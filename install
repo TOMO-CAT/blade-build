@@ -3,6 +3,33 @@
 blade_dir=$(cd $(dirname $0) && pwd)
 cd $blade_dir
 
+# 生成版本号, 通过 blade --version 获取
+function blade_version() {
+    local branch
+    local version
+    local log
+    branch=$(git branch | grep '^\*')
+    if echo "$branch" | egrep 'detached (at|from)' > /dev/null; then
+        # Extract tag name
+        version=$(echo "$branch" | sed -E -n 's/\* \(.* detached (at|from) (.*)\)/\2/p')
+    else
+        version=$(echo "$branch" | sed -n 's/\* \(.*\)$/("\1" branch)/p')
+    fi
+    # get last commit brief
+    log=$(git log -1 --format="%ad %h, by %cn" --date=short)
+
+    # Examples:
+    #   2.0.0, 2019-03-16 3b2ad0d, by CHEN Feng
+    #   ("version" branch), 2019-03-16 3b2ad0d, by CHEN Feng
+    echo "$version, $log"
+}
+version=$(blade_version)
+cd $blade_dir
+src_dir='./src'
+cd $src_dir
+echo "VERSION = r'''$version'''" > blade/blade_version.py
+
+# 安装 vim scripts
 echo -n "Installing vim scripts..."
 mkdir -p ~/.vim/{syntax,ftdetect,indent}
 ln -sf $blade_dir/vim/ftdetect/* ~/.vim/ftdetect/
@@ -10,6 +37,7 @@ ln -sf $blade_dir/vim/syntax/* ~/.vim/syntax/
 ln -sf $blade_dir/vim/indent/* ~/.vim/indent/
 echo ", Done."
 
+# 安装 blade auxiliary tools
 mkdir -p ~/bin
 echo -n "Installing blade auxiliary tools..."
 ln -sf $blade_dir/tool/{genlibbuild,lsnobuild,lsrc,merge-static-libs,bladefunctions} ~/bin
@@ -18,6 +46,7 @@ if [ ! -f ~/.bashrc ] || ! grep "bladefunctions" ~/.bashrc 2>&1 >/dev/null; then
 fi
 echo ", Done."
 
+# 安装 blade
 echo -n "Installing blade..."
 ln -sf $blade_dir/blade ~/bin
 echo ", Done."
@@ -32,4 +61,3 @@ if ! echo $PATH | grep "$HOME/bin" &> /dev/null; then
     echo 'export PATH=~/bin:$PATH' >> $profile
     echo -e "\033[1;32mInstall success, please relogin or run 'source $profile' manually to apply\033[0m"
 fi
-

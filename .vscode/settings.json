@@ -3,5 +3,8 @@
     "python.analysis.extraPaths": [
         "src",
         "src/test"
+    ],
+    "cSpell.words": [
+        "TOMO"
     ]
 }
