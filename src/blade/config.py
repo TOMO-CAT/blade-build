@@ -147,8 +147,10 @@ class BladeConfig(object):
             'cuda_config': {
                 '__help__': 'CUDA Configuration',
                 'cuda_path': '',
+                'ccbin': '',
                 'cu_warnings': [],
                 'cuflags': [],
+                'linkflags': [],
             },
 
             'java_config': {
@@ -287,6 +289,7 @@ class BladeConfig(object):
                 with open(filename, 'rb') as f:
                     content = f.read()
                     self.__md5.update(content)
+                    # 以 python 的语法运行 blade.conf / BLADE_ROOT 等配置文件, 加载对应的变量到 _config_globals
                     exec_file_content(filename, content, _config_globals, None)
         except SystemExit:
             console.error('Parse error in config file %s' % filename)
@@ -343,7 +346,6 @@ class BladeConfig(object):
             if other_section:
                 msg += ', maybe it is in "%s"?' % other_section
             self.warning(msg)
-
 
     def _assign_item_value(self, section, name, value):
         """Assign value to config item."""
@@ -475,7 +477,7 @@ def _check_default_visibility(kwargs):
         return
     if len(value) != 1 or 'PUBLIC' not in value:
         _blade_config.error(
-                '''"global_config.default_visibility" can only be empty("[]") or "['PUBLIC']"''')
+            '''"global_config.default_visibility" can only be empty("[]") or "['PUBLIC']"''')
 
 
 _DUPLICATED_SOURCE_ACTION_VALUES = {'warning', 'error', 'none', None}

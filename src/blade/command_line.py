@@ -414,8 +414,9 @@ class CommandLineParser(object):
         group.add_argument(
             '--all-tags', dest='dump_all_tags', default=False, action='store_true',
             help='Dump all tags of targets in json format')
+
     def _build_arg_parser(self):
-        """Add command options, add options whthin this method."""
+        """Add command options, add options within this method."""
         blade_cmd_help = 'blade <subcommand> [options...] [targets...]'
         arg_parser = argparse.ArgumentParser(prog='blade', description=blade_cmd_help)
         arg_parser.add_argument('--version', action='version', version='%(prog)s ' + VERSION)
@@ -423,6 +424,7 @@ class CommandLineParser(object):
 
         sub_parser.required = True
 
+        # 添加子命令
         build_parser = sub_parser.add_parser(
             'build',
             help='Build specified targets')
@@ -449,8 +451,10 @@ class CommandLineParser(object):
             'dump',
             help='Dump specified internal information')
 
+        # 添加所有 subcommand 的公共参数
         self._add_common_arguments(build_parser, run_parser, test_parser,
                                    clean_parser, query_parser, dump_parser)
+        # 添加每个 subcommand 的特例化参数
         self._add_build_arguments(build_parser, run_parser, test_parser, dump_parser)
         self._add_run_arguments(run_parser)
         self._add_test_arguments(test_parser)

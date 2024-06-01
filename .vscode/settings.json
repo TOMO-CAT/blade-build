@@ -5,6 +5,33 @@
         "src/test"
     ],
     "cSpell.words": [
-        "TOMO"
+        "bladerc",
+        "ccbin",
+        "cflags",
+        "Chong",
+        "compdb",
+        "cppflags",
+        "cuda",
+        "cudalink",
+        "cudasolink",
+        "cuflags",
+        "debugpy",
+        "DNDEBUG",
+        "DPROFILE",
+        "Feng",
+        "fprofile",
+        "fstack",
+        "gperftools",
+        "gprof",
+        "Huan",
+        "incchk",
+        "pprof",
+        "secretcc",
+        "srcs",
+        "STDC",
+        "TOMO",
+        "unversioned",
+        "Xcompiler",
+        "Xlinker"
     ]
 }

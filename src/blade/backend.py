@@ -39,12 +39,13 @@ from blade import util
 # `多个防止重包含可能对其有用：` is the same as `Multiple...` in Chinese.
 # After `Multiple...`, maybe there are still some useful messages, such as cuda error.
 _INCLUSION_STACK_SPLITTER = (r"awk '"
-    r"""/Multiple include guards may be useful for:|多个防止重包含可能对其有用：/ {stop=1} """  # Can't exit here otherwise SIGPIPE maybe occurs.
-    r"""/^\.+ [^\/]/ && !end { started=1 ; print $$0} """  # Non absolute path, neither header list after error message.
-    r"""!/^\.+ / && started {end=1} """  # mark the error message when polling header list
-    r"""!/^\.+ / && (!stop || (!/Multiple include guards may be useful for:|多个防止重包含可能对其有用：/ && !/^[a-zA-Z0-9\.\/\+_-]+$$/ )) {print $$0 > "/dev/stderr"}"""  # Maybe error messages
-    r"'"
-)
+                             r"""/Multiple include guards may be useful for:|多个防止重包含可能对其有用：/ {stop=1} """  # Can't exit here otherwise SIGPIPE maybe occurs.
+                             r"""/^\.+ [^\/]/ && !end { started=1 ; print $$0} """  # Non absolute path, neither header list after error message.
+                             r"""!/^\.+ / && started {end=1} """  # mark the error message when polling header list
+                             r"""!/^\.+ / && (!stop || (!/Multiple include guards may be useful for:|多个防止重包含可能对其有用：/ && !/^[a-zA-Z0-9\.\/\+_-]+$$/ )) {print $$0 > "/dev/stderr"}"""  # Maybe error messages
+                             r"'"
+                             )
+
 
 def _incs_list_to_string(incs):
     """Convert incs list to string.
@@ -72,6 +73,7 @@ class _NinjaFileHeaderGenerator(object):
     for the underlying build system.
     """
     # pylint: disable=too-many-public-methods
+
     def __init__(self, command, options, build_dir, blade_path, build_toolchain, blade):
         self.command = command
         self.options = options
@@ -253,7 +255,7 @@ class _NinjaFileHeaderGenerator(object):
 
         cc_command = ('%s -o ${out} -MMD -MF ${out}.d -c -fPIC %s %s ${optimize} '
                       '${c_warnings} ${cppflags} %s ${includes} ${in}') % (
-                              cc, ' '.join(cflags), ' '.join(cppflags), includes)
+            cc, ' '.join(cflags), ' '.join(cppflags), includes)
         self.generate_rule(name='cc',
                            command=template % cc_command,
                            description='CC ${in}',
@@ -262,7 +264,7 @@ class _NinjaFileHeaderGenerator(object):
 
         cxx_command = ('%s -o ${out} -MMD -MF ${out}.d -c -fPIC %s %s ${optimize} '
                        '${cxx_warnings} ${cppflags} %s ${includes} ${in}') % (
-                               cxx, ' '.join(cxxflags), ' '.join(cppflags), includes)
+            cxx, ' '.join(cxxflags), ' '.join(cppflags), includes)
         self.generate_rule(name='cxx',
                            command=template % cxx_command,
                            description='CXX ${in}',
@@ -701,6 +703,7 @@ class _NinjaFileHeaderGenerator(object):
         includes = cc_config['extra_incs']
         includes = includes + ['.', self.build_dir]
         includes = ' '.join(['-I%s' % inc for inc in includes])
+        ccbin = cuda_config['ccbin']
 
         template = self._cc_compile_command_wrapper_template('${out}.H', cuda=True)
 
@@ -708,7 +711,7 @@ class _NinjaFileHeaderGenerator(object):
         cu_command = '%s -ccbin %s -o ${out} -MMD -MF ${out}.d ' \
             '-Xcompiler -fPIC %s %s %s ${optimize} ${cu_warnings} ' \
             '%s ${includes} ${cppflags} ${cuflags} -c ${in}' % (
-                nvcc_cmd, cxx, ' '.join(cxxflags), ' '.join(cppflags),
+                nvcc_cmd, ccbin, ' '.join(cxxflags), ' '.join(cppflags),
                 ' '.join(cuflags), includes)
         self.generate_rule(
             name='cudacc',
@@ -718,7 +721,10 @@ class _NinjaFileHeaderGenerator(object):
             deps='gcc',
         )
 
-        link_args = '-o ${out} ${includes} ${cppflags} ${target_linkflags} ${extra_linkflags} ${in}'
+        # 添加 cuda 额外的 linkflags
+        cuda_linkflags = cuda_config['linkflags']
+        link_args = '-o ${out} ${includes} ${cppflags} %s ${target_linkflags} ${extra_linkflags} ${in}' % (
+            ' '.join(cuda_linkflags))
         self.generate_rule(
             name='cudalink',
             command=nvcc_cmd + ' ' + link_args,

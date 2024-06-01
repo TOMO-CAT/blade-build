@@ -42,6 +42,7 @@ _NINJA_FILE_FINGERPRINT_START = '#Fingerprint='
 
 _ALL_COMMAND_TARGETS = '__ALL_COMMAND_TARGETS__'
 
+
 class Blade(object):
     """Blade. A blade manager class."""
 
@@ -149,7 +150,7 @@ class Blade(object):
         """Generate the backend build code."""
         console.info('Generating backend build code...')
         generator = NinjaFileGenerator(self.__build_script, self.__blade_path, self)
-        generator.generate_build_script()
+        generator.generate_build_script()  # 生成 Ninja 编译脚本, 存储在 build64_release/build.ninja 下
         self.__all_rule_names = generator.get_all_rule_names()
         console.info('Generating done.')
 
@@ -239,13 +240,13 @@ class Blade(object):
             exclude_tests = target_pattern.normalize_str_list(self.__options.exclude_tests,
                                                               self.__working_dir, ',')
         test_runner = TestRunner(
-                self.__options,
-                self.__target_database,
-                self.__direct_targets,
-                self.__expanded_command_targets,
-                self.__build_targets,
-                exclude_tests,
-                self.test_jobs_num())
+            self.__options,
+            self.__target_database,
+            self.__direct_targets,
+            self.__expanded_command_targets,
+            self.__build_targets,
+            exclude_tests,
+            self.test_jobs_num())
         return test_runner.run()
 
     @staticmethod
@@ -362,7 +363,7 @@ class Blade(object):
                 self.__working_dir):
             if id not in self.__target_database:
                 console.fatal('Invalid argument: "--path-to=%s", target "%s" does not exist' % (
-                        self.__options.query_path_to, id))
+                    self.__options.query_path_to, id))
             result.add(id)
         return result
 

@@ -69,24 +69,29 @@ function _full_real_path() {
 # version is under 2.7
 function _check_python() {
     local python
-    if command -v python &> /dev/null; then
-        python="python"
-    elif command -v python3 &> /dev/null; then
+    # 优先使用 Python3, 可以写中文注释
+    if command -v python3 &> /dev/null; then
         echo "python3"
         return
-    elif command -v python3 &> /dev/null; then
+    elif command -v python &> /dev/null; then
         python="python"
-        echo "python3"
     else
         _fatal "Please install python 2.7+ or 3.6+ or above in your system"
     fi
 
+    # pyhton2 版本必须 >= 2.7
     python_ver=$($python -V 2>&1 | sed 's/Python //g')
     if [[ "$python_ver" < "2.7" ]]; then
         _info "Python version in your machine: $python_ver"
         _fatal "Please upgrade your python version to 2.7 or 3.6+"
     fi
     echo $python
+}
+
+# 打印并执行 shell 命令
+function _execute_and_echo() {
+    echo "+ $@"
+    "$@"
 }
 
 
@@ -115,4 +120,4 @@ if [[ ! -e "$blade_file" ]]; then
     _fatal "Cannot find the core file $blade_file"
 fi
 
-${BLADE_PYTHON_INTERPRETER:-$python} $blade_file "$@"
+_execute_and_echo ${BLADE_PYTHON_INTERPRETER:-$python} $blade_file "$@"

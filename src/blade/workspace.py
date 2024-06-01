@@ -78,6 +78,7 @@ def _generate_scm(build_dir):
 
 class Workspace(object):
     """Workspace represent a dir tree rooted from the dir where the BLADE_ROOT residents."""
+
     def __init__(self, options):
         self.__options = options
         working_dir = util.get_cwd()
@@ -156,7 +157,7 @@ class Workspace(object):
         return os.path.dirname(blade_root)
 
 
-__instance = None
+__instance = None  # 单例模式
 
 
 def initialize(options):

@@ -6,7 +6,7 @@
 #          Chong Peng <michaelpeng@tencent.com>
 
 """
-Main entrence of blade.
+Main entrance of blade.
 """
 
 from __future__ import absolute_import

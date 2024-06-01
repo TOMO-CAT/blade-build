@@ -36,7 +36,7 @@ from blade.version import LooseVersion as version_parse
 
 # See https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html#Overall-Options
 _SOURCE_FILE_EXTS = {'c', 'cc', 'cp', 'cxx', 'cpp', 'CPP', 'c++', 'C', 's', 'S', 'asm'}
-_HEADER_FILE_EXTS = {'h', 'hh', 'H', 'hp', 'hpp', 'hxx', 'HPP', 'h++', 'inc', 'inl', 'tcc'}
+_HEADER_FILE_EXTS = {'h', 'hh', 'H', 'hp', 'hpp', 'hxx', 'HPP', 'h++', 'inc', 'inl', 'tcc', 'cuh'}
 
 
 def is_header_file(filename):
@@ -91,7 +91,7 @@ def find_libs_by_header(hdr):
     if result is not None:
         return result
     result = inclusion_check.find_libs_by_header(
-                hdr, _hdr_targets_map, _hdr_dir_targets_map)
+        hdr, _hdr_targets_map, _hdr_dir_targets_map)
     cache[hdr] = result
     return result
 
@@ -181,14 +181,14 @@ class CcTarget(Target):
         self.cmd = cmd
 
         super(CcTarget, self).__init__(
-                name=name,
-                type=type,
-                srcs=srcs,
-                src_exts=src_exts,
-                deps=deps,
-                visibility=visibility,
-                tags=tags,
-                kwargs=kwargs)
+            name=name,
+            type=type,
+            srcs=srcs,
+            src_exts=src_exts,
+            deps=deps,
+            visibility=visibility,
+            tags=tags,
+            kwargs=kwargs)
 
         self._check_defs(defs)
         self._check_incorrect_no_warning(warning)
@@ -249,8 +249,8 @@ class CcTarget(Target):
             if self.key not in suppress:
                 severity = config.get_item('cc_library_config', 'hdrs_missing_severity')
                 getattr(self, severity)(
-                        'Missing "hdrs" declaration. The public header files should be declared '
-                        'explicitly, if no public header file, set "hdrs" to empty (hdrs = [])')
+                    'Missing "hdrs" declaration. The public header files should be declared '
+                    'explicitly, if no public header file, set "hdrs" to empty (hdrs = [])')
         if not hdrs:
             return
         hdrs = var_to_list(hdrs)
@@ -775,7 +775,7 @@ class CcTarget(Target):
 
     def _collect_allowed_undeclared_hdrs(self, hdrs):
         allowed = config.get_item('cc_config', 'allowed_undeclared_hdrs')
-        return {hdr : hdr in allowed for hdr in hdrs}
+        return {hdr: hdr in allowed for hdr in hdrs}
 
 
 class CcLibrary(CcTarget):
@@ -814,21 +814,21 @@ class CcLibrary(CcTarget):
         """
         # pylint: disable=too-many-locals
         super(CcLibrary, self).__init__(
-                name=name,
-                type='cc_library',
-                srcs=srcs,
-                deps=deps,
-                visibility=visibility,
-                tags=tags,
-                warning=warning,
-                defs=defs,
-                incs=incs,
-                export_incs=export_incs,
-                optimize=optimize,
-                linkflags=linkflags,
-                extra_cppflags=extra_cppflags,
-                extra_linkflags=extra_linkflags,
-                kwargs=kwargs)
+            name=name,
+            type='cc_library',
+            srcs=srcs,
+            deps=deps,
+            visibility=visibility,
+            tags=tags,
+            warning=warning,
+            defs=defs,
+            incs=incs,
+            export_incs=export_incs,
+            optimize=optimize,
+            linkflags=linkflags,
+            extra_cppflags=extra_cppflags,
+            extra_linkflags=extra_linkflags,
+            kwargs=kwargs)
         self.attr['link_all_symbols'] = link_all_symbols
         self.attr['binary_link_only'] = binary_link_only
         self.attr['always_optimize'] = always_optimize
@@ -847,7 +847,6 @@ class CcLibrary(CcTarget):
         """Override"""
         self._write_inclusion_check_info()
         self._check_binary_link_only()
-
 
     def generate(self):
         """Generate build code for cc object/library."""
@@ -878,21 +877,21 @@ class PrebuiltCcLibrary(CcTarget):
         """Init method."""
         # pylint: disable=too-many-locals
         super(PrebuiltCcLibrary, self).__init__(
-                name=name,
-                type='prebuilt_cc_library',
-                srcs=[],
-                deps=deps,
-                visibility=visibility,
-                tags=tags,
-                warning='no',
-                defs=[],
-                incs=[],
-                export_incs=export_incs,
-                optimize=None,
-                linkflags=None,
-                extra_cppflags=[],
-                extra_linkflags=[],
-                kwargs=kwargs)
+            name=name,
+            type='prebuilt_cc_library',
+            srcs=[],
+            deps=deps,
+            visibility=visibility,
+            tags=tags,
+            warning='no',
+            defs=[],
+            incs=[],
+            export_incs=export_incs,
+            optimize=None,
+            linkflags=None,
+            extra_cppflags=[],
+            extra_linkflags=[],
+            kwargs=kwargs)
         self.attr['libpath_pattern'] = libpath_pattern
         self.attr['link_all_symbols'] = link_all_symbols
         self.attr['binary_link_only'] = binary_link_only
@@ -1019,17 +1018,17 @@ def prebuilt_cc_library(
         **kwargs):
     """prebuilt_cc_library rule"""
     target = PrebuiltCcLibrary(
-            name=name,
-            deps=deps,
-            visibility=visibility,
-            tags=tags,
-            export_incs=export_incs,
-            hdrs=hdrs,
-            libpath_pattern=libpath_pattern,
-            link_all_symbols=link_all_symbols,
-            binary_link_only=binary_link_only,
-            deprecated=deprecated,
-            kwargs=kwargs)
+        name=name,
+        deps=deps,
+        visibility=visibility,
+        tags=tags,
+        export_incs=export_incs,
+        hdrs=hdrs,
+        libpath_pattern=libpath_pattern,
+        link_all_symbols=link_all_symbols,
+        binary_link_only=binary_link_only,
+        deprecated=deprecated,
+        kwargs=kwargs)
     build_manager.instance.register_target(target)
     return target
 
@@ -1076,43 +1075,43 @@ def cc_library(
     # pylint: disable=too-many-locals
     if pre_build or prebuilt:
         target = prebuilt_cc_library(
-                name=name,
-                hdrs=hdrs,
-                deps=deps,
-                visibility=visibility,
-                tags=tags,
-                export_incs=export_incs,
-                libpath_pattern=prebuilt_libpath_pattern,
-                link_all_symbols=link_all_symbols,
-                binary_link_only=binary_link_only,
-                deprecated=deprecated,
-                **kwargs)
-        # target.warning('"cc_library.prebuilt" is deprecated, please use the standalone '
-        #                '"prebuilt_cc_library" rule')
-        return
-    target = CcLibrary(
             name=name,
-            srcs=srcs,
             hdrs=hdrs,
             deps=deps,
             visibility=visibility,
             tags=tags,
-            warning=warning,
-            defs=defs,
-            incs=incs,
             export_incs=export_incs,
-            optimize=optimize,
-            always_optimize=always_optimize,
+            libpath_pattern=prebuilt_libpath_pattern,
             link_all_symbols=link_all_symbols,
             binary_link_only=binary_link_only,
             deprecated=deprecated,
-            linkflags=linkflags,
-            extra_cppflags=extra_cppflags,
-            extra_linkflags=extra_linkflags,
-            allow_undefined=allow_undefined,
-            secret=secret or secure,
-            secret_revision_file=secret_revision_file,
-            kwargs=kwargs)
+            **kwargs)
+        # target.warning('"cc_library.prebuilt" is deprecated, please use the standalone '
+        #                '"prebuilt_cc_library" rule')
+        return
+    target = CcLibrary(
+        name=name,
+        srcs=srcs,
+        hdrs=hdrs,
+        deps=deps,
+        visibility=visibility,
+        tags=tags,
+        warning=warning,
+        defs=defs,
+        incs=incs,
+        export_incs=export_incs,
+        optimize=optimize,
+        always_optimize=always_optimize,
+        link_all_symbols=link_all_symbols,
+        binary_link_only=binary_link_only,
+        deprecated=deprecated,
+        linkflags=linkflags,
+        extra_cppflags=extra_cppflags,
+        extra_linkflags=extra_linkflags,
+        allow_undefined=allow_undefined,
+        secret=secret or secure,
+        secret_revision_file=secret_revision_file,
+        kwargs=kwargs)
     build_manager.instance.register_target(target)
 
 
@@ -1139,21 +1138,21 @@ class ForeignCcLibrary(CcTarget):
         """Init method."""
         # pylint: disable=too-many-locals
         super(ForeignCcLibrary, self).__init__(
-                name=name,
-                type='foreign_cc_library',
-                srcs=[],
-                deps=deps,
-                visibility=visibility,
-                tags=tags,
-                warning='no',
-                defs=[],
-                incs=[],
-                export_incs=export_incs,
-                optimize=None,
-                linkflags=None,
-                extra_cppflags=[],
-                extra_linkflags=[],
-                kwargs=kwargs)
+            name=name,
+            type='foreign_cc_library',
+            srcs=[],
+            deps=deps,
+            visibility=visibility,
+            tags=tags,
+            warning='no',
+            defs=[],
+            incs=[],
+            export_incs=export_incs,
+            optimize=None,
+            linkflags=None,
+            extra_cppflags=[],
+            extra_linkflags=[],
+            kwargs=kwargs)
         self.attr['install_dir'] = install_dir
         self.attr['link_all_symbols'] = link_all_symbols
         self.attr['deprecated'] = deprecated
@@ -1234,20 +1233,20 @@ def foreign_cc_library(
         has_dynamic: bool, whether this library has a dynamic edition.
     """
     target = ForeignCcLibrary(
-            name=name,
-            deps=deps,
-            visibility=visibility,
-            tags=tags,
-            export_incs=export_incs,
-            install_dir=install_dir,
-            hdrs=hdrs,
-            hdr_dir=hdr_dir,
-            lib_dir=lib_dir,
-            has_dynamic=has_dynamic,
-            link_all_symbols=link_all_symbols,
-            binary_link_only=binary_link_only,
-            deprecated=deprecated,
-            kwargs=kwargs)
+        name=name,
+        deps=deps,
+        visibility=visibility,
+        tags=tags,
+        export_incs=export_incs,
+        install_dir=install_dir,
+        hdrs=hdrs,
+        hdr_dir=hdr_dir,
+        lib_dir=lib_dir,
+        has_dynamic=has_dynamic,
+        link_all_symbols=link_all_symbols,
+        binary_link_only=binary_link_only,
+        deprecated=deprecated,
+        kwargs=kwargs)
     build_manager.instance.register_target(target)
 
 
@@ -1288,21 +1287,21 @@ class CcBinary(CcTarget):
         """
         # pylint: disable=too-many-locals
         super(CcBinary, self).__init__(
-                name=name,
-                type='cc_binary',
-                srcs=srcs,
-                deps=deps,
-                visibility=visibility,
-                tags=tags,
-                warning=warning,
-                defs=defs,
-                incs=incs,
-                export_incs=[],
-                optimize=optimize,
-                linkflags=linkflags,
-                extra_cppflags=extra_cppflags,
-                extra_linkflags=extra_linkflags,
-                kwargs=kwargs)
+            name=name,
+            type='cc_binary',
+            srcs=srcs,
+            deps=deps,
+            visibility=visibility,
+            tags=tags,
+            warning=warning,
+            defs=defs,
+            incs=incs,
+            export_incs=[],
+            optimize=optimize,
+            linkflags=linkflags,
+            extra_cppflags=extra_cppflags,
+            extra_linkflags=extra_linkflags,
+            kwargs=kwargs)
         self.attr['embed_version'] = embed_version
         self.attr['dynamic_link'] = dynamic_link
         self.attr['lds_fullpath'] = self._fullpath_sources(var_to_list(linker_scripts))
@@ -1409,24 +1408,24 @@ def cc_binary(name=None,
               **kwargs):
     """cc_binary target."""
     cc_binary_target = CcBinary(
-            name=name,
-            srcs=srcs,
-            deps=deps,
-            visibility=visibility,
-            tags=tags,
-            warning=warning,
-            defs=defs,
-            incs=incs,
-            embed_version=embed_version,
-            optimize=optimize,
-            dynamic_link=dynamic_link,
-            linkflags=linkflags,
-            extra_cppflags=extra_cppflags,
-            extra_linkflags=extra_linkflags,
-            linker_scripts=linker_scripts,
-            version_scripts=version_scripts,
-            export_dynamic=export_dynamic,
-            kwargs=kwargs)
+        name=name,
+        srcs=srcs,
+        deps=deps,
+        visibility=visibility,
+        tags=tags,
+        warning=warning,
+        defs=defs,
+        incs=incs,
+        embed_version=embed_version,
+        optimize=optimize,
+        dynamic_link=dynamic_link,
+        linkflags=linkflags,
+        extra_cppflags=extra_cppflags,
+        extra_linkflags=extra_linkflags,
+        linker_scripts=linker_scripts,
+        version_scripts=version_scripts,
+        export_dynamic=export_dynamic,
+        kwargs=kwargs)
     build_manager.instance.register_target(cc_binary_target)
 
 
@@ -1477,21 +1476,21 @@ class CcPlugin(CcTarget):
 
         """
         super(CcPlugin, self).__init__(
-                  name=name,
-                  type='cc_plugin',
-                  srcs=srcs,
-                  deps=deps,
-                  visibility=visibility,
-                  tags=tags,
-                  warning=warning,
-                  defs=defs,
-                  incs=incs,
-                  export_incs=[],
-                  optimize=optimize,
-                  linkflags=linkflags,
-                  extra_cppflags=extra_cppflags,
-                  extra_linkflags=extra_linkflags,
-                  kwargs=kwargs)
+            name=name,
+            type='cc_plugin',
+            srcs=srcs,
+            deps=deps,
+            visibility=visibility,
+            tags=tags,
+            warning=warning,
+            defs=defs,
+            incs=incs,
+            export_incs=[],
+            optimize=optimize,
+            linkflags=linkflags,
+            extra_cppflags=extra_cppflags,
+            extra_linkflags=extra_linkflags,
+            kwargs=kwargs)
         self.prefix = prefix
         self.suffix = suffix
         self.attr['allow_undefined'] = allow_undefined
@@ -1556,25 +1555,25 @@ def cc_plugin(
         **kwargs):
     """cc_plugin target."""
     target = CcPlugin(
-            name=name,
-            srcs=srcs,
-            deps=deps,
-            visibility=visibility,
-            tags=tags,
-            warning=warning,
-            defs=defs,
-            incs=incs,
-            optimize=optimize,
-            prefix=prefix,
-            suffix=suffix,
-            linkflags=linkflags,
-            extra_cppflags=extra_cppflags,
-            extra_linkflags=extra_linkflags,
-            linker_scripts=linker_scripts,
-            version_scripts=version_scripts,
-            allow_undefined=allow_undefined,
-            strip=strip,
-            kwargs=kwargs)
+        name=name,
+        srcs=srcs,
+        deps=deps,
+        visibility=visibility,
+        tags=tags,
+        warning=warning,
+        defs=defs,
+        incs=incs,
+        optimize=optimize,
+        prefix=prefix,
+        suffix=suffix,
+        linkflags=linkflags,
+        extra_cppflags=extra_cppflags,
+        extra_linkflags=extra_linkflags,
+        linker_scripts=linker_scripts,
+        version_scripts=version_scripts,
+        allow_undefined=allow_undefined,
+        strip=strip,
+        kwargs=kwargs)
     build_manager.instance.register_target(target)
 
 
@@ -1617,24 +1616,24 @@ class CcTest(CcBinary):
             dynamic_link = cc_test_config['dynamic_link']
 
         super(CcTest, self).__init__(
-                name=name,
-                srcs=srcs,
-                deps=deps,
-                visibility=visibility,
-                tags=tags,
-                warning=warning,
-                defs=defs,
-                incs=incs,
-                embed_version=embed_version,
-                optimize=optimize,
-                linkflags=linkflags,
-                dynamic_link=dynamic_link,
-                extra_cppflags=extra_cppflags,
-                extra_linkflags=extra_linkflags,
-                linker_scripts=[],
-                version_scripts=[],
-                export_dynamic=export_dynamic,
-                kwargs=kwargs)
+            name=name,
+            srcs=srcs,
+            deps=deps,
+            visibility=visibility,
+            tags=tags,
+            warning=warning,
+            defs=defs,
+            incs=incs,
+            embed_version=embed_version,
+            optimize=optimize,
+            linkflags=linkflags,
+            dynamic_link=dynamic_link,
+            extra_cppflags=extra_cppflags,
+            extra_linkflags=extra_linkflags,
+            linker_scripts=[],
+            version_scripts=[],
+            export_dynamic=export_dynamic,
+            kwargs=kwargs)
         self.type = 'cc_test'
         self.attr['testdata'] = var_to_list(testdata)
         self.attr['always_run'] = always_run
@@ -1692,27 +1691,27 @@ def cc_test(name=None,
     """cc_test target."""
     # pylint: disable=too-many-locals
     cc_test_target = CcTest(
-            name=name,
-            srcs=srcs,
-            deps=deps,
-            visibility=visibility,
-            tags=tags,
-            warning=warning,
-            defs=defs,
-            incs=incs,
-            embed_version=embed_version,
-            optimize=optimize,
-            dynamic_link=dynamic_link,
-            testdata=testdata,
-            linkflags=linkflags,
-            extra_cppflags=extra_cppflags,
-            extra_linkflags=extra_linkflags,
-            export_dynamic=export_dynamic,
-            always_run=always_run,
-            exclusive=exclusive,
-            heap_check=heap_check,
-            heap_check_debug=heap_check_debug,
-            kwargs=kwargs)
+        name=name,
+        srcs=srcs,
+        deps=deps,
+        visibility=visibility,
+        tags=tags,
+        warning=warning,
+        defs=defs,
+        incs=incs,
+        embed_version=embed_version,
+        optimize=optimize,
+        dynamic_link=dynamic_link,
+        testdata=testdata,
+        linkflags=linkflags,
+        extra_cppflags=extra_cppflags,
+        extra_linkflags=extra_linkflags,
+        export_dynamic=export_dynamic,
+        always_run=always_run,
+        exclusive=exclusive,
+        heap_check=heap_check,
+        heap_check_debug=heap_check_debug,
+        kwargs=kwargs)
     build_manager.instance.register_target(cc_test_target)
 
 
