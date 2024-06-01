@@ -83,6 +83,7 @@ class BladeConfig(object):
             'cc_config': {
                 '__help__': 'C/C++ Configuration',
                 'extra_incs': [],
+                'extra_sys_incs': [],
                 'cppflags': [],
                 'cflags': [],
                 'cxxflags': [],
@@ -529,7 +530,7 @@ def cc_library_config(append=None, **kwargs):
 
 @config_rule
 def cc_config(append=None, **kwargs):
-    """extra cc config, like extra cpp include path splited by space."""
+    """extra cc config, like extra cpp include path split by space."""
     _check_kwarg_enum_value(kwargs, 'hdr_dep_missing_severity', constants.SEVERITIES)
     if 'extra_incs' in kwargs:
         extra_incs = kwargs['extra_incs']

@@ -250,6 +250,8 @@ class _NinjaFileHeaderGenerator(object):
         includes = cc_config['extra_incs']
         includes = includes + ['.', self.build_dir]
         includes = ' '.join(['-I%s' % inc for inc in includes])
+        sys_includes = cc_config['extra_sys_incs']
+        includes = includes + ''.join(' -isystem %s' % inc for inc in sys_includes)
 
         template = self._cc_compile_command_wrapper_template('${out}.H')
 
@@ -703,6 +705,8 @@ class _NinjaFileHeaderGenerator(object):
         includes = cc_config['extra_incs']
         includes = includes + ['.', self.build_dir]
         includes = ' '.join(['-I%s' % inc for inc in includes])
+        sys_includes = cc_config['extra_sys_incs']
+        includes = includes + ''.join(' -isystem %s' % inc for inc in sys_includes)
         ccbin = cuda_config['ccbin']
 
         template = self._cc_compile_command_wrapper_template('${out}.H', cuda=True)
