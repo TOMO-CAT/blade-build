@@ -372,7 +372,12 @@ class CcTarget(Target):
                 continue
 
             target = self.target_database[dep]
-            inc_list += target.attr.get('export_incs', [])
+            # 如果 target 类型是 prebuilt_cc_library, 那么它的 export_incs 应该是 -isystem
+            # 这样可以不用添加额外的 cxxflags 来屏蔽三方库 warning
+            if target.type == 'prebuilt_cc_library':
+                inc_list += [f'-isystem {inc}' for inc in target.attr.get('export_incs', [])]
+            else:
+                inc_list += target.attr.get('export_incs', [])
         return inc_list
 
     def _get_incs_list(self):
@@ -407,8 +412,8 @@ class CcTarget(Target):
         if cppflags:
             vars['cppflags'] = ' '.join(cppflags)
         if includes:
-            vars['includes'] = ' '.join(['-I%s' % inc for inc in includes])
-
+            # 处理 prebuilt_cc_library target 的 export_incs
+            vars['includes'] = ' '.join([inc if inc.startswith('-isystem') else '-I%s' % inc for inc in includes])
         optimize = self._get_optimize_flags()
         if optimize is not None:
             vars['optimize'] = optimize
