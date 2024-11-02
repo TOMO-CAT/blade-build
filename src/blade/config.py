@@ -290,8 +290,7 @@ class BladeConfig(object):
                 with open(filename, 'rb') as f:
                     content = f.read()
                     self.__md5.update(content)
-                    # run blade.conf / BLADE_ROOT with python syntax
-                    # and load variables to _config_globals
+                    # run blade.conf / BLADE_ROOT with python syntax with global-namespace _config_globals
                     exec_file_content(filename, content, _config_globals, None)
         except SystemExit:
             console.error('Parse error in config file %s' % filename)

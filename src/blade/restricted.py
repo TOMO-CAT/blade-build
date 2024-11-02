@@ -55,7 +55,8 @@ _SAFE_NAMES = [
     'sorted',
     'str',
     'tuple',
-    'zip'
+    'zip',
+    'print'
 ]
 
 _SAFE_EXCEPTIONS = [
