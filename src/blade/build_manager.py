@@ -150,7 +150,7 @@ class Blade(object):
         """Generate the backend build code."""
         console.info('Generating backend build code...')
         generator = NinjaFileGenerator(self.__build_script, self.__blade_path, self)
-        generator.generate_build_script()  # 生成 Ninja 编译脚本, 存储在 build64_release/build.ninja 下
+        generator.generate_build_script()  # generate Ninja files in build64_release/build.ninja
         self.__all_rule_names = generator.get_all_rule_names()
         console.info('Generating done.')
 

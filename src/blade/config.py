@@ -290,7 +290,8 @@ class BladeConfig(object):
                 with open(filename, 'rb') as f:
                     content = f.read()
                     self.__md5.update(content)
-                    # 以 python 的语法运行 blade.conf / BLADE_ROOT 等配置文件, 加载对应的变量到 _config_globals
+                    # run blade.conf / BLADE_ROOT with python syntax
+                    # and load variables to _config_globals
                     exec_file_content(filename, content, _config_globals, None)
         except SystemExit:
             console.error('Parse error in config file %s' % filename)

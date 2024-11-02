@@ -37,6 +37,22 @@
             ],
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Build example's include target",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "/auto_pilot/thirdparty/blade-build/example",
+            "program": "/auto_pilot/thirdparty/blade-build/src",
+            "args": [
+                "build",
+                "--verbose",
+                "--color",
+                "yes",
+                "include/..."
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }

@@ -26,9 +26,9 @@ proto_library_config(
         '//thirdparty/glog:glog',
         '//thirdparty/gflags:gflags',
         '#pthread'],
-    protobuf_java_libs = ['//java:protobuf-java'],
+    protobuf_java_libs=['//java:protobuf-java'],
     protobuf_path='thirdparty',
-    protobuf_incs = [],
+    protobuf_incs=[],
     protobuf_php_path='thirdparty/Protobuf-PHP/library',
     protoc_php_plugin='thirdparty/Protobuf-PHP/protoc-gen-php.php'
 )
@@ -46,21 +46,21 @@ cc_config(
     extra_incs=[
         'thirdparty/',
     ],
-    cppflags = ['-DHAVE_CONFIG_H', '-D_GLIBCXX_USE_CXX11_ABI=0'],
+    cppflags=['-DHAVE_CONFIG_H', '-D_GLIBCXX_USE_CXX11_ABI=0'],
 )
 
 cuda_config(
     # cuda_path = '//thirdparty/cuda/11.2',
-    cu_warnings = [
+    cu_warnings=[
         '--Wno-deprecated-declarations',
     ],
-    cuflags = [
+    cuflags=[
         '--display-error-number',
     ],
 )
 
 java_test_config(
-    junit_libs = ['/usr/share/java/junit.jar'],
+    junit_libs=['/usr/share/java/junit.jar'],
 )
 
 """

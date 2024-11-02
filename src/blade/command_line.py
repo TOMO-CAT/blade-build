@@ -424,7 +424,7 @@ class CommandLineParser(object):
 
         sub_parser.required = True
 
-        # 添加子命令
+        # subcommands
         build_parser = sub_parser.add_parser(
             'build',
             help='Build specified targets')
@@ -451,10 +451,10 @@ class CommandLineParser(object):
             'dump',
             help='Dump specified internal information')
 
-        # 添加所有 subcommand 的公共参数
+        # add subcommand's common args
         self._add_common_arguments(build_parser, run_parser, test_parser,
                                    clean_parser, query_parser, dump_parser)
-        # 添加每个 subcommand 的特例化参数
+        # add subcommand's specific args
         self._add_build_arguments(build_parser, run_parser, test_parser, dump_parser)
         self._add_run_arguments(run_parser)
         self._add_test_arguments(test_parser)
