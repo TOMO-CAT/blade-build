@@ -12,3 +12,6 @@ build64_*
 
 /.coverage*
 __pycache__
+
+# code generation
+/src/blade/blade_version.py
