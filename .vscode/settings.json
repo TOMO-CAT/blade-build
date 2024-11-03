@@ -5,10 +5,12 @@
         "src/test"
     ],
     "cSpell.words": [
+        "aspp",
         "bladerc",
         "ccbin",
         "cflags",
         "Chong",
+        "codeql",
         "compdb",
         "cppflags",
         "cuda",
@@ -21,20 +23,26 @@
         "Feng",
         "fprofile",
         "fstack",
+        "gaurav",
+        "glog",
         "gperftools",
         "gprof",
         "hdrs",
         "Huan",
         "incchk",
         "isystem",
+        "jemalloc",
+        "kubuntu",
         "pprof",
         "Protoc",
         "secretcc",
         "srcs",
         "STDC",
+        "tcmalloc",
         "TOMO",
         "unversioned",
         "Xcompiler",
         "Xlinker"
-    ]
+    ],
+    "editor.formatOnSave": false
 }

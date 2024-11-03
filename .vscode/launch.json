@@ -12,7 +12,7 @@
             // 请求类型: launch / attach
             "request": "launch",
             // Python 脚本路径
-            "program": "/auto_pilot/blade-build/src", // 指定您的Python脚本路径
+            "program": "src", // 指定您的Python脚本路径
             // 传递给程序的命令行参数
             "args": [
                 "--version"
@@ -34,6 +34,33 @@
                 "--color",
                 "yes",
                 "gpu/cuda_util:cuda_test_kernel"
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Build example's include target",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "/auto_pilot/thirdparty/blade-build/example",
+            "program": "/auto_pilot/thirdparty/blade-build/src",
+            "args": [
+                "build",
+                "--verbose",
+                "--color",
+                "yes",
+                "include/..."
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Debug cc_binary_test.py",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "/auto_pilot/thirdparty/blade-build/src/test/",
+            "program": "cc_binary_test.py",
+            "args": [
             ],
             "console": "integratedTerminal",
             "justMyCode": true

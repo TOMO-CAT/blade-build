@@ -1,15 +1,4 @@
-# Usage
-
-## 安装方法
-
-```bash
-git clone git@github.com:TOMO-CAT/blade-build.git
-cd blade-build/
-./install
-source ~/.profile
-```
-
-## 调试
+# Debug
 
 首先先找到 blade 运行的具体命令（我们已经在 `./blade` 脚本中打印出来了）：
 

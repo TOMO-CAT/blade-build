@@ -156,8 +156,8 @@ class Workspace(object):
                 "You should create it manually at the first time.")
         return os.path.dirname(blade_root)
 
-
-__instance = None  # 单例模式
+# singleton
+__instance = None
 
 
 def initialize(options):
