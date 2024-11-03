@@ -27,7 +27,7 @@ class TestTestRunner(blade_test.TargetTest):
         com_lower_line = self.findCommand(['plowercase.cpp.o', '-c'])
         com_upper_line = self.findCommand(['puppercase.cpp.o', '-c'])
         com_string_line = self.findCommand(['string_test.cpp.o', '-c'])
-        string_main_depends_libs = self.findCommand('string_test_main ')
+        string_main_depends_libs = self.findCommand(['string_test_main ', '-o'])
 
         self.assertCxxFlags(com_lower_line)
         self.assertCxxFlags(com_upper_line)

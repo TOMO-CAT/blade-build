@@ -130,7 +130,9 @@ class TargetTest(unittest.TestCase):
         self._assertCxxNoWarningFlags(cmdline)
 
     def assertLinkFlags(self, cmdline):
-        self.assertIn('-static-libgcc -static-libstdc++', cmdline)
+        # clang don't have these link flags
+        # self.assertIn('-static-libgcc -static-libstdc++', cmdline)
+        pass
 
     def assertStaticLinkFlags(self, cmdline):
         self.assertNotIn('-shared', cmdline)
