@@ -243,8 +243,6 @@ C/C++ 库的配置：
 
   开启 gperftools 的 HEAPCHECK，空表示不开启。
 
-  详情参考 [gperftools](https://gperftools.github.io/gperftools/heap_checker.html)的文档。
-
 - `gperftools_libs` : list = ['#tcmalloc']
 
   tcmclloc 库，blade deps 格式。
@@ -263,7 +261,6 @@ C/C++ 库的配置：
 
 注意:
 
-- gtest 1.6 开始，去掉了 make install，但是可以绕过，参见[gtest1.6.0安装方法](http://blog.csdn.net/chengwenyao18/article/details/7181514)。
 - gtest 库还依赖 pthread，因此 gtest_libs 需要写成 `['#gtest', '#pthread']`
 - 或者把源码纳入你的源码树，比如thirdparty下，就可以写成 `gtest_libs='//thirdparty/gtest:gtest'`。
 
