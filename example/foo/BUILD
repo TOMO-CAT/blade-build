@@ -5,4 +5,5 @@ cc_library(
     deps = '//common:common',
     optimize = ['-O3'],
     always_optimize = True,
+    visibility=['PUBLIC'],
 )

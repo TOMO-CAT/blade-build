@@ -5,5 +5,6 @@ cc_library(
     deps = [
         '//common:common',
         '//proto:contact_proto'
-    ]
+    ],
+    visibility=['PUBLIC'],
 )

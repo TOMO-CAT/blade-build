@@ -15,3 +15,5 @@
 * 优化 `cuda_config`, 支持指定 ccbin 和 linkflags
 * 优化 `cc_config`, 支持添加 `extra_sys_incs`
 * 优化 `prebuilt_cc_library`, 以 `-isystem` 的方式添加 prebuild 库的头文件, 从而避免污染我们自己项目的参数
+* 导出 `print` 内置函数
+* 编译通过所有 example 文件夹内的 demo

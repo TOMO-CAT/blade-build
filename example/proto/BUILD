@@ -1,7 +1,19 @@
 proto_library(
-    name='contact_proto',
+    name='contact_proto_lib',
     srcs=[
         'contact.proto',
-        'dir/contact.proto'
+        'dir/contact.proto',
     ],
+    deps=[
+    ],
+    visibility=['PUBLIC'],
+)
+
+cc_library(
+    name='contact_proto',
+    hdrs=[],
+    deps=[
+        ':contact_proto_lib',
+    ],
+    visibility=['PUBLIC'],
 )

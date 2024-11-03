@@ -5,6 +5,7 @@ cc_binary(
         '//bar:bar',
         '//extra:extra',
         '//foo:foo',
+        '#protobuf',
         '#pthread'
     ]
 )

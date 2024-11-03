@@ -7,6 +7,7 @@ blade-bin
 .Building.lock
 build32_*
 build64_*
+.cache
 
 /blade.zip
 
@@ -15,3 +16,5 @@ __pycache__
 
 # code generation
 /src/blade/blade_version.py
+
+compile_commands.json
