@@ -10,6 +10,7 @@
         "ccbin",
         "cflags",
         "Chong",
+        "codeql",
         "compdb",
         "cppflags",
         "cuda",
