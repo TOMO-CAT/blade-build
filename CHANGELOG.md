@@ -7,7 +7,7 @@
 ```bash
 ```
 
-## v1.0.0
+## master
 
 ### Feature
 
@@ -17,3 +17,7 @@
 * 优化 `prebuilt_cc_library`, 以 `-isystem` 的方式添加 prebuild 库的头文件, 从而避免污染我们自己项目的参数
 * 导出 `print` 内置函数
 * 编译通过所有 example 文件夹内的 demo
+
+### Bugs Fixed
+
+* 关闭 check-md-links github action 自动触发, 经常误检测死链
