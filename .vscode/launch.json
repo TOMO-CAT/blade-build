@@ -12,14 +12,14 @@
             // 请求类型: launch / attach
             "request": "launch",
             // Python 脚本路径
-            "program": "src", // 指定您的Python脚本路径
+            "program": "${workspaceFolder}/src", // 指定您的 Python 脚本路径
             // 传递给程序的命令行参数
             "args": [
                 "--version"
             ],
             // 在集成终端中显示输出
             "console": "integratedTerminal",
-            // 如果需要调试第三方库代码, 可以设置为false
+            // 如果需要调试第三方库代码, 可以设置为 false
             "justMyCode": true
         },
         {
@@ -27,7 +27,7 @@
             "type": "debugpy",
             "request": "launch",
             "cwd": "/auto_pilot",
-            "program": "/auto_pilot/blade-build/src",
+            "program": "${workspaceFolder}/src",
             "args": [
                 "build",
                 "--verbose",
@@ -42,8 +42,8 @@
             "name": "Build example's include target",
             "type": "debugpy",
             "request": "launch",
-            "cwd": "/auto_pilot/thirdparty/blade-build/example",
-            "program": "/auto_pilot/thirdparty/blade-build/src",
+            "cwd": "${workspaceFolder}/example",
+            "program": "${workspaceFolder}/src",
             "args": [
                 "build",
                 "--verbose",
@@ -58,7 +58,7 @@
             "name": "Debug cc_binary_test.py",
             "type": "debugpy",
             "request": "launch",
-            "cwd": "/auto_pilot/thirdparty/blade-build/src/test/",
+            "cwd": "${workspaceFolder}/src/test/",
             "program": "cc_binary_test.py",
             "args": [
             ],
