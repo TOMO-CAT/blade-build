@@ -92,6 +92,7 @@ class TargetTest(unittest.TestCase):
         print(''.join(self.build_output))
 
     def findBuildOutput(self, kwlist, file='stdout'):
+        """Find a line in build output or error that contains all keywords in kwlist."""
         if not isinstance(kwlist, list):
             kwlist = [kwlist]
         output = self.build_error if file == 'stderr' else self.build_output

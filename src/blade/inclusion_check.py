@@ -305,7 +305,7 @@ class Checker(object):
         return '"%s", which belongs to %s' % (hdr, self._or_joined_libs(libs))
 
     def _or_joined_libs(self, libs):
-        """Return " or " joind libs descriptive string."""
+        """Return " or " joined libs descriptive string."""
         def beautify(lib):
             # Convert full path to ':' started form if it is in same directory as this target.
             if lib.startswith(self.path + ':'):

@@ -39,10 +39,10 @@ from blade import util
 # `多个防止重包含可能对其有用：` is the same as `Multiple...` in Chinese.
 # After `Multiple...`, maybe there are still some useful messages, such as cuda error.
 _INCLUSION_STACK_SPLITTER = (r"awk '"
-                             r"""/Multiple include guards may be useful for:|多个防止重包含可能对其有用：/ {stop=1} """  # Can't exit here otherwise SIGPIPE maybe occurs.
+                             r"""/Multiple include guards may be useful for:/ {stop=1} """  # Can't exit here otherwise SIGPIPE maybe occurs.
                              r"""/^\.+ [^\/]/ && !end { started=1 ; print $$0} """  # Non absolute path, neither header list after error message.
                              r"""!/^\.+ / && started {end=1} """  # mark the error message when polling header list
-                             r"""!/^\.+ / && (!stop || (!/Multiple include guards may be useful for:|多个防止重包含可能对其有用：/ && !/^[a-zA-Z0-9\.\/\+_-]+$$/ )) {print $$0 > "/dev/stderr"}"""  # Maybe error messages
+                             r"""!/^\.+ / && (!stop || (!/Multiple include guards may be useful for:/ && !/^[a-zA-Z0-9\.\/\+_-]+$$/ )) {print $$0 > "/dev/stderr"}"""  # Maybe error messages
                              r"'"
                              )
 

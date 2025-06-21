@@ -75,6 +75,23 @@
             ],
             "console": "integratedTerminal",
             "justMyCode": true
-        }
+        },
+        {
+            "name": "Blade test",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/test/testdata",
+            "program": "${workspaceFolder}/src",
+            "args": [
+                "test",
+                "--verbose",
+                "--color", "yes",
+                "--full-test",
+                "--show-details",
+                "cc:..." // 指定测试目标, cc 文件夹下的所有目标
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
     ]
 }

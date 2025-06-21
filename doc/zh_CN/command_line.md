@@ -158,7 +158,7 @@ pgo 参数：
 
 - `--full-test`：全量测试，默认是增量测试
 - `-t, --test-jobs`：N 路并行测试，多 CPU 机器上适用
-- `--show-details`：
+- `--show-details`：显示单测详细结果
 - `--show-tests-slower-than`：显示运行时间超过该值的测试（用于调试）
 - `--no-build`：不编译，只运行测试
 - `--exclude-tests`：以逗号分割的测试模式，排除这些测试
