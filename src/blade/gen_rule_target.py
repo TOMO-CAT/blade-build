@@ -160,7 +160,7 @@ class GenRuleTarget(Target):
         """Generate code for backend build system."""
         # NOTE: Here is something different with normal targets.
         # We have to generate each `rule` for a `gen_rule` target but not sharing a predefined rule.
-        # Because the `command` variable is not lazy evaluated althrough it can be overridden in a
+        # Because the `command` variable is not lazy evaluated although it can be overridden in a
         # `build` statement, so any other build scoped variables are expanded to empty.
         rule = '%s__rule__' % regular_variable_name(self._source_file_path(self.name))
         cmd = self._expand_command()

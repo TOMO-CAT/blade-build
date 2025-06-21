@@ -100,8 +100,8 @@ $ blade dump --all-tags ...
 - `--color=yes/no/auto`：是否开启彩色输出
 - `--load-local-config`
 - `--no-load-local-config`
-- `--verbose`：完整输出所运行的每条命令行?
-- `--quiet`
+- `--verbose`：额外打印 debug 日志和其他详细输出
+- `--quiet`：只打印 warning 和 errors
 - `--exclude-targets`：以逗号分割的加载时要排除的目标模式
 - `--jar-compression-level`
 - `--fat-jar-compression-level`

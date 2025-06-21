@@ -43,6 +43,7 @@ _COLORS = {
     'white': '\033[1;37m',
     'gray': '\033[1;38m',
     'dimpurple': '\033[2;35m',
+    'slate': '\033[1;90m',
     'end': '\033[0m',
 }
 
@@ -272,7 +273,8 @@ def debug(msg, prefix=True):
     if prefix:
         msg = 'Blade(debug): ' + msg
     log(msg)
-    _print(msg, 'verbose')
+    # verbose 模式下才会打印 debug 日志
+    _print(colored(msg, 'slate'), 'verbose')
 
 
 def diagnose(source_location, severity, message):
