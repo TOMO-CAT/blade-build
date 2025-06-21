@@ -32,6 +32,7 @@ subcommand是一个子命令，目前有：
 如果 `path` 以 `//` 开始，则表示从[工作空间](workspace.md)的根目录开始。name 部分不是通配符的称为“直接目标”。
 
 如果没有指定目标模式，则默认为当前目录下的所有目标（不包含子目录），如果当前目录下没有 BUILD 文件，就会失败。
+
 当指定 `...` 作为结尾目标时，如果其路径存在，即使展开为空，也总不会失败。
 
 对于 `...` 目标模式，Blade 会递归搜索 `BUILD` 文件，如果需要排除某些目录，在其中放一个空的 `.bladeskip` 文件即可。
@@ -90,22 +91,96 @@ $ blade dump --all-tags ...
 
 不同子命令支持的选项不一样，具体请执行 `blade <subcommand> --help` 查看
 
-下面是一些常用的命令行选项：
+### 公共参数
 
-- -m32,-m64            指定构建目标位数，默认为自动检测
-- -p PROFILE           指定debug/release，默认release
-- -k, --keep-going     构建过程中遇到错误继续执行（如果是致命错误不能继续）
-- -j N,--jobs=N        N路并行构建（Blade默认开启并行构建，自己计算合适的值）
-- -t N,--test-jobs=N   N路并行测试，多CPU机器上适用
-- --verbose            完整输出所运行的每条命令行
-- –h, --help           显示帮助
-- --color=yes/no/auto  是否开启彩色
-- --exclude-targets    以逗号分割的加载时要排除的目标模式
-- --generate-dynamic   强制生成动态库
-- --generate-java      为proto_library 和 swig_library 生成java文件
-- --generate-php       为proto_library 和 swig_library 生成php文件
-- --gprof              支持 GNU gprof
-- --coverage           支持生成覆盖率，目前支持 GNU gcov 和Java jacoco
+- `-h, --help`：显示帮助信息
+- `--version`：显示版本信息
+- `--profiling`
+- `--stop-after`
+- `--color=yes/no/auto`：是否开启彩色输出
+- `--load-local-config`
+- `--no-load-local-config`
+- `--verbose`：完整输出所运行的每条命令行?
+- `--quiet`
+- `--exclude-targets`：以逗号分割的加载时要排除的目标模式
+- `--jar-compression-level`
+- `--fat-jar-compression-level`
+- `--tags-filter`
+
+编译优化相关的参数：
+
+- `-m32, -m64`：指定构建目标位数，默认为自动检测
+- `-p, --profile`：指定 debug/release，默认 release
+- `--debug-info-level`：指定 debug 信息级别，支持 no、low、mid 和 high
+- `--no-debug-info`：不生成 debug 信息
+
+### blade build 参数
+
+编译指定的 target。blade build、run、test 和 dump 命令都继承了这些参数。
+
+build action 参数（blade clean 命令也继承了）：
+
+- `--backend-builder`：编译后端 builder，目前只支持 ninja
+- `--backend-builder-options`：传递给后端 builder 的选项
+- `-j, --jobs`：N 路并行构建（Blade 默认开启并行构建，自己计算合适的值）
+- `-k, --keep-going`：构建过程中遇到错误继续执行（如果是致命错误不能继续）
+- `--no-test`：不编译 test target
+- `-n, --dry-run`：不实际执行命令
+- `--show-builds-slower-than`：显示构建时间超过该值的构建（用于调试）
+
+generate 参数（blade clean 命令也继承了）：
+
+- `--generate-dynamic`：强制生成动态库
+- `--generate-package`
+- `--generate-java`：为 proto_library 和 swig_library 生成 java 文件
+- `--generate-php`：为 proto_library 和 swig_library 生成 php 文件
+- `--generate-python`：为 proto_library 和 thrift_library 生成 python 文件
+- `--generate-go`：为 proto_library 生成 go 文件
+
+coverage 参数：
+
+- `--gprof`：支持 GNU gprof
+- `--coverage`：支持生成覆盖率，目前支持 GNU gcov 和 Java jacoco
+- `--gcov`：FIXME: 现在是 SUPPRESS 状态
+
+pgo 参数：
+
+- `--profile-generate`：支持 `protile-generate` 的编译选项
+- `--profile-use`：支持 `profile-use` 的编译选项
+
+### blade run 参数
+
+编译并运行指定的 target。继承了 blade build 的参数。
+
+### blade test 参数
+
+编译指定的 target 并运行测试。
+
+- `--full-test`：全量测试，默认是增量测试
+- `-t, --test-jobs`：N 路并行测试，多 CPU 机器上适用
+- `--show-details`：
+- `--show-tests-slower-than`：显示运行时间超过该值的测试（用于调试）
+- `--no-build`：不编译，只运行测试
+- `--exclude-tests`：以逗号分割的测试模式，排除这些测试
+- `--run-unrepaired-tests`：是否运行未修复的测试（在增量测试中没有改动过的单测默认不运行）
+
+### blade clean 参数
+
+清理所有的 blade 编译产出。继承了 blade build 的参数。
+
+### blade query 参数
+
+查询目标的依赖项和被依赖项。
+
+- `--deps`：查询 target 依赖项
+- `--dependents`：查询 target 被依赖项
+- `--path-to`
+- `--output-file`：输出到文件，默认是 stdout
+- `--output-format`：输出结果的展示格式，支持 plain、tree 和 dot
+
+### blade dump 参数
+
+输出一些内部信息。
 
 ## 示例
 
@@ -135,6 +210,7 @@ blade test base:string_test
 ## 命令行补全
 
 执行[安装](misc.md)命令后有简单的命令行补全。
+
 安装 [autocomplete](https://pypi.org/project/argcomplete/) 后会得到完整的命令行补全。
 
 ### 安装 argcomplete

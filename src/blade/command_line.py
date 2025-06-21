@@ -15,9 +15,10 @@ from __future__ import print_function
 
 import argparse
 
-# https://pypi.org/project/argcomplete/
+# 支持命令行自动补全
+# @see https://pypi.org/project/argcomplete/
+# pyright: reportMissingImports=false
 try:
-    # pyright: reportMissingImports=false
     import argcomplete
 except ImportError:
     argcomplete = None
@@ -299,9 +300,6 @@ class CommandLineParser(object):
             '--output-format', dest='output_format', type=str,
             choices=('plain', 'tree', 'dot'), default='plain',
             help='Specify the format of query results')
-        parser.add_argument(
-            '--depended', dest='dependents', action='store_true',
-            help='DEPRECATED, please use --dependents')
 
     def _add_clean_arguments(self, parser):
         """Add clean arguments for parser."""
