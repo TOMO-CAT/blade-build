@@ -182,6 +182,13 @@ pgo 参数：
 
 输出一些内部信息。
 
+- `--to-file`：dump 结果存储的位置, 默认是 `/dev/stdout`
+- 互斥参数组，下面选项只能选择一个
+  - `--compdb`：输出编译数据库
+  - `--config`：输出编译配置
+  - `--targets`：以 json 方式输出编译的 targets 属性
+  - `--all-tags`：以 json 方式输出所有标签的 targets
+
 ## 示例
 
 ```bash
