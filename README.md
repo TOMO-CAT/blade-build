@@ -125,6 +125,15 @@ blade test -m32 -pdebug common...
 * 头文件更新，受影响的模块没有重新构建。
 * 被依赖的库需要更新，而构建时没有被更新，比如某子目录依
 
+## 安装
+
+```bash
+git clone git@github.com:TOMO-CAT/blade-build.git
+cd blade-build/
+./install
+source ~/.profile
+```
+
 ## 文档
 
 看到这里，你应该觉得 Blade 是个不错的工具，那么，阅读 [完整文档](doc/zh_CN/README.md)，开始使用吧。
