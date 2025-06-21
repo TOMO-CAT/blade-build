@@ -15,6 +15,15 @@ import subprocess
 import sys
 import unittest
 
+"""
+
+TargetTest 作为所有测试类的基类, 提供了通用的测试方法和属性
+
+所有的测试类都应该继承自 TargetTest, 细节如下:
+* unittest 的测试发现机制会自动查找类中所有以 test 开头的方法并依次执行
+* stdout 和 stderr 日志会被分别写到 build_output.txt 和 build_error.txt 文件中
+
+"""
 
 # pylint: disable=attribute-defined-outside-init
 class TargetTest(unittest.TestCase):
@@ -33,10 +42,10 @@ class TargetTest(unittest.TestCase):
         self.current_building_path = 'build64_release'
         self.current_source_dir = '.'
         self.build_output = []
-        self.build_output_file = 'build_output.txt'
+        self.build_output_file = 'build_output.txt' # stdout 日志
         self.build_error = []
-        self.build_error_file = 'build_error.txt'
-        os.chdir('testdata')
+        self.build_error_file = 'build_error.txt' # stderr 日志
+        os.chdir('testdata')  # 切换到 testdata 目录执行单测
         self.removeTree('build64_release')
 
     def tearDown(self):

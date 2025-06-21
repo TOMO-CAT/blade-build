@@ -79,7 +79,7 @@ function _check_python() {
         _fatal "Please install python 2.7+ or 3.6+ or above in your system"
     fi
 
-    # pyhton2 版本必须 >= 2.7
+    # python2 版本必须 >= 2.7
     python_ver=$($python -V 2>&1 | sed 's/Python //g')
     if [[ "$python_ver" < "2.7" ]]; then
         _info "Python version in your machine: $python_ver"

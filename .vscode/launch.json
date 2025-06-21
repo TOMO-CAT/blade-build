@@ -64,6 +64,17 @@
             ],
             "console": "integratedTerminal",
             "justMyCode": true
+        },
+        {
+            "name": "Debug cc_test_test.py",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/src/test/",
+            "program": "cc_test_test.py",
+            "args": [
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
         }
     ]
 }
