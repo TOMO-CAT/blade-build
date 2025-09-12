@@ -1,5 +1,39 @@
 #!/bin/bash
 
+set -e
+
+function log_info() {
+    printf "\e[34m\e[1m[INFO]\e[0m $*\n"
+}
+
+function log_warn() {
+    printf "\033[0;33m[WARN]\e[0m $*\n"
+}
+
+function log_error() {
+    printf "\033[0;31m[ERROR]\e[0m $*\n"
+}
+
+function log_ok() {
+    printf "\e[32m\e[1m[ OK ]\e[0m $*\n"
+}
+
+function color_info() {
+    echo -e "\e[34m\e[1m$*\e[0m"
+}
+
+function color_warn() {
+    echo -e "\033[0;33m$*\e[0m"
+}
+
+function color_error() {
+    echo -e "\033[0;31m$*\e[0m"
+}
+
+function color_ok() {
+    echo -e "\e[32m\e[1m$*\e[0m"
+}
+
 blade_dir=$(cd $(dirname $0) && pwd)
 cd $blade_dir
 
@@ -30,34 +64,35 @@ cd $src_dir
 echo "VERSION = r'''$version'''" > blade/blade_version.py
 
 # 安装 vim scripts
-echo -n "Installing vim scripts..."
+log_info "Installing vim scripts..."
 mkdir -p ~/.vim/{syntax,ftdetect,indent}
-ln -sf $blade_dir/vim/ftdetect/* ~/.vim/ftdetect/
-ln -sf $blade_dir/vim/syntax/* ~/.vim/syntax/
-ln -sf $blade_dir/vim/indent/* ~/.vim/indent/
-echo ", Done."
+ln -svf $blade_dir/vim/ftdetect/* ~/.vim/ftdetect/
+ln -svf $blade_dir/vim/syntax/* ~/.vim/syntax/
+ln -svf $blade_dir/vim/indent/* ~/.vim/indent/
 
-# 安装 blade auxiliary tools
+# 安装 blade auxiliary tools 到 ~/bin
 mkdir -p ~/bin
-echo -n "Installing blade auxiliary tools..."
-ln -sf $blade_dir/tool/{genlibbuild,lsnobuild,lsrc,merge-static-libs,bladefunctions} ~/bin
+log_info "Installing blade auxiliary tools..."
+ln -svf $blade_dir/tool/{genlibbuild,lsnobuild,lsrc,merge-static-libs,bladefunctions} ~/bin
 if [ ! -f ~/.bashrc ] || ! grep "bladefunctions" ~/.bashrc 2>&1 >/dev/null; then
-    echo "test -s ~/bin/bladefunctions && . ~/bin/bladefunctions || true" >> ~/.bashrc
+    echo "test -s ~/bladefunctions && . ~/bladefunctions || true" >> ~/.bashrc
 fi
-echo ", Done."
 
 # 安装 blade
-echo -n "Installing blade..."
-ln -sf $blade_dir/blade ~/bin
-echo ", Done."
+log_info "Installing blade..."
+ln -svf $blade_dir/blade ~/bin
 
 if ! echo $PATH | grep "$HOME/bin" &> /dev/null; then
-    profile=~/.bash_profile
+    profile=~/.bashrc
     if echo $SHELL | grep "zsh" &> /dev/null; then
-        profile=~/.zshenv
-    elif [ -f ~/.profile ]; then
-        profile=~/.profile
+        profile=~/.zshrc
     fi
-    echo 'export PATH=~/bin:$PATH' >> $profile
-    echo -e "\033[1;32mInstall success, please relogin or run 'source $profile' manually to apply\033[0m"
+    echo 'export PATH=$HOME/bin:$PATH' >> $profile
+    echo
+    echo "To apply the changes:"
+    echo "  source $profile      # For current terminal session only"
+    echo "  Or start a new terminal window for permanent effect"
+    echo
+    echo "The PATH has been updated to include $HOME/bin"
 fi
+log_ok "Install success"

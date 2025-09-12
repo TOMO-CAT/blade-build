@@ -1,3 +1,4 @@
+syntax = "proto2";
 package tutorial;
 option java_outer_classname = "PersonProto";
 
@@ -19,4 +20,3 @@ message Person {
 
   repeated PhoneNumber phone = 4;
 }
-

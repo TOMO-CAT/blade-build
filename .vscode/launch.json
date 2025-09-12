@@ -55,6 +55,22 @@
             "justMyCode": true
         },
         {
+            "name": "Build example's thrift target",
+            "type": "debugpy",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/example",
+            "program": "${workspaceFolder}/src",
+            "args": [
+                "build",
+                "--verbose",
+                "--color",
+                "yes",
+                "thrift/..."
+            ],
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
             "name": "Debug cc_binary_test.py",
             "type": "debugpy",
             "request": "launch",

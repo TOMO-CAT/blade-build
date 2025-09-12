@@ -133,4 +133,3 @@ _blade()
 }
 
 complete -F _blade -o default blade
-

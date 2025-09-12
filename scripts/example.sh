@@ -9,7 +9,8 @@ set -e
 # 2. 安装 javac
 # sudo apt install openjdk-11-jdk
 # 3. 安装 thrift
-# sudo apt install thrift-compiler
-# sudo apt install libthrift-dev
+# sudo apt install thrift-compiler libthrift-dev
+# 4. 安装 bison
+# sudo apt install bison
 
 bash example/blade.sh build ...
