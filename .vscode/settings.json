@@ -68,6 +68,7 @@
         "perftools",
         "pprof",
         "Protoc",
+        "pylintrc",
         "secretcc",
         "srcs",
         "STDC",

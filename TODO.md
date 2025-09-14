@@ -7,3 +7,5 @@
 - [ ] blade 如何实现 header 可见性限制的?
 - [ ] 如何支持 gdb 调试?
 - [x] github action 支持运行 examples
+- [ ] .pylintrc 如何生效
+- [ ] 引入 pre-commit

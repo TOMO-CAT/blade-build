@@ -4,6 +4,8 @@
         "davidanson.vscode-markdownlint",
         "yzhang.markdown-all-in-one",
         "streetsidesoftware.code-spell-checker",
-        "ms-python.debugpy"
+        "ms-python.debugpy",
+        "akamud.vscode-theme-onedark",
+        "iliazeus.vscode-ansi"
     ]
 }
