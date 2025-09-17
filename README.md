@@ -34,8 +34,7 @@ Blade 是一个方便易用高性能的现代化代码构建系统，特别适�
 master 分支上的代码是开发版，应当视为 alpha 版。正式环境请优先考虑使用 tag 上的版本。我们会不定期地把内部大规模代码库上验证过的版本发布到 tag 上。
 
 * Blade 发布 2.0，包含以下特性：
-  * python 最低版本要求 2.7，并支持 python 3
-  * 对 Java，scala 构建的完善支持
+  * 逐步废弃 python2, 仅支持 python3
   * 全面支持 Python 构建
   * 支持自定义扩展
   * 后端只支持 [ninja](doc/zh_CN/config.md#global_config) 构建系统，大幅度提高构建性能
@@ -131,7 +130,7 @@ blade test -m32 -pdebug common...
 git clone git@github.com:TOMO-CAT/blade-build.git
 cd blade-build/
 ./install
-source ~/.profile
+source ~/.bashrc
 ```
 
 ## 文档
