@@ -14,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.6", "3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11"]
 
     steps:
     - uses: actions/checkout@v2
@@ -27,11 +27,14 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install coverage coveralls ninja
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        sudo apt update
-        sudo apt install -y google-perftools libgoogle-perftools-dev
-        sudo apt install -y openjdk-11-jdk
-        sudo apt install -y thrift-compiler libthrift-dev
-        sudo apt install -y bison
+        apt update
+        apt install -y google-perftools libgoogle-perftools-dev
+        apt install -y openjdk-11-jdk
+        apt install -y thrift-compiler libthrift-dev
+        apt install -y bison
+        apt install -y flex
+        apt install -y protobuf-compiler
+        apt install -y libboost-all-dev
     - name: Run tests
       run: |
         bash scripts/example.sh

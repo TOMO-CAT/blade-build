@@ -27,3 +27,4 @@ python3 scripts/docker.py --command run
 ### Bugs Fixed
 
 * 关闭 check-md-links github action 自动触发, 经常误检测死链
+* [#2](https://github.com/TOMO-CAT/blade-build/issues/2): 修复 ubuntu2204 编译 example/thrift 失败的问题
