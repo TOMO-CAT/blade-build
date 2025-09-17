@@ -53,7 +53,7 @@ cc_config(
         'thirdparty/',
     ],
     extra_sys_incs=[
-        '/usr/local/cuda-11.4/targets/x86_64-linux/include',
+        '/usr/local/cuda/targets/x86_64-linux/include',
     ],
 )
 
@@ -71,9 +71,9 @@ cuda_config(
     ],
     # CUDA 公用链接参数
     linkflags=[
-        '-isystem /usr/local/cuda-11.4/targets/x86_64-linux/include',
-        '-L /usr/local/cuda-11.4/targets/x86_64-linux/lib',
-        '-L /usr/local/cuda-11.4/targets/x86_64-linux/lib/stubs',
+        '-isystem /usr/local/cuda/targets/x86_64-linux/include',
+        '-L /usr/local/cuda/targets/x86_64-linux/lib',
+        '-L /usr/local/cuda/targets/x86_64-linux/lib/stubs',
     ],
 )
 

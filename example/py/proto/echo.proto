@@ -1,3 +1,4 @@
+syntax = "proto2";
 import "py/proto/address_book.proto";
 
 service EchoService {

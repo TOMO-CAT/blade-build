@@ -1,7 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
-
-name: Run all tests
+name: Run all examples
 
 on:
   push:
@@ -11,6 +8,8 @@ on:
 
 jobs:
   build:
+    # example 依赖 cuda
+    container: nvcr.io/nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
@@ -28,6 +27,14 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install coverage coveralls ninja
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        apt update
+        apt install -y google-perftools libgoogle-perftools-dev
+        apt install -y openjdk-11-jdk
+        apt install -y thrift-compiler libthrift-dev
+        apt install -y bison
+        apt install -y flex
+        apt install -y protobuf-compiler
+        apt install -y libboost-all-dev
     - name: Run tests
       run: |
-        src/test/runall.sh
+        bash scripts/example.sh

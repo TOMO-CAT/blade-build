@@ -1,3 +1,4 @@
+syntax = "proto2";
 package tutorial;
 option java_outer_classname = "AddressBookProto";
 

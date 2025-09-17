@@ -125,10 +125,11 @@ class ThriftHelper(ThriftParser):
 
     def get_generated_cpp_files(self):
         thrift_name = self.src[:-7]
-        files = ['%s_constants.cpp' % thrift_name,
-                 '%s_constants.h' % thrift_name,
-                 '%s_types.cpp' % thrift_name,
+        files = ['%s_types.cpp' % thrift_name,
                  '%s_types.h' % thrift_name]
+        if self.has_constants:
+            files.append('%s_constants.cpp' % thrift_name, '%s_constants.h' % thrift_name)
+
         dir = os.path.dirname(thrift_name)
         for service in self.services:
             files.append(os.path.join(dir, '%s.cpp' % service))

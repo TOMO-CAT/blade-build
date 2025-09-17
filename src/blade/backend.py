@@ -125,6 +125,7 @@ class _NinjaFileHeaderGenerator(object):
                 builddir = %s
                 ''') % self.build_dir)
         # No more than 1 heavy target at a time
+        # 该 pool 允许的最大并发数为 1
         self._add_line(textwrap.dedent('''\
                 pool heavy_pool
                   depth = 1

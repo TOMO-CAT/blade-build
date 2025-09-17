@@ -5,6 +5,9 @@
 需要保证如下命令运行通过（后续考虑配置 github action 流水线）：
 
 ```bash
+# 进入 docker
+python3 scripts/docker.py --command build
+python3 scripts/docker.py --command run
 ```
 
 ## master
@@ -18,7 +21,10 @@
 * 导出 `print` 内置函数
 * 编译通过所有 example 文件夹内的 demo
 * 设置 debug 日志颜色
+* 支持 Dockerfile
+* github action 运行 examples
 
 ### Bugs Fixed
 
 * 关闭 check-md-links github action 自动触发, 经常误检测死链
+* [#2](https://github.com/TOMO-CAT/blade-build/issues/2): 修复 ubuntu2204 编译 example/thrift 失败的问题
