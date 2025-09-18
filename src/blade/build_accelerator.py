@@ -25,7 +25,7 @@ class BuildAccelerator(object):
         """
         cc, cxx, ld = self.__toolchain.get_cc_commands()
         return cc, cxx, ld
-    
+
     def get_ar_command(self):
         return self.__toolchain.get_ar()
 

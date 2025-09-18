@@ -138,3 +138,8 @@ source ~/.bashrc
 看到这里，你应该觉得 Blade 是个不错的工具，那么，阅读 [完整文档](doc/zh_CN/README.md)，开始使用吧。
 
 如果遇到有问题，可以试试先查一下 [FAQ](doc/zh_CN/FAQ.md)，也许有你需要的信息。
+
+## 最佳实践
+
+* IDE: vscode
+* 操作系统: ubuntu22.04 / ubuntu24.04

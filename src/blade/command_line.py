@@ -170,7 +170,7 @@ class CommandLineParser(object):
                             dest='profile',
                             choices=['debug', 'release'],
                             default='release',
-                            help=('Build profile, default is release'))
+                            help='Build profile, default is release')
 
         parser.add_argument('--debug-info-level',
                             dest='debug_info_level',
@@ -230,7 +230,7 @@ class CommandLineParser(object):
 
         parser.add_argument(
             '-j', '--jobs', dest='build_jobs', type=int,
-            help=(constants.HELP.build_jobs))
+            help=constants.HELP.build_jobs)
 
         parser.add_argument(
             '-k', '--keep-going', dest='keep_going',

@@ -6,6 +6,9 @@
         "streetsidesoftware.code-spell-checker",
         "ms-python.debugpy",
         "akamud.vscode-theme-onedark",
-        "iliazeus.vscode-ansi"
+        "iliazeus.vscode-ansi",
+        "ms-python.pylint",
+        "ms-python.python",
+        "ms-python.autopep8"
     ]
 }
