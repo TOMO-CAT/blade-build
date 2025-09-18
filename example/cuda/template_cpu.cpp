@@ -31,4 +31,3 @@ computeGold(float *reference, float *idata, const unsigned int len)
         reference[i] = idata[i] * f_len;
     }
 }
-

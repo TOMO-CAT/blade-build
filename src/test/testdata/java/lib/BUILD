@@ -39,4 +39,3 @@ java_library(
     prebuilt = 1,
     visibility = ['PUBLIC'],
 )
-

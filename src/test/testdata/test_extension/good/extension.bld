@@ -8,4 +8,3 @@ try:
     HAS_NATIVE = True
 except NameError:
     HAS_NATIVE = False
-

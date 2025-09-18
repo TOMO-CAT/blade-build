@@ -23,4 +23,3 @@ echo $output_dir
 tar cjvf blade-$version.tbz $blade_dir_name --exclude .git --exclude src --exclude extra --exclude ".*"
 
 echo "$output_dir/blade-$version.tbz was generated"
-

@@ -93,4 +93,3 @@ cc_plugin(
     defs=['BLADE_STR_DEF'],
     extra_linkflags='-Wl,-Bsymbolic'
 )
-
