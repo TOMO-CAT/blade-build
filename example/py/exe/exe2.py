@@ -1,5 +1,5 @@
 import py.lib.lib
-import py.proto.echo_pb2
+import py.proto.libecho_proto
 
 
 def main():
