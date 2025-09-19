@@ -10,7 +10,7 @@ import pprint
 import sys
 
 try:
-    import cPickle as pickle
+    import cPickle as pickle # pyright: ignore[reportMissingImports]
 except ImportError:
     import pickle
 

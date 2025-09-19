@@ -247,14 +247,6 @@ def generate_resource_index(args):
     _declare_outputs(*targets)
     return _generate_resource_index(targets, sources, name, path)
 
-def generate_fat_jar(output, **kwargs):
-    # Import from function to avoid affecting the performance of other tools.
-    from blade import fatjar  # pylint: disable=import-outside-toplevel
-    _declare_outputs(output)
-    console.set_log_file('%s.log' % output.replace('.fat.jar', '__fatjar__'))
-    console.enable_color(True)
-    fatjar.generate_fat_jar(output=output, **kwargs)
-
 
 def generate_one_jar(onejar, main_class, bootjar, args):
     _declare_outputs(onejar)

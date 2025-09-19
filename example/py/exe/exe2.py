@@ -1,5 +1,5 @@
 import py.lib.lib
-import py.proto.libecho_proto
+import py.proto.libecho_proto # pyright: ignore[reportMissingImports]
 
 
 def main():

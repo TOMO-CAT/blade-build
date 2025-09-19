@@ -13,8 +13,7 @@ _IS_PY2 = sys.version_info.major == 2
 
 if _IS_PY2:
     # pylint: disable=import-error
-    # pyright: reportMissingImports=false
-    import __builtin__ as builtins
+    import __builtin__ as builtins # pyright: ignore[reportMissingImports]
 else:
     # Do not attempt to use this package on Python2.7 as there
     # might be backports for this package such as future.

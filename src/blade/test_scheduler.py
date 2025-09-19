@@ -22,7 +22,7 @@ from collections import namedtuple
 try:
     import queue
 except ImportError:
-    import Queue as queue
+    import Queue as queue # pyright: ignore[reportMissingImports]
 
 from blade import config
 from blade import console

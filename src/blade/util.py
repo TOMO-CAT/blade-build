@@ -37,8 +37,7 @@ _IN_PY3 = sys.version_info[0] == 3
 if _IN_PY3:
     import pickle  # pylint: disable=unused-import
 else:
-    # pyright: reportMissingImports=false
-    import cPickle as pickle  # pylint: disable=import-error, unused-import
+    import cPickle as pickle  # pyright: ignore[reportMissingImports] # pylint: disable=import-error, unused-import
 
 
 def md5sum_bytes(content):
