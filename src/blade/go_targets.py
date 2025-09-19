@@ -10,19 +10,14 @@ a simple wrapper function go_package wrapping all sorts of go tar-
 gets totally.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 import re
 
-from blade import build_manager
-from blade import build_rules
-from blade import config
-from blade import console
+from blade import build_manager, build_rules, config, console
 from blade.target import Target
 from blade.util import run_command, var_to_list
-
 
 _package_re = re.compile(r"^\s*package\s+(\w+)\s*$")
 

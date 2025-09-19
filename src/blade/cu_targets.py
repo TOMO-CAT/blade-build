@@ -10,18 +10,13 @@ This module defines cu_library, cu_binary and cu_test rules
 for cuda development.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 
-from blade import build_manager
-from blade import build_rules
-from blade import config
-from blade import console
+from blade import build_manager, build_rules, config, console
 from blade.cc_targets import CcTarget
 from blade.util import var_to_list
-
 
 # See https://docs.nvidia.com/cuda/cuda-compiler-driver-nvcc/index.html#supported-input-file-suffixes
 _SOURCE_FILE_EXTS = {"cu", "c", "cc", "cxx", "cpp", "ptx"}

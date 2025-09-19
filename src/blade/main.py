@@ -9,8 +9,7 @@
 Main entrance of blade.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import cProfile
 import os
@@ -19,13 +18,15 @@ import signal
 import time
 import traceback
 
-from blade import build_attributes
-from blade import build_manager
-from blade import command_line
-from blade import config
-from blade import console
-from blade import target_pattern
-from blade import workspace
+from blade import (
+    build_attributes,
+    build_manager,
+    command_line,
+    config,
+    console,
+    target_pattern,
+    workspace,
+)
 
 
 def load_config(options, root_dir):

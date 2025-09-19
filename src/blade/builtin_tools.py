@@ -10,9 +10,7 @@ targets from sources and custom parameters.
 """
 
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function
 
 import fnmatch
 import getpass
@@ -21,13 +19,11 @@ import socket
 import sys
 import tarfile
 import textwrap
-import traceback
 import time
+import traceback
 import zipfile
 
-from blade import console
-from blade import util
-
+from blade import console, util
 
 # These following helper functions is designed to centralize error handling
 

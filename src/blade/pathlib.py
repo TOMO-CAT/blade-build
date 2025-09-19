@@ -11,11 +11,10 @@ import posixpath
 import re
 import sys
 import time
-
 from contextlib import contextmanager
 from errno import EINVAL, ENOENT
 from operator import attrgetter
-from stat import S_ISDIR, S_ISLNK, S_ISREG, S_ISSOCK, S_ISBLK, S_ISCHR, S_ISFIFO
+from stat import S_ISBLK, S_ISCHR, S_ISDIR, S_ISFIFO, S_ISLNK, S_ISREG, S_ISSOCK
 
 try:
     from collections.abc import Sequence
@@ -23,9 +22,11 @@ except ImportError:
     from collections import Sequence
 
 try:
-    from urllib import quote as urlquote, quote as urlquote_from_bytes
+    from urllib import quote as urlquote
+    from urllib import quote as urlquote_from_bytes
 except ImportError:
-    from urllib.parse import quote as urlquote, quote_from_bytes as urlquote_from_bytes
+    from urllib.parse import quote as urlquote
+    from urllib.parse import quote_from_bytes as urlquote_from_bytes
 
 try:
     intern = intern

@@ -9,13 +9,11 @@
 The target pattern module.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 
-from blade import console
-from blade import util
+from blade import console, util
 
 
 def _split(target):

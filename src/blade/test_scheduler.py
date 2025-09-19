@@ -9,8 +9,7 @@
 This module use threads to run tests concurrently.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import signal
 import subprocess
@@ -24,8 +23,7 @@ try:
 except ImportError:
     import Queue as queue  # pyright: ignore[reportMissingImports]
 
-from blade import config
-from blade import console
+from blade import config, console
 
 TestRunResult = namedtuple("TestRunResult", ["exit_code", "start_time", "cost_time"])
 

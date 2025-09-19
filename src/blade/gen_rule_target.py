@@ -9,19 +9,13 @@
 Allow users defining their custom build rules.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 
-from blade import build_manager
-from blade import build_rules
-from blade import cc_targets
-from blade import console
-from blade.target import Target, LOCATION_RE
-from blade.util import regular_variable_name
-from blade.util import var_to_list
-
+from blade import build_manager, build_rules, cc_targets, console
+from blade.target import LOCATION_RE, Target
+from blade.util import regular_variable_name, var_to_list
 
 # The rule template for gen_rule
 _RULE_FORMAT = """\

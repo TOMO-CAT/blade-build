@@ -9,17 +9,13 @@
 This is the target module which is the super class of all of the targets.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 import re
 
-from blade import config
-from blade import console
-from blade import target_pattern
-from blade import target_tags
-from blade.util import var_to_list, iteritems, source_location, md5sum
+from blade import config, console, target_pattern, target_tags
+from blade.util import iteritems, md5sum, source_location, var_to_list
 
 
 def _is_likely_concatenated_filenames(string, exts):

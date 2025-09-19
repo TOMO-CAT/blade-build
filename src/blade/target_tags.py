@@ -10,7 +10,6 @@ Build target tag validator and filter.
 
 import re
 
-
 _TAG_RE = re.compile(r"\w+:\w+$")
 
 

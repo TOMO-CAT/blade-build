@@ -10,13 +10,11 @@ This is python targets module which generates python egg,
 python library, python binary, python test.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 
-from blade import build_manager
-from blade import build_rules
+from blade import build_manager, build_rules
 from blade.target import Target
 from blade.util import var_to_list
 

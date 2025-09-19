@@ -6,8 +6,7 @@
 
 """The workspace module represent current workspace."""
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import errno
 import json
@@ -15,9 +14,7 @@ import os
 import re
 import string
 
-from blade import config
-from blade import console
-from blade import util
+from blade import config, console, util
 
 
 def _generate_scm_svn():

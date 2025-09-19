@@ -8,11 +8,9 @@
 Define lex_yacc_library target.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
-from blade import build_manager
-from blade import build_rules
+from blade import build_manager, build_rules
 from blade.cc_targets import CcTarget
 from blade.util import var_to_list
 

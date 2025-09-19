@@ -10,8 +10,7 @@ This is the blade module which mainly holds the global database and
 do the coordination work between classes.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import json
 import os
@@ -19,17 +18,14 @@ import subprocess
 import sys
 import time
 
-from blade import config
-from blade import console
-from blade import ninja_runner
-from blade import target_pattern
+from blade import config, console, ninja_runner, target_pattern
+from blade.backend import NinjaFileGenerator
 from blade.binary_runner import BinaryRunner
-from blade.toolchain import ToolChain
 from blade.build_accelerator import BuildAccelerator
 from blade.dependency_analyzer import analyze_deps
 from blade.load_build_files import load_targets
-from blade.backend import NinjaFileGenerator
 from blade.test_runner import TestRunner
+from blade.toolchain import ToolChain
 from blade.util import cpu_count, md5sum_file, pickle
 
 # Global build manager instance

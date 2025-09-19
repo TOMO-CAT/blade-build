@@ -12,8 +12,7 @@
 This module executes the test programs.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import datetime
 import json
@@ -22,16 +21,12 @@ import re
 import time
 from collections import namedtuple
 
-from blade import binary_runner
-from blade import config
-from blade import console
-from blade import target_pattern
-from blade.test_scheduler import TestScheduler
+from blade import binary_runner, config, console, target_pattern
 
 # pylint: disable=unused-import
 from blade.test_scheduler import TestRunResult  # Used by eval
-from blade.util import md5sum, iteritems
-
+from blade.test_scheduler import TestScheduler
+from blade.util import iteritems, md5sum
 
 # Used by eval when loading test history
 _TEST_HISTORY_FILE = ".blade.test.stamp"

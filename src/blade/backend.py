@@ -14,18 +14,14 @@ This is the build rules genearator module which invokes all the builder
 objects to generate build rules.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 import subprocess
 import sys
 import textwrap
 
-from blade import config
-from blade import console
-from blade import util
-
+from blade import config, console, util
 
 # To verify whether a header file is included without depends on the library it belongs to,
 # we use the gcc's `-H` option to generate the inclusion stack information, see

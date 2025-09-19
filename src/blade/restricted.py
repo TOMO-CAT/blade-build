@@ -6,8 +6,7 @@
 
 import sys
 
-from blade import console
-from blade import util
+from blade import console, util
 
 _IS_PY2 = sys.version_info.major == 2
 

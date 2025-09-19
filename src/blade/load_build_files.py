@@ -14,24 +14,23 @@ This is the CmdOptions module which parses the users'
 input and provides hint for users.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 import traceback
 import types
 
-from blade import build_attributes
-from blade import build_rules
-from blade import config
-from blade import console
-from blade import dsl_api
-from blade import restricted
-from blade import target_tags
-
+from blade import (
+    build_attributes,
+    build_rules,
+    config,
+    console,
+    dsl_api,
+    restricted,
+    target_tags,
+)
 from blade.pathlib import Path
-from blade.util import path_under_dir, var_to_list, exec_file, source_location
-
+from blade.util import exec_file, path_under_dir, source_location, var_to_list
 
 # import these modules make build functions registered into build_rules
 # TODO(chen3feng): Load build modules dynamically to enable extension.
@@ -41,6 +40,7 @@ def _load_build_rules():
     # pylint: disable=import-outside-toplevel,unused-import
     import blade.cc_targets
     import blade.cu_targets
+    import blade.fbthrift_library
     import blade.gen_rule_target
     import blade.go_targets
     import blade.lex_yacc_target
@@ -50,7 +50,6 @@ def _load_build_rules():
     import blade.resource_library_target
     import blade.sh_test_target
     import blade.thrift_library
-    import blade.fbthrift_library
 
     build_rules.register_variable("build_target", build_attributes.attributes)
 

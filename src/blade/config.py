@@ -10,8 +10,7 @@ This is the configuration parse module which parses
 the BLADE_ROOT as a configuration file.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import hashlib
 import os
@@ -19,17 +18,14 @@ import pprint
 import re
 import sys
 
-from blade import build_attributes
-from blade import console
-from blade import constants
+from blade import build_attributes, console, constants
 from blade.util import (
-    var_to_list,
-    iteritems,
     eval_file,
     exec_file_content,
+    iteritems,
     source_location,
+    var_to_list,
 )
-
 
 _MAVEN_SNAPSHOT_UPDATE_POLICY_VALUES = ["always", "daily", "interval", "never"]
 

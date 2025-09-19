@@ -8,12 +8,9 @@
 Define resource_library target.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
-from blade import build_manager
-from blade import build_rules
-from blade import cc_targets
+from blade import build_manager, build_rules, cc_targets
 from blade.util import regular_variable_name
 
 

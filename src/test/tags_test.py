@@ -11,6 +11,7 @@ This is the test module to test target tags functions.
 import unittest
 
 import blade_test
+
 from blade import target_tags
 
 

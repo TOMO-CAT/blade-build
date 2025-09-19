@@ -11,16 +11,12 @@ This is the cc_target module which is the super class
 of all of the cc targets, like cc_library, cc_binary.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 from string import Template
 
-from blade import build_manager
-from blade import build_rules
-from blade import config
-from blade import inclusion_check
+from blade import build_manager, build_rules, config, inclusion_check
 from blade.constants import HEAP_CHECK_VALUES
 from blade.target import Target
 from blade.util import (
@@ -33,7 +29,6 @@ from blade.util import (
     var_to_list_or_none,
 )
 from blade.version import LooseVersion as version_parse
-
 
 # See https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html#Overall-Options
 _SOURCE_FILE_EXTS = {"c", "cc", "cp", "cxx", "cpp", "CPP", "c++", "C", "s", "S", "asm"}

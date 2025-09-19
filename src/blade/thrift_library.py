@@ -12,14 +12,11 @@ The module defines thrift_library target to generate code in
 different languages from .thrift file.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 
-from blade import build_manager
-from blade import build_rules
-from blade import config
+from blade import build_manager, build_rules, config
 from blade.cc_targets import CcTarget
 from blade.thrift_helper import ThriftHelper
 from blade.util import var_to_list

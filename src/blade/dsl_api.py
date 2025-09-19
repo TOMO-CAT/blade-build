@@ -13,11 +13,7 @@ import re
 import types
 
 import blade
-
-from blade import config
-from blade import console
-from blade import util
-from blade import workspace
+from blade import config, console, util, workspace
 
 
 def _new_module(name):

@@ -2,12 +2,13 @@
 
 import argparse
 import logging
-import subprocess
 import os
-import sys
-from typing import Optional
 import shutil
+import subprocess
+import sys
 from pathlib import Path
+from typing import Optional
+
 from colorama import Fore, Style
 
 logger = logging.getLogger("docker")

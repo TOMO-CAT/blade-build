@@ -12,8 +12,7 @@
 This is the util module which provides some helper functions.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import ast
 import errno
@@ -27,7 +26,6 @@ import string
 import subprocess
 import sys
 import zipfile
-
 
 _IN_PY3 = sys.version_info[0] == 3
 

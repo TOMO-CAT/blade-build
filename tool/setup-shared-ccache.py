@@ -5,11 +5,11 @@ Setup shared ccache for multiple users in same develop box.
 """
 
 from __future__ import print_function
+
 import argparse
 import os
-import sys
 import subprocess
-
+import sys
 
 _CONFIG_FILE_NAME = "ccache.conf"
 

@@ -12,16 +12,14 @@
 This module executes a binary programs.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 import shutil
 import subprocess
 import sys
 
-from blade import config
-from blade import console
+from blade import config, console
 from blade.util import environ_add_path
 
 

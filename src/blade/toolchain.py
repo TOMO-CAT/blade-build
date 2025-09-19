@@ -9,15 +9,14 @@
 This module deals with the build toolchains.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 import re
 import tempfile
 
 from blade import console
-from blade.util import var_to_list, iteritems, run_command
+from blade.util import iteritems, run_command, var_to_list
 
 # example: Cuda compilation tools, release 11.0, V11.0.194
 _nvcc_version_re = re.compile(r"V(\d+\.\d+\.\d+)")

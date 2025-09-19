@@ -8,14 +8,12 @@
 This module defines sh_test target which executes a shell script.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import os
 
-from blade import build_manager
-from blade import build_rules
-from blade.target import Target, LOCATION_RE
+from blade import build_manager, build_rules
+from blade.target import LOCATION_RE, Target
 from blade.util import var_to_list
 
 

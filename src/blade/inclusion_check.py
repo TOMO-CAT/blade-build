@@ -8,8 +8,7 @@
 
 import os
 
-from blade import console
-from blade import util
+from blade import console, util
 from blade.util import pickle
 
 

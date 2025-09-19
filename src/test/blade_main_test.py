@@ -22,17 +22,16 @@ from dump_test import TestDump
 from extension_test import TestExtension
 from gen_rule_test import TestGenRule
 from hdr_dep_check_test import TestHdrDepCheck
+from html_test_runner import HTMLTestRunner
 from lex_yacc_test import TestLexYacc
+from linker_scripts_test import LinkerScriptsTest
 from load_builds_test import TestLoadBuilds
-from proto_library_test import TestProtoLibrary
 from prebuild_cc_library_test import TestPrebuildCcLibrary
+from proto_library_test import TestProtoLibrary
 from query_target_test import TestQuery
 from resource_library_test import TestResourceLibrary
 from target_dependency_test import TestDepsAnalyzing
 from target_pattern_test import TargetPatternTest
-from linker_scripts_test import LinkerScriptsTest
-
-from html_test_runner import HTMLTestRunner
 from test_target_test import TestTestRunner
 
 

@@ -14,8 +14,7 @@ from BUILD files and will find all of the targets needed by the target and
 add extra options according to different target types.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 from blade import console
 from blade.util import iteritems, itervalues
