@@ -563,29 +563,6 @@ class Target(object):
     def _before_generate(self):  # abstract
         """Will be called before generating build code, overridable"""
 
-    def _expand_deps_generation(self):
-        """Expand the generation process and generated rules of dependencies.
-
-        Such as, given a proto_library target, it should generate Java rules
-        in addition to C++ rules once it's depended by a java_library target.
-        """
-
-    def _get_java_pack_deps(self):
-        """
-        Return java package dependencies excluding provided dependencies
-
-        target jars represent a path to jar archive. Each jar is built by
-        java_library(prebuilt)/scala_library/proto_library.
-
-        maven jars represent maven artifacts within local repository built
-        by maven_jar(...).
-
-        Returns:
-            A tuple of (target jars, maven jars)
-        """
-        # TODO(chen3feng): put to `data`
-        return [], []
-
     def _target_dir(self):
         """Return the full path of target dir."""
         return self.target_dir

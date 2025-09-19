@@ -200,7 +200,7 @@ class CuLibrary(CuTarget):
                  extra_cuflags,
                  extra_linkflags,
                  kwargs):
-        super(CuLibrary, self).__init__(
+        super().__init__(
             name=name,
             type='cu_library',
             srcs=srcs,

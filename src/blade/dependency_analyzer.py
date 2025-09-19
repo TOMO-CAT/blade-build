@@ -62,7 +62,6 @@ def _expand_deps(targets):
     for target_id in targets:
         target = targets[target_id]
         _expand_target_deps(target_id, targets)
-        target._expand_deps_generation()
 
 
 def _unique_deps(new_deps_list):

@@ -137,31 +137,6 @@ class ThriftHelper(ThriftParser):
 
         return files
 
-    def get_generated_java_files(self):
-        java_package = ''
-        if 'java' in self.package_name:
-            java_package = self.package_name['java']
-        base_path = os.path.join(*java_package.split('.'))
-
-        files = []
-        if self.has_constants:
-            files.append('Constants.java')
-
-        for enum in self.enums:
-            files.append('%s.java' % enum)
-
-        for struct in self.structs:
-            files.append('%s.java' % struct)
-
-        for exception in self.exceptions:
-            files.append('%s.java' % exception)
-
-        for service in self.services:
-            files.append('%s.java' % service)
-
-        files = [os.path.join(base_path, f) for f in files]
-        return files
-
     def get_generated_py_files(self):
         py_package = self.thrift_name
         if 'py' in self.package_name:

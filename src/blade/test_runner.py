@@ -25,7 +25,6 @@ from collections import namedtuple
 from blade import binary_runner
 from blade import config
 from blade import console
-from blade import coverage
 from blade import target_pattern
 from blade.test_scheduler import TestScheduler
 # pylint: disable=unused-import
@@ -323,13 +322,6 @@ class TestRunner(binary_runner.BinaryRunner):
         self.unrepaired_tests.sort(key=lambda x: self.test_history['items'][x].first_fail_time,
                                    reverse=True)
 
-    def _generate_coverage_report(self):
-        reporter = coverage.JacocoReporter(self.build_dir,
-                                           self.target_database,
-                                           self.__command_targets,
-                                           self.test_jobs)
-        reporter.generate()
-
     def _show_banner(self, text):
         pads = int((76 - len(text)) / 2)
         console.notice('{0} {1} {0}'.format('=' * pads, text), prefix=False)
@@ -480,6 +472,5 @@ class TestRunner(binary_runner.BinaryRunner):
 
         if self.options.coverage:
             self._clean_for_coverage()
-            self._generate_coverage_report()
 
         return 0 if self._is_full_success(passed_run_results) else 1

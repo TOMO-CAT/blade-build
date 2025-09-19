@@ -25,7 +25,6 @@ from blade.thrift_helper import ThriftHelper
 from blade.util import var_to_list
 
 
-# TODO(chen3feng): Support java generation
 class ThriftLibrary(CcTarget):
     """A thrift library target derived from CcTarget."""
 
@@ -88,13 +87,6 @@ class ThriftLibrary(CcTarget):
         """Get the python files generated from thrift file."""
         files = []
         for f in self.thrift_helpers[src].get_generated_py_files():
-            files.append(self._target_file_path(f))
-        return files
-
-    def _thrift_gen_java_files(self, src):
-        """Get the java files generated from thrift file."""
-        files = []
-        for f in self.thrift_helpers[src].get_generated_java_files():
             files.append(self._target_file_path(f))
         return files
 

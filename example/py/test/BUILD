@@ -1,10 +1,10 @@
 py_library(
-    name = 'lib',
-    srcs = 'lib.py',
+    name = 'test_lib',
+    srcs = 'test_lib.py',
 )
 
 py_test(
     name = 'test',
     srcs = 'test.py',
-    deps = ':lib'
+    deps = ':test_lib'
 )

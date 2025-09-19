@@ -45,7 +45,6 @@ def adjust_config_by_options(config, options):
     # Shared options between config and command line
     shared_options = {
         'global_config': ['debug_info_level', 'backend_builder', 'build_jobs', 'test_jobs', 'run_unrepaired_tests'],
-        'java_config': ['jar_compression_level', 'fat_jar_compression_level'],
     }
     for section, names in shared_options.items():
         for name in names:

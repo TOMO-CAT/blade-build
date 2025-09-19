@@ -34,7 +34,6 @@ class TestLoadBuilds(blade_test.TargetTest):
         lex_yacc_library = (self.target_path, 'parser')
         cc_plugin = (self.target_path, 'meter_business')
         gen_rule = (self.target_path, 'search_service_echo')
-        java_jar = (self.target_path, 'poppy_java_client')
         cc_binary = (self.target_path, 'echoserver')
 
 

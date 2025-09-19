@@ -154,68 +154,6 @@ class BladeConfig(object):
                 'linkflags': [],
             },
 
-            'java_config': {
-                '__help__': 'Java Configuration',
-                'version': '1.8',
-                'source_version': '',
-                'target_version': '',
-                'fat_jar_conflict_severity': 'warning',
-                'fat_jar_conflict_severity__help__':
-                    'The severity of java fat jar packing conflict, can be "debug", "warning", "error"',
-                'maven': 'mvn',
-                'maven_central': '',
-                'maven_snapshot_update_policy': 'daily',
-                'maven_snapshot_update_policy__help__':
-                    'Can be %s' % _MAVEN_SNAPSHOT_UPDATE_POLICY_VALUES,
-                'maven_snapshot_update_interval': 0,
-                'maven_snapshot_update_interval__help__': 'When policy is interval, in minutes',
-                'maven_download_concurrency': 0,
-                'maven_download_concurrency__help__': constants.HELP.maven_download_concurrency,
-                'maven_jar_allowed_dirs': set(),
-                'maven_jar_allowed_dirs__help__':
-                    'List of directories and their subdirectories where maven_jar is allowed',
-                'maven_jar_allowed_dirs_exempts': set(),
-                'maven_jar_allowed_dirs_exempts__help__':
-                    'List of targets which are exempted from maven_jar_disallowed_dirs check',
-                'warnings': ['-Werror', '-Xlint:all'],
-                'source_encoding': '',
-                'java_home': '',
-                'jar_compression_level': '',
-                'jar_compression_level__help__': constants.HELP.jar_compression_level,
-                'fat_jar_compression_level': "6",
-                'fat_jar_compression_level__help__': constants.HELP.fat_jar_compression_level,
-                'debug_info_levels': {
-                    'no': ['-g:none'],
-                    'low': ['-g:source'],
-                    'mid': ['-g:source,lines'],
-                    'high': ['-g'],
-                },
-            },
-
-            'java_binary_config': {
-                '__help__': 'Java Executable Configuration',
-                'one_jar_boot_jar': '',
-            },
-
-            'java_test_config': {
-                '__help__': 'Java Test Configuration',
-                'junit_libs': [],
-                'jacoco_home': '',
-            },
-
-            'scala_config': {
-                '__help__': 'Scala Configuration',
-                'scala_home': '',
-                'target_platform': '',
-                'warnings': '',
-                'source_encoding': '',
-            },
-
-            'scala_test_config': {
-                '__help__': 'Scala Test Configuration',
-                'scalatest_libs': [],
-            },
-
             'go_config': {
                 '__help__': 'Golang Configuration',
                 'go': '',
@@ -229,14 +167,11 @@ class BladeConfig(object):
             'proto_library_config': {
                 '__help__': 'Protobuf Configuration',
                 'protoc': 'thirdparty/protobuf/bin/protoc',
-                'protoc_java': '',
                 'protobuf_libs': [],
                 'protobuf_path': '',
                 'protobuf_incs': [],
-                'protobuf_java_incs': [],
                 'protobuf_php_path': '',
                 'protoc_php_plugin': '',
-                'protobuf_java_libs': [],
                 'protoc_go_plugin': '',
                 'protoc_go_subplugins': [],
                 # All the generated go source files will be placed
@@ -550,39 +485,6 @@ def link_config(append=None, **kwargs):
 def cuda_config(append=None, **kwargs):
     """cuda_config."""
     _blade_config.update_config('cuda_config', append, kwargs)
-
-
-@config_rule
-def java_config(append=None, **kwargs):
-    """java_config."""
-    _check_kwarg_enum_value(kwargs, 'maven_snapshot_update_policy',
-                            _MAVEN_SNAPSHOT_UPDATE_POLICY_VALUES)
-    _blade_config.update_config('java_config', append, kwargs)
-
-
-@config_rule
-def java_binary_config(append=None, **kwargs):
-    """java_test_config."""
-    _blade_config.update_config('java_binary_config', append, kwargs)
-
-
-@config_rule
-def java_test_config(append=None, **kwargs):
-    """java_test_config."""
-    _blade_config.update_config('java_test_config', append, kwargs)
-
-
-@config_rule
-def scala_config(append=None, **kwargs):
-    """scala_config."""
-    _blade_config.update_config('scala_config', append, kwargs)
-
-
-@config_rule
-def scala_test_config(append=None, **kwargs):
-    """scala_test_config."""
-    _blade_config.update_config('scala_test_config', append, kwargs)
-
 
 @config_rule
 def go_config(append=None, **kwargs):

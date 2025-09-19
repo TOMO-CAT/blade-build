@@ -1,5 +1,5 @@
 import unittest
-import lib
+from example.py.test import test_lib
 
 
 class LibTestCase(unittest.TestCase):
@@ -8,7 +8,7 @@ class LibTestCase(unittest.TestCase):
     def tearDown(self):
         pass
     def testAdd(self):
-        self.assertEqual(3, lib.add(1, 2))
+        self.assertEqual(3, test_lib.add(1, 2))
 
 
 if __name__ == '__main__':

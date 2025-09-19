@@ -17,7 +17,6 @@ from __future__ import print_function
 import fnmatch
 import getpass
 import os
-import shutil
 import socket
 import sys
 import tarfile
@@ -248,93 +247,6 @@ def generate_resource_index(args):
     _declare_outputs(*targets)
     return _generate_resource_index(targets, sources, name, path)
 
-
-def generate_java_jar(compression_level, args):
-    jar, target = args[0], args[1]
-    _declare_outputs(target)
-    resources_dir = target.replace('.jar', '.resources')
-    arg = args[2]
-    if arg.endswith('__classes__.jar'):
-        classes_jar = arg
-        resources = args[3:]
-    else:
-        classes_jar = ''
-        resources = args[2:]
-
-    def archive_resources(resources_dir, resources, new=True):
-        options = ('c' if new else 'u') + 'f' + compression_level
-        cmd = ['%s %s %s' % (jar, options, target)]
-        for resource in resources:
-            cmd.append("-C '%s' '%s'" % (resources_dir,
-                                         os.path.relpath(resource, resources_dir)))
-        return util.shell(cmd)
-
-    if classes_jar:
-        shutil.copy2(classes_jar, target)
-        if resources:
-            return archive_resources(resources_dir, resources, False)
-    else:
-        return archive_resources(resources_dir, resources, True)
-
-
-def generate_java_resource(args):
-    assert len(args) % 2 == 0
-    middle = len(args) // 2
-    targets = args[:middle]
-    sources = args[middle:]
-    _declare_outputs(*targets)
-    for i in range(middle):
-        shutil.copy(sources[i], targets[i])
-
-
-def _get_all_test_class_names_in_jar(jar):
-    """Returns a list of test class names in the jar file."""
-    test_class_names = []
-    zip_file = zipfile.ZipFile(jar, 'r')
-    name_list = zip_file.namelist()
-    for name in name_list:
-        basename = os.path.basename(name)
-        # Exclude inner class and Test.class
-        if (basename.endswith('Test.class') and
-                len(basename) > len('Test.class') and '$' not in basename):
-            class_name = name.replace('/', '.')[:-6]  # Remove .class suffix
-            test_class_names.append(class_name)
-    zip_file.close()
-    return test_class_names
-
-
-def _jacoco_test_coverage_flag(jacocoagent, packages_under_test):
-    if packages_under_test and jacocoagent:
-        jacocoagent = os.path.abspath(jacocoagent)
-        packages = packages_under_test.split(':')
-        options = [
-            'includes=%s' % ':'.join([p + '.*' for p in packages if p]),
-            'output=file',
-        ]
-        return '-javaagent:%s=%s' % (jacocoagent, ','.join(options))
-    return ''
-
-
-def generate_java_test(script, main_class, jacocoagent, packages_under_test, args):
-    _declare_outputs(script)
-    jars = args
-    test_jar = jars[0]
-    test_classes = ' '.join(_get_all_test_class_names_in_jar(test_jar))
-    with open(script, 'w') as f:
-        coverage_flags = _jacoco_test_coverage_flag(jacocoagent, packages_under_test)
-        f.write(textwrap.dedent('''\
-                #!/bin/sh
-                # Auto generated wrapper shell script by blade
-
-                if [ -n "$BLADE_COVERAGE" ]; then
-                    coverage_options="%s"
-                fi
-
-                exec java $coverage_options -classpath %s %s %s $@''') % (
-                coverage_flags, ':'.join(jars), main_class, test_classes))
-    os.chmod(script, 0o755)
-
-
 def generate_fat_jar(output, **kwargs):
     # Import from function to avoid affecting the performance of other tools.
     from blade import fatjar  # pylint: disable=import-outside-toplevel
@@ -390,52 +302,6 @@ def generate_one_jar(onejar, main_class, bootjar, args):
 
                             ''') % main_class)
     onejar.close()
-
-
-def generate_java_binary(args):
-    script, onejar = args
-    _declare_outputs(script)
-    basename = os.path.basename(onejar)
-    fullpath = os.path.abspath(onejar)
-    with open(script, 'w') as f:
-        f.write(textwrap.dedent('''\
-                #!/bin/sh
-                # Auto generated wrapper shell script by blade
-
-                jar=`dirname "$0"`/"%s"
-                if [ ! -f "$jar" ]; then
-                  jar="%s"
-                fi
-
-                exec java -jar "$jar" $@
-                ''') % (basename, fullpath))
-    os.chmod(script, 0o755)
-
-
-def generate_scala_test(script, java, scala, jacocoagent, packages_under_test, args):
-    _declare_outputs(script)
-    jars = args
-    test_jar = jars[0]
-    test_class_names = _get_all_test_class_names_in_jar(test_jar)
-    scala, java = os.path.abspath(scala), os.path.abspath(java)
-    java_args = ''
-    coverage_flags = _jacoco_test_coverage_flag(jacocoagent, packages_under_test)
-    if coverage_flags:
-        java_args = '-J%s' % coverage_flags
-    run_args = 'org.scalatest.run ' + ' '.join(test_class_names)
-    with open(script, 'w') as f:
-        text = textwrap.dedent('''\
-                #!/bin/sh
-                # Auto generated wrapper shell script by blade
-
-                if [ -n "$BLADE_COVERAGE" ]; then
-                    coverage_options="%s"
-                fi
-
-                JAVACMD=%s exec %s "$coverage_options" -classpath %s %s $@
-                ''') % (java_args, java, scala, ':'.join(jars), run_args)
-        f.write(text)
-    os.chmod(script, 0o755)
 
 
 def generate_shell_test(args):
@@ -577,13 +443,6 @@ _BUILTIN_TOOLS = {
     'package': generate_package,
     'cc_inclusion_check': generate_cc_inclusion_check,
     'resource_index': generate_resource_index,
-    'java_jar': generate_java_jar,
-    'java_resource': generate_java_resource,
-    'java_test': generate_java_test,
-    'java_fatjar': generate_fat_jar,
-    'java_onejar': generate_one_jar,
-    'java_binary': generate_java_binary,
-    'scala_test': generate_scala_test,
     'shell_test': generate_shell_test,
     'shell_testdata': generate_shell_testdata,
     'python_library': generate_python_library,

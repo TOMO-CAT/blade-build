@@ -4,7 +4,6 @@
 
 V2 进行了大量的性能优化，新功能支持，以及代码重构。升级到 V2，可以获得这些好处：
 
-- 完善支持 `java`、`scala` 构建
 - 支持把头文件纳入依赖管理
 - 支持完整的[可见性](build_file.md)控制
 - 支持用 `foegign_cc_library` 描述其他构建系统（例如 GNU Autotools、CMake 等）的构建结果

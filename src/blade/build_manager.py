@@ -21,7 +21,6 @@ import time
 
 from blade import config
 from blade import console
-from blade import maven
 from blade import ninja_runner
 from blade import target_pattern
 from blade.binary_runner import BinaryRunner
@@ -158,8 +157,6 @@ class Blade(object):
         """Generate the build script."""
         if self.__command == 'query':
             return
-        maven_cache = maven.MavenCache.instance(self.__build_dir)
-        maven_cache.download_all()
         self._write_inclusion_declaration_file()
         self.generate_build_code()
 

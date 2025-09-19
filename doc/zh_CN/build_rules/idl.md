@@ -23,7 +23,7 @@ protobuf_library 支持生成多种语言的目标。
 要引用某 proto 文件生成的头文件，需要从 BLADE_ROOT 的目录开始，只是把 proto 扩展名改为 pb.h 扩展名。
 比如 //common/base/string_test.proto 生成的头文件，路径为 "common/base/string_test.pb.h"。
 
-当 proto_library 被 Java 目标依赖时，会自动构建 Java 相关的结果，Python也类似。
+当 proto_library 被 Python 目标依赖时，会自动构建 Python 相关的结果。
 因此同一个proto_library目标可以被多种语言所使用。
 
 如果需要强制生成某种语言的目标库，可以通过 `target_languages` 参数来指定：
@@ -33,7 +33,7 @@ proto_library(
     name = 'rpc_meta_info_proto',
     srcs = 'rpc_meta_info.proto',
     deps = ':rpc_option_proto',
-    target_languages = ['java', 'python'],
+    target_languages = ['python'],
 )
 ```
 

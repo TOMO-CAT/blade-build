@@ -378,17 +378,10 @@ class _NinjaFileHeaderGenerator(object):
     def generate_proto_rules(self):
         proto_config = config.get_section('proto_library_config')
         protoc = proto_config['protoc']
-        protoc_java = protoc
-        if proto_config['protoc_java']:
-            protoc_java = proto_config['protoc_java']
         protobuf_incs = protoc_import_path_option(proto_config['protobuf_incs'])
-        protobuf_java_incs = protobuf_incs
-        if proto_config['protobuf_java_incs']:
-            protobuf_java_incs = protoc_import_path_option(proto_config['protobuf_java_incs'])
         self._add_line(textwrap.dedent('''\
                 protocflags =
                 protoccpppluginflags =
-                protocjavapluginflags =
                 protocpythonpluginflags =
                 '''))
         self.generate_rule(name='proto',
@@ -396,11 +389,6 @@ class _NinjaFileHeaderGenerator(object):
                                    '--cpp_out=%s ${protocflags} ${protoccpppluginflags} ${in}' % (
                                        protoc, protobuf_incs, self.build_dir),
                            description='PROTOC CPP ${in}')
-        self.generate_rule(name='protojava',
-                           command='%s --proto_path=. %s --java_out=%s/`dirname ${in}` '
-                                   '${protocjavapluginflags} ${in}' % (
-                                       protoc_java, protobuf_java_incs, self.build_dir),
-                           description='PROTOC JAVA ${in}')
         self.generate_rule(name='protopython',
                            command='%s --proto_path=. %s -I=`dirname ${in}` '
                                    '--python_out=%s ${protocpythonpluginflags} ${in}' % (
@@ -444,136 +432,6 @@ class _NinjaFileHeaderGenerator(object):
                                    'sed -e "s/^unsigned char /const char RESOURCE_/g" '
                                    '-e "s/^unsigned int /const unsigned int RESOURCE_/g" > ${out}',
                            description='RESOURCE ${in}')
-
-    def get_java_command(self, java_config, cmd):
-        java_home = java_config['java_home']
-        if java_home:
-            return os.path.join(java_home, 'bin', cmd)
-        return cmd
-
-    def get_jacocoagent(self):
-        jacoco_home = config.get_item('java_test_config', 'jacoco_home')
-        if jacoco_home:
-            return os.path.join(jacoco_home, 'lib', 'jacocoagent.jar')
-        return ''
-
-    def generate_javac_rules(self, java_config):
-        javac = self.get_java_command(java_config, 'javac')
-        jar = self.get_java_command(java_config, 'jar')
-        cmd = [javac]
-        version = java_config['version']
-        source_version = java_config.get('source_version', version)
-        target_version = java_config.get('target_version', version)
-        if source_version:
-            cmd.append('-source %s' % source_version)
-        if target_version:
-            cmd.append('-target %s' % target_version)
-        cmd += [
-            '-encoding ${source_encoding}',
-            '-d ${classes_dir}',
-            '-classpath ${classpath}',
-            '${javacflags}',
-            '${in}',
-        ]
-        self._add_line(textwrap.dedent('''\
-                source_encoding = UTF-8
-                classpath = .
-                javacflags =
-                '''))
-        jarflags = 'cf' + config.get_item('java_config', 'jar_compression_level')
-        self.generate_rule(name='javac',
-                           command='rm -fr ${classes_dir} && mkdir -p ${classes_dir} && '
-                                   '%s && sleep 0.01 && '
-                                   '%s %s ${out} -C ${classes_dir} .' % (
-                                       ' '.join(cmd), jar, jarflags),
-                           description='JAVAC ${out}')
-
-    def generate_java_resource_rules(self):
-        self.generate_rule(name='javaresource',
-                           command=self._builtin_command('java_resource'),
-                           description='JAVA RESOURCE ${resources_dir}')
-
-    def generate_java_jar_rules(self, java_config):
-        jar = self.get_java_command(java_config, 'jar')
-        level = config.get_item('java_config', 'jar_compression_level')
-        args = '%s --compression_level=%s ${out} ${in}' % (jar, level)
-        self.generate_rule(name='javajar',
-                           command=self._builtin_command('java_jar', args),
-                           description='JAVA JAR ${out}')
-
-    def generate_java_test_rules(self):
-        jacocoagent = self.get_jacocoagent()
-        args = ('--script=${out} --main_class=${mainclass} --jacocoagent=%s '
-                '--packages_under_test=${packages_under_test} ${in}') % jacocoagent
-        self.generate_rule(name='javatest',
-                           command=self._builtin_command('java_test', args),
-                           description='JAVA TEST ${out}')
-
-    def generate_fatjar_rules(self, java_config):
-        conflict_severity = java_config.get('fat_jar_conflict_severity', 'warning')
-        compression_level = java_config.get('fat_jar_compression_level')
-        args = '--output=${out} --compression_level=%s --conflict_severity=%s ${in}' % (
-            compression_level, conflict_severity)
-        self.generate_rule(name='fatjar',
-                           command=self._builtin_command('java_fatjar', args),
-                           description='FAT JAR ${out}')
-
-    def generate_java_binary_rules(self):
-        bootjar = config.get_item('java_binary_config', 'one_jar_boot_jar')
-        args = '--onejar=${out} --bootjar=%s --main_class=${mainclass} ${in}' % bootjar
-        self.generate_rule(name='onejar',
-                           command=self._builtin_command('java_onejar', args),
-                           description='ONE JAR ${out}')
-        self.generate_rule(name='javabinary',
-                           command=self._builtin_command('java_binary'),
-                           description='JAVA BINARY ${out}')
-
-    def generate_scalac_rule(self, java_config):
-        scalac = 'scalac'
-        scala_home = config.get_item('scala_config', 'scala_home')
-        if scala_home:
-            scalac = os.path.join(scala_home, 'bin', scalac)
-        java = self.get_java_command(java_config, 'java')
-        self._add_line(textwrap.dedent('''\
-                scalacflags = -nowarn
-                '''))
-        cmd = [
-            'JAVACMD=%s' % java,
-            scalac,
-            '-encoding UTF8',
-            '-d ${out}',
-            '-classpath ${classpath}',
-            '${scalacflags}',
-            '${in}'
-        ]
-        self.generate_rule(name='scalac',
-                           command=' '.join(cmd),
-                           description='SCALAC ${out}')
-
-    def generate_scalatest_rule(self, java_config):
-        java = self.get_java_command(java_config, 'java')
-        scala = 'scala'
-        scala_home = config.get_item('scala_config', 'scala_home')
-        if scala_home:
-            scala = os.path.join(scala_home, 'bin', scala)
-        jacocoagent = self.get_jacocoagent()
-        args = ('--java=%s --scala=%s --jacocoagent=%s --packages_under_test=${packages_under_test} '
-                '--script=${out} ${in}') % (java, scala, jacocoagent)
-        self.generate_rule(name='scalatest', command=self._builtin_command('scala_test', args),
-                           description='SCALA TEST ${out}')
-
-    def generate_java_scala_rules(self):
-        java_config = config.get_section('java_config')
-        self.generate_javac_rules(java_config)
-        self.generate_java_resource_rules()
-        jar = self.get_java_command(java_config, 'jar')
-        args = '%s ${out} ${in}' % jar
-        self.generate_java_jar_rules(java_config)
-        self.generate_java_test_rules()
-        self.generate_fatjar_rules(java_config)
-        self.generate_java_binary_rules()
-        self.generate_scalac_rule(java_config)
-        self.generate_scalatest_rule(java_config)
 
     def generate_thrift_rules(self):
         thrift_config = config.get_section('thrift_config')
@@ -757,7 +615,6 @@ class _NinjaFileHeaderGenerator(object):
         self.generate_cc_rules()
         self.generate_proto_rules()
         self.generate_resource_rules()
-        self.generate_java_scala_rules()
         self.generate_thrift_rules()
         self.generate_python_rules()
         self.generate_go_rules()

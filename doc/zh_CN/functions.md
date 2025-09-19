@@ -15,7 +15,7 @@ Glob 是一个返回在源代码目录中匹配某些模式的文件的辅助函
 
 ```python
 ...
-    srcs = glob(['*.java', 'src/main/java/**/*.java'], exclude=['*Test.java'])
+    srcs = glob(['*.go', 'src/main/go/**/*.go'], exclude=['*Test.go'])
 ...
 ```
 

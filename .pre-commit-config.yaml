@@ -22,13 +22,17 @@ repos:
   #   rev: v0.45.0
   #   hooks:
   #     - id: markdownlint
-  # - repo: https://github.com/pylint-dev/pylint.git
-  #   rev: v3.3.8
-  #   hooks:
-  #     - id: pylint
-  #       language_version: python3
-  #       args:
-  #         - --rcfile=.pylintrc
-  #       # 指定需要额外加载的依赖包或者模块
-  #       additional_dependencies:
-  #         - colorama
+  - repo: https://github.com/pylint-dev/pylint.git
+    rev: v3.3.8
+    hooks:
+      - id: pylint
+        exclude: |
+          (?x)^(
+            BUILD
+          )$
+        language_version: python3
+        args:
+          - --rcfile=.pylintrc
+        # 指定需要额外加载的依赖包或者模块
+        additional_dependencies:
+          - colorama

@@ -43,15 +43,12 @@ def _load_build_rules():
     import blade.cu_targets
     import blade.gen_rule_target
     import blade.go_targets
-    import blade.java_targets
-    import blade.scala_targets
     import blade.lex_yacc_target
     import blade.package_target
     import blade.proto_library_target
     import blade.py_targets
     import blade.resource_library_target
     import blade.sh_test_target
-    import blade.swig_library_target
     import blade.thrift_library
     import blade.fbthrift_library
 

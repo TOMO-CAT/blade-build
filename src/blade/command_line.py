@@ -197,12 +197,6 @@ class CommandLineParser(object):
             help='Generate packages for package target')
 
         parser.add_argument(
-            '--generate-java', dest='generate_java',
-            action='store_true', default=False,
-            help='Generate java files for proto_library, thrift_library and '
-                 'swig_library')
-
-        parser.add_argument(
             '--generate-php', dest='generate_php',
             action='store_true', default=False,
             help='Generate php files for proto_library and swig_library')

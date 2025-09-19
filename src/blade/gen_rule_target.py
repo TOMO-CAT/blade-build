@@ -55,7 +55,7 @@ class GenRuleTarget(Target):
         """
         srcs = var_to_list(srcs)
         deps = var_to_list(deps)
-        super(GenRuleTarget, self).__init__(
+        super().__init__(
                 name=name,
                 type='gen_rule',
                 srcs=srcs,

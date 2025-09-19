@@ -36,8 +36,6 @@ class BinaryRunner(object):
         self.options = options
         self.run_list = ['cc_binary',
                          'cc_test',
-                         'java_binary',
-                         'java_test',
                          'py_binary',
                          'py_test',
                          'scala_test',
@@ -87,10 +85,6 @@ class BinaryRunner(object):
                     path = path[2:]
                 path = os.path.abspath(path)
                 environ_add_path(run_env, 'LD_LIBRARY_PATH', path)
-        java_home = config.get_item('java_config', 'java_home')
-        if java_home:
-            java_home = os.path.abspath(java_home)
-            environ_add_path(run_env, 'PATH', os.path.join(java_home, 'bin'))
 
         return run_env
 

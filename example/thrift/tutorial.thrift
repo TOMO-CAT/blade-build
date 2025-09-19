@@ -64,7 +64,6 @@ include "shared.thrift"
  */
 namespace cpp tutorial
 namespace d tutorial
-namespace java tutorial
 namespace php tutorial
 namespace perl tutorial
 

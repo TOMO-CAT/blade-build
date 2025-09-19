@@ -180,7 +180,7 @@ class CcTarget(Target):
         deps = var_to_list(deps)
         self.cmd = cmd
 
-        super(CcTarget, self).__init__(
+        super().__init__(
             name=name,
             type=type,
             srcs=srcs,
@@ -820,7 +820,7 @@ class CcLibrary(CcTarget):
 
         """
         # pylint: disable=too-many-locals
-        super(CcLibrary, self).__init__(
+        super().__init__(
             name=name,
             type='cc_library',
             srcs=srcs,
@@ -883,7 +883,7 @@ class PrebuiltCcLibrary(CcTarget):
                  kwargs):
         """Init method."""
         # pylint: disable=too-many-locals
-        super(PrebuiltCcLibrary, self).__init__(
+        super().__init__(
             name=name,
             type='prebuilt_cc_library',
             srcs=[],
@@ -1144,7 +1144,7 @@ class ForeignCcLibrary(CcTarget):
                  kwargs):
         """Init method."""
         # pylint: disable=too-many-locals
-        super(ForeignCcLibrary, self).__init__(
+        super().__init__(
             name=name,
             type='foreign_cc_library',
             srcs=[],
@@ -1293,7 +1293,7 @@ class CcBinary(CcTarget):
 
         """
         # pylint: disable=too-many-locals
-        super(CcBinary, self).__init__(
+        super().__init__(
             name=name,
             type='cc_binary',
             srcs=srcs,
@@ -1482,7 +1482,7 @@ class CcPlugin(CcTarget):
         Init the cc plugin target.
 
         """
-        super(CcPlugin, self).__init__(
+        super().__init__(
             name=name,
             type='cc_plugin',
             srcs=srcs,
@@ -1622,7 +1622,7 @@ class CcTest(CcBinary):
         if dynamic_link is None:
             dynamic_link = cc_test_config['dynamic_link']
 
-        super(CcTest, self).__init__(
+        super().__init__(
             name=name,
             srcs=srcs,
             deps=deps,

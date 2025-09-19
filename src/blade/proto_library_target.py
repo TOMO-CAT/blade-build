@@ -18,7 +18,6 @@ from blade import build_manager
 from blade import build_rules
 from blade import config
 from blade import console
-from blade import java_targets
 from blade.cc_targets import CcTarget
 from blade.util import var_to_list, iteritems
 
@@ -33,7 +32,7 @@ class ProtocPlugin(object):
 
     """
 
-    __languages = ['cpp', 'java', 'python']
+    __languages = ['cpp', 'python']
 
     def __init__(self,
                  name,
@@ -70,7 +69,7 @@ class ProtocPlugin(object):
         return 'ProtocPlugin(%s)' % self.__dict__
 
 
-class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
+class ProtoLibrary(CcTarget):
     """
     This class manages build rules and dependencies in different languages for proto files.
     """
@@ -120,21 +119,11 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
 
         proto_config = config.get_section('proto_library_config')
         protobuf_libs = var_to_list(proto_config['protobuf_libs'])
-        protobuf_java_libs = var_to_list(proto_config['protobuf_java_libs'])
         protobuf_python_libs = var_to_list(proto_config['protobuf_python_libs'])
 
         # Implicit deps rule to thirdparty protobuf lib.
         self._add_implicit_library(protobuf_libs)
-        self._add_implicit_library(protobuf_java_libs)
         self._add_implicit_library(protobuf_python_libs)
-
-        # Normally a proto target depends on another proto target when
-        # it references a message defined in that target. Then in the
-        # generated code there is public API with return type/arguments
-        # defined outside and in java it needs to export that dependency,
-        # which is also the case for java protobuf library.
-        self.attr['exported_deps'] = self._unify_deps(var_to_list(deps))
-        self.attr['exported_deps'] += self._unify_deps(protobuf_java_libs)
 
         self._set_protoc_plugins(plugins)
 
@@ -148,7 +137,6 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
         target_languages = var_to_list(target_languages)
         self.attr['target_languages'] = target_languages
         options = self.blade.get_options()
-        self.attr['generate_java'] = 'java' in target_languages or getattr(options, 'generate_java', False)
         self.attr['generate_python'] = 'python' in target_languages or getattr(options, 'generate_python', False)
         self.attr['generate_go'] = 'go' in target_languages or getattr(options, 'generate_go', False)
 
@@ -173,8 +161,7 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
         """Only proto_library or gen_rule target is allowed as deps."""
         proto_config = config.get_section('proto_library_config')
         protobuf_libs = var_to_list(proto_config['protobuf_libs'])
-        protobuf_java_libs = var_to_list(proto_config['protobuf_java_libs'])
-        protobuf_libs = [self._unify_dep(d) for d in protobuf_libs + protobuf_java_libs]
+        protobuf_libs = [self._unify_dep(d) for d in protobuf_libs]
         proto_deps = protobuf_libs + self.attr['protoc_plugin_deps']
         for dkey in self.deps:
             if dkey in proto_deps:
@@ -190,7 +177,7 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
         self.attr['protoc_plugins'] = plugins
         protoc_plugin_config = config.get_section('protoc_plugin_config')
         protoc_plugins = []
-        protoc_plugin_deps, protoc_plugin_java_deps = set(), set()
+        protoc_plugin_deps = set()
         for plugin in plugins:
             if plugin not in protoc_plugin_config:
                 self.error('Unknown plugin %s' % plugin)
@@ -202,10 +189,7 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
                     if key not in self.deps:
                         self.deps.append(key)
                     protoc_plugin_deps.add(key)
-                    if language == 'java':
-                        protoc_plugin_java_deps.add(key)
         self.attr['protoc_plugin_deps'] = list(protoc_plugin_deps)
-        self.attr['exported_deps'] += list(protoc_plugin_java_deps)
         self.data['protoc_plugin_objects'] = protoc_plugins
 
     def _prepare_to_generate_rule(self):
@@ -213,8 +197,7 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
         self._check_proto_deps()
 
     def _expand_deps_generation(self):
-        if self.attr['generate_java']:
-            self._expand_deps_java_generation()
+        pass
 
     def _proto_gen_cpp_files(self, src):
         """_proto_gen_cpp_files."""
@@ -236,23 +219,6 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
         """Generate the descriptor file name."""
         return self._target_file_path('%s.descriptors.pb' % name)
 
-    def _get_java_pack_deps(self):
-        return self._get_pack_deps()
-
-    def _get_java_package_name(self, content):
-        """Get the java package name from proto file if it is specified."""
-        java_package_pattern = r'^\s*option\s+java_package\s*=\s*["\']([\w.]+)'
-        m = re.search(java_package_pattern, content, re.MULTILINE)
-        if m:
-            return m.group(1)
-
-        package_pattern = r'^\s*package\s+([\w.]+)'
-        m = re.search(package_pattern, content, re.MULTILINE)
-        if m:
-            return m.group(1)
-
-        return ''
-
     def _get_go_package_name(self, path):
         with open(path) as f:
             content = f.read()
@@ -263,26 +229,6 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
         self.error('"go_package" is mandatory to generate golang code '
                    'in protocol buffers but is missing in %s.' % path)
         return ''
-
-    def _proto_java_gen_class_name(self, src, content):
-        """Get generated java class name"""
-        pattern = r'^\s*option\s+java_outer_classname\s*=\s*[\'"](\w+)["\']'
-        m = re.search(pattern, content, re.MULTILINE)
-        if m:
-            return m.group(1)
-        proto_name = src[:-6]
-        base_name = os.path.basename(proto_name)
-        return ''.join([p[0].upper() + p[1:] for p in base_name.split('_') if p])
-
-    def _proto_java_gen_file(self, src):
-        """Generate the java files name of the proto library."""
-        # FIXME: Handle utf-8 file decode error in python3
-        with open(self._source_file_path(src)) as f:
-            content = f.read()
-        package_dir = self._get_java_package_name(content).replace('.', '/')
-        class_name = self._proto_java_gen_class_name(src, content)
-        java_name = '%s.java' % class_name
-        return package_dir, java_name
 
     def protoc_direct_dependencies(self):
         """
@@ -317,13 +263,7 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
             if language in p.code_generation:
                 paths.append(p.path)
                 flag_key = 'protoc%spluginflags' % language
-                # For Java, we need to be consistent with native java output directory
-                # which is the build target directory for insertion points to be effected.
-                # See `protojava` rules for details
-                if language == 'java':
-                    flag_value = p.protoc_plugin_flag(self._target_dir())
-                else:
-                    flag_value = p.protoc_plugin_flag(self.build_dir)
+                flag_value = p.protoc_plugin_flag(self.build_dir)
                 vars[flag_key] = vars[flag_key] + ' ' + flag_value if flag_key in vars else flag_value
         return paths, vars
 
@@ -353,22 +293,6 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
             cpp_sources.append(source)
         objs = self._generated_cc_objects(cpp_sources, generated_headers=self.attr['generated_hdrs'])
         self._cc_library(objs)
-
-    def _proto_java_rules(self):
-        plugin_paths, vars = self._protoc_plugin_parameters('java')
-        implicit_deps = self.protoc_direct_dependencies()
-        implicit_deps.extend(plugin_paths)
-        java_sources = []
-        for src in self.srcs:
-            input = self._source_file_path(src)
-            package_dir, java_name = self._proto_java_gen_file(src)
-            output = self._target_file_path(os.path.join(os.path.dirname(src), package_dir, java_name))
-            self.generate_build('protojava', output, inputs=input,
-                                implicit_deps=implicit_deps, variables=vars)
-            java_sources.append(output)
-
-        jar = self._build_jar(inputs=java_sources, source_encoding=self.attr.get('source_encoding'))
-        self._add_target_file('jar', jar)
 
     def _proto_python_rules(self):
         # plugin, vars = self._protoc_plugin_parameters('python')
@@ -405,9 +329,6 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
     def _proto_rules(self):
         """Generate ninja rules for other languages if needed."""
         self._proto_cpp_rules()
-
-        if self.attr.get('generate_java') or self.attr.get('generate_scala'):
-            self._proto_java_rules()
 
         if self.attr.get('generate_python'):
             self._proto_python_rules()
@@ -450,7 +371,7 @@ def proto_library(
     Args:
         generate_descriptors (bool): Whether generate binary protobuf descriptors.
         target_languages (Sequence[str]): Code for target languages to be generated, such as
-            `java`, `python`, see protoc's `--xx_out`s.
+            `python`, see protoc's `--xx_out`s.
             NOTE: The `cpp` target code is always generated.
     """
     proto_library_target = ProtoLibrary(
