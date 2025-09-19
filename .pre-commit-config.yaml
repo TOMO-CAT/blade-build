@@ -25,7 +25,7 @@ repos:
   - repo: https://github.com/pylint-dev/pylint.git
     rev: v3.3.8
     hooks:
-      - id: pylint
+      - id: pylint # python 代码静态检测工具
         exclude: |
           (?x)^(
             BUILD
@@ -36,3 +36,21 @@ repos:
         # 指定需要额外加载的依赖包或者模块
         additional_dependencies:
           - colorama
+  # - repo: https://github.com/psf/black
+  #   rev: 25.9.0
+  #   hooks:
+  #     - id: black  # 著名的 Python 代码格式化工具
+  # - repo: https://github.com/PyCQA/isort
+  #   rev: 5.13.2
+  #   hooks:
+  #     - id: isort  # 自动排序和组织 import
+  #       name: isort (python)
+  #       # 解决 black 和 isort 相互冲突的问题
+  #       # @see https://pycqa.github.io/isort/docs/configuration/black_compatibility.html
+  #       args: ["--profile", "black", "--filter-files"]
+  # - repo: https://github.com/astral-sh/ruff-pre-commit
+  #   rev: v0.13.1
+  #   hooks:
+  #     - id: ruff
+  #       args: [ --fix ] # 自动修复部分简单问题
+  #     - id: ruff-format
