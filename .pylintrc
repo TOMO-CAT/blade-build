@@ -1,12 +1,15 @@
-[MASTER]
-init-hook='import sys; sys.path.extend(["src", "example", "example/build64_release", "."])'
+# 例子: https://github.com/pylint-dev/pylint/blob/main/pylintrc
 
-# 忽略文件
-ignore-paths=.*/BUILD$
-ignore-path=.*/BLADE_ROOT$
+[MASTER]
+init-hook = 'import sys; sys.path.extend(["src", "example", "example/build64_release", "."])'
+
+# 忽略 BUILD 和 BLADE_ROOT 文件
+ignore-paths=
+    .*/BUILD$,
+    .*/BLADE_ROOT$,
 
 [MESSAGES CONTROL]
-disable=
+disable =
     I0011,I0013,C0111,C0103,C0104,C0116,C0209,C0301,
     R0205,R0401,R0801,R0902,R0903,R0911,R0912,R0913,R0914,R0917,R1732,
     W0102,W0212,W0223,W0238,W0511,W0603,W0612,W0613,W0621,W0622,W0718,W0719,W1203,W1514
