@@ -32,41 +32,44 @@ class ProtocPlugin(object):
 
     """
 
-    __languages = ['cpp', 'python']
+    __languages = ["cpp", "python"]
 
-    def __init__(self,
-                 name,
-                 path,
-                 code_generation):
+    def __init__(self, name, path, code_generation):
         self.name = name
         self.path = path
         assert isinstance(code_generation, dict)
         self.code_generation = {}
         for language, v in iteritems(code_generation):
             if language not in self.__languages:
-                console.error('%s: Language %s is invalid. '
-                              'Protoc plugins in %s are supported by blade currently.' % (
-                                  name, language, ', '.join(self.__languages)))
+                console.error(
+                    "%s: Language %s is invalid. "
+                    "Protoc plugins in %s are supported by blade currently."
+                    % (name, language, ", ".join(self.__languages))
+                )
                 continue
             self.code_generation[language] = {}
             # Note that each plugin dep should be in the global target format
             # since protoc plugin is defined in the global scope
             deps = []
-            for dep in var_to_list(v['deps']):
-                if dep.startswith('//'):
+            for dep in var_to_list(v["deps"]):
+                if dep.startswith("//"):
                     dep = dep[2:]
                 if dep not in deps:
                     deps.append(dep)
-            self.code_generation[language]['deps'] = deps
+            self.code_generation[language]["deps"] = deps
 
     def protoc_plugin_flag(self, out):
-        return '--plugin=protoc-gen-%s=%s --%s_out=%s' % (
-            self.name, self.path, self.name, out)
+        return "--plugin=protoc-gen-%s=%s --%s_out=%s" % (
+            self.name,
+            self.path,
+            self.name,
+            out,
+        )
 
     def __repr__(self):
         # This object is a member of proto target's data, provide a textual repr here to make
         # fingerprint reproducable between each build.
-        return 'ProtocPlugin(%s)' % self.__dict__
+        return "ProtocPlugin(%s)" % self.__dict__
 
 
 class ProtoLibrary(CcTarget):
@@ -74,19 +77,21 @@ class ProtoLibrary(CcTarget):
     This class manages build rules and dependencies in different languages for proto files.
     """
 
-    def __init__(self,
-                 name,
-                 srcs,
-                 deps,
-                 visibility,
-                 tags,
-                 optimize,
-                 deprecated,
-                 generate_descriptors,
-                 target_languages,
-                 plugins,
-                 source_encoding,
-                 kwargs):
+    def __init__(
+        self,
+        name,
+        srcs,
+        deps,
+        visibility,
+        tags,
+        optimize,
+        deprecated,
+        generate_descriptors,
+        target_languages,
+        plugins,
+        source_encoding,
+        kwargs,
+    ):
         """Init method.
 
         Init the proto target.
@@ -95,31 +100,32 @@ class ProtoLibrary(CcTarget):
         # pylint: disable=too-many-locals
         srcs = var_to_list(srcs)
         super().__init__(
-                name=name,
-                type='proto_library',
-                srcs=srcs,
-                src_exts=['proto'],
-                deps=deps,
-                visibility=visibility,
-                tags=tags,
-                warning='',
-                defs=[],
-                incs=[],
-                export_incs=[],
-                optimize=optimize,
-                linkflags=None,
-                extra_cppflags=[],
-                extra_linkflags=[],
-                kwargs=kwargs)
+            name=name,
+            type="proto_library",
+            srcs=srcs,
+            src_exts=["proto"],
+            deps=deps,
+            visibility=visibility,
+            tags=tags,
+            warning="",
+            defs=[],
+            incs=[],
+            export_incs=[],
+            optimize=optimize,
+            linkflags=None,
+            extra_cppflags=[],
+            extra_linkflags=[],
+            kwargs=kwargs,
+        )
 
         self._check_proto_srcs_name(srcs)
         if srcs:
-            self.attr['public_protos'] = [self._source_file_path(s) for s in srcs]
-        self._add_tags('lang:proto', 'type:library')
+            self.attr["public_protos"] = [self._source_file_path(s) for s in srcs]
+        self._add_tags("lang:proto", "type:library")
 
-        proto_config = config.get_section('proto_library_config')
-        protobuf_libs = var_to_list(proto_config['protobuf_libs'])
-        protobuf_python_libs = var_to_list(proto_config['protobuf_python_libs'])
+        proto_config = config.get_section("proto_library_config")
+        protobuf_libs = var_to_list(proto_config["protobuf_libs"])
+        protobuf_python_libs = var_to_list(proto_config["protobuf_python_libs"])
 
         # Implicit deps rule to thirdparty protobuf lib.
         self._add_implicit_library(protobuf_libs)
@@ -128,17 +134,21 @@ class ProtoLibrary(CcTarget):
         self._set_protoc_plugins(plugins)
 
         # Link all the symbols by default
-        self.attr['link_all_symbols'] = True
-        self.attr['deprecated'] = deprecated
-        self.attr['source_encoding'] = source_encoding
-        self.attr['generate_descriptors'] = generate_descriptors
+        self.attr["link_all_symbols"] = True
+        self.attr["deprecated"] = deprecated
+        self.attr["source_encoding"] = source_encoding
+        self.attr["generate_descriptors"] = generate_descriptors
 
         # TODO(chen3feng): Change the values to a `set` rather than separated attributes
         target_languages = var_to_list(target_languages)
-        self.attr['target_languages'] = target_languages
+        self.attr["target_languages"] = target_languages
         options = self.blade.get_options()
-        self.attr['generate_python'] = 'python' in target_languages or getattr(options, 'generate_python', False)
-        self.attr['generate_go'] = 'go' in target_languages or getattr(options, 'generate_go', False)
+        self.attr["generate_python"] = "python" in target_languages or getattr(
+            options, "generate_python", False
+        )
+        self.attr["generate_go"] = "go" in target_languages or getattr(
+            options, "generate_go", False
+        )
 
         # Declare generated header files
         full_cpp_headers = []
@@ -148,49 +158,54 @@ class ProtoLibrary(CcTarget):
             full_cpp_headers.append(full_header)
             source, header = self._proto_gen_cpp_file_names(src)
             cpp_headers.append(header)
-        self.attr['generated_hdrs'] = full_cpp_headers
+        self.attr["generated_hdrs"] = full_cpp_headers
         self._set_hdrs(cpp_headers)
 
     def _check_proto_srcs_name(self, srcs):
         """Checks whether the proto file's name ends with 'proto'."""
         for src in srcs:
-            if not src.endswith('.proto'):
-                self.error('Invalid proto file name %s' % src)
+            if not src.endswith(".proto"):
+                self.error("Invalid proto file name %s" % src)
 
     def _check_proto_deps(self):
         """Only proto_library or gen_rule target is allowed as deps."""
-        proto_config = config.get_section('proto_library_config')
-        protobuf_libs = var_to_list(proto_config['protobuf_libs'])
+        proto_config = config.get_section("proto_library_config")
+        protobuf_libs = var_to_list(proto_config["protobuf_libs"])
         protobuf_libs = [self._unify_dep(d) for d in protobuf_libs]
-        proto_deps = protobuf_libs + self.attr['protoc_plugin_deps']
+        proto_deps = protobuf_libs + self.attr["protoc_plugin_deps"]
         for dkey in self.deps:
             if dkey in proto_deps:
                 continue
             dep = self.target_database[dkey]
-            if dkey not in self._implicit_deps and dep.type not in ('proto_library', 'gen_rule'):
-                self.error('Invalid dep %s. proto_library can only depend on proto_library '
-                           'or gen_rule.' % dep.fullname)
+            if dkey not in self._implicit_deps and dep.type not in (
+                "proto_library",
+                "gen_rule",
+            ):
+                self.error(
+                    "Invalid dep %s. proto_library can only depend on proto_library "
+                    "or gen_rule." % dep.fullname
+                )
 
     def _set_protoc_plugins(self, plugins):
         """Handle protoc plugins and corresponding dependencies."""
         plugins = var_to_list(plugins)
-        self.attr['protoc_plugins'] = plugins
-        protoc_plugin_config = config.get_section('protoc_plugin_config')
+        self.attr["protoc_plugins"] = plugins
+        protoc_plugin_config = config.get_section("protoc_plugin_config")
         protoc_plugins = []
         protoc_plugin_deps = set()
         for plugin in plugins:
             if plugin not in protoc_plugin_config:
-                self.error('Unknown plugin %s' % plugin)
+                self.error("Unknown plugin %s" % plugin)
                 continue
             p = protoc_plugin_config[plugin]
             protoc_plugins.append(p)
             for language, v in iteritems(p.code_generation):
-                for key in v['deps']:
+                for key in v["deps"]:
                     if key not in self.deps:
                         self.deps.append(key)
                     protoc_plugin_deps.add(key)
-        self.attr['protoc_plugin_deps'] = list(protoc_plugin_deps)
-        self.data['protoc_plugin_objects'] = protoc_plugins
+        self.attr["protoc_plugin_deps"] = list(protoc_plugin_deps)
+        self.data["protoc_plugin_objects"] = protoc_plugins
 
     def _prepare_to_generate_rule(self):
         CcTarget._prepare_to_generate_rule(self)
@@ -202,22 +217,24 @@ class ProtoLibrary(CcTarget):
     def _proto_gen_cpp_files(self, src):
         """_proto_gen_cpp_files."""
         proto_name = src[:-6]
-        return (self._target_file_path('%s.pb.cc' % proto_name),
-                self._target_file_path('%s.pb.h' % proto_name))
+        return (
+            self._target_file_path("%s.pb.cc" % proto_name),
+            self._target_file_path("%s.pb.h" % proto_name),
+        )
 
     def _proto_gen_php_file(self, src):
         """Generate the php file name."""
         proto_name = src[:-6]
-        return self._target_file_path('%s.pb.php' % proto_name)
+        return self._target_file_path("%s.pb.php" % proto_name)
 
     def _proto_gen_python_file(self, src):
         """Generate the python file name."""
         proto_name = src[:-6]
-        return self._target_file_path('%s_pb2.py' % proto_name)
+        return self._target_file_path("%s_pb2.py" % proto_name)
 
     def _proto_gen_descriptor_file(self, name):
         """Generate the descriptor file name."""
-        return self._target_file_path('%s.descriptors.pb' % name)
+        return self._target_file_path("%s.descriptors.pb" % name)
 
     def _get_go_package_name(self, path):
         with open(path) as f:
@@ -226,9 +243,11 @@ class ProtoLibrary(CcTarget):
         m = re.search(pattern, content, re.MULTILINE)
         if m:
             return m.group(1)
-        self.error('"go_package" is mandatory to generate golang code '
-                   'in protocol buffers but is missing in %s.' % path)
-        return ''
+        self.error(
+            '"go_package" is mandatory to generate golang code '
+            "in protocol buffers but is missing in %s." % path
+        )
+        return ""
 
     def protoc_direct_dependencies(self):
         """
@@ -240,58 +259,70 @@ class ProtoLibrary(CcTarget):
 
         # Including self's proto files because if there are multiple proto files in this target,
         # there may be import relationships between these files.
-        key = 'protoc_direct_dependencies'  # Cache the result
+        key = "protoc_direct_dependencies"  # Cache the result
         if key in self.data:
             return self.data[key][:]
-        self_protos = self.attr.get('public_protos')
+        self_protos = self.attr.get("public_protos")
         protos = self_protos[:] if len(self_protos) > 1 else []
         for key in self.deps:
             dep = self.target_database[key]
-            protos += dep.attr.get('public_protos', [])
+            protos += dep.attr.get("public_protos", [])
         self.data[key] = protos
         return protos[:]
 
     def _proto_descriptor_rules(self):
         inputs = [self._source_file_path(s) for s in self.srcs]
         output = self._proto_gen_descriptor_file(self.name)
-        self.generate_build('protodescriptors', output, inputs=inputs, variables={'first': inputs[0]})
+        self.generate_build(
+            "protodescriptors", output, inputs=inputs, variables={"first": inputs[0]}
+        )
 
     def _protoc_plugin_parameters(self, language):
         """Return a tuple of (plugin paths, vars) used as parameters for ninja build."""
         paths, vars = [], {}
-        for p in self.data['protoc_plugin_objects']:
+        for p in self.data["protoc_plugin_objects"]:
             if language in p.code_generation:
                 paths.append(p.path)
-                flag_key = 'protoc%spluginflags' % language
+                flag_key = "protoc%spluginflags" % language
                 flag_value = p.protoc_plugin_flag(self.build_dir)
-                vars[flag_key] = vars[flag_key] + ' ' + flag_value if flag_key in vars else flag_value
+                vars[flag_key] = (
+                    vars[flag_key] + " " + flag_value
+                    if flag_key in vars
+                    else flag_value
+                )
         return paths, vars
 
     def _add_protoc_direct_dependencies(self, vars):
-        """ Add a `--direct_dependencies` optiopn to protocflags.
+        """Add a `--direct_dependencies` optiopn to protocflags.
 
         This option enforces correct dependency is declared for any imported proto file.
         """
         # Because cpp_out is always generated, we needn't add this option to other language's out.
-        if config.get_item('proto_library_config', 'protoc_direct_dependencies'):
+        if config.get_item("proto_library_config", "protoc_direct_dependencies"):
             dependencies = self.protoc_direct_dependencies()
-            dependencies += config.get_item('proto_library_config', 'well_known_protos')
-            vars['protocflags'] = '--direct_dependencies %s' % ':'.join(dependencies)
+            dependencies += config.get_item("proto_library_config", "well_known_protos")
+            vars["protocflags"] = "--direct_dependencies %s" % ":".join(dependencies)
 
     def _proto_cpp_rules(self):
-        plugin_paths, vars = self._protoc_plugin_parameters('cpp')
+        plugin_paths, vars = self._protoc_plugin_parameters("cpp")
         self._add_protoc_direct_dependencies(vars)
         implicit_deps = self.protoc_direct_dependencies()
         implicit_deps.extend(plugin_paths)
         cpp_sources = []
         for src in self.srcs:
             full_source, full_header = self._proto_gen_cpp_files(src)
-            self.generate_build('proto', [full_source, full_header],
-                                inputs=self._source_file_path(src),
-                                implicit_deps=implicit_deps, variables=vars)
+            self.generate_build(
+                "proto",
+                [full_source, full_header],
+                inputs=self._source_file_path(src),
+                implicit_deps=implicit_deps,
+                variables=vars,
+            )
             source, header = self._proto_gen_cpp_file_names(src)
             cpp_sources.append(source)
-        objs = self._generated_cc_objects(cpp_sources, generated_headers=self.attr['generated_hdrs'])
+        objs = self._generated_cc_objects(
+            cpp_sources, generated_headers=self.attr["generated_hdrs"]
+        )
         self._cc_library(objs)
 
     def _proto_python_rules(self):
@@ -301,16 +332,21 @@ class ProtoLibrary(CcTarget):
         for proto in self.srcs:
             input = self._source_file_path(proto)
             output = self._proto_gen_python_file(proto)
-            self.generate_build('protopython', output, inputs=input)
+            self.generate_build("protopython", output, inputs=input)
             generated_pys.append(output)
-        pylib = self._target_file_path(self.name + '.pylib')
-        self.generate_build('pythonlibrary', pylib, inputs=generated_pys,
-                            implicit_deps=implicit_deps, variables={'basedir': self.build_dir})
-        self._add_target_file('pylib', pylib)
+        pylib = self._target_file_path(self.name + ".pylib")
+        self.generate_build(
+            "pythonlibrary",
+            pylib,
+            inputs=generated_pys,
+            implicit_deps=implicit_deps,
+            variables={"basedir": self.build_dir},
+        )
+        self._add_target_file("pylib", pylib)
 
     def _proto_go_rules(self):
-        go_home = config.get_item('go_config', 'go_home')
-        protobuf_go_path = config.get_item('proto_library_config', 'protobuf_go_path')
+        go_home = config.get_item("go_config", "go_home")
+        protobuf_go_path = config.get_item("proto_library_config", "protobuf_go_path")
         generated_goes = []
         for src in self.srcs:
             path = self._source_file_path(src)
@@ -318,31 +354,33 @@ class ProtoLibrary(CcTarget):
             if not package:
                 continue
             if not package.startswith(protobuf_go_path):
-                self.warning('go_package "%s" is not starting with "%s" in %s' % (
-                             package, protobuf_go_path, src))
+                self.warning(
+                    'go_package "%s" is not starting with "%s" in %s'
+                    % (package, protobuf_go_path, src)
+                )
             basename = os.path.basename(src)
-            output = os.path.join(go_home, 'src', package, '%s.pb.go' % basename[:-6])
-            self.generate_build('protogo', output, inputs=path)
+            output = os.path.join(go_home, "src", package, "%s.pb.go" % basename[:-6])
+            self.generate_build("protogo", output, inputs=path)
             generated_goes.append(output)
-        self._add_target_file('gopkg', generated_goes)
+        self._add_target_file("gopkg", generated_goes)
 
     def _proto_rules(self):
         """Generate ninja rules for other languages if needed."""
         self._proto_cpp_rules()
 
-        if self.attr.get('generate_python'):
+        if self.attr.get("generate_python"):
             self._proto_python_rules()
 
-        if self.attr.get('generate_go'):
+        if self.attr.get("generate_go"):
             self._proto_go_rules()
 
-        if self.attr['generate_descriptors']:
+        if self.attr["generate_descriptors"]:
             self._proto_descriptor_rules()
 
     def _proto_gen_cpp_file_names(self, source):
         """Return just file names"""
         base = source[:-6]
-        return ['%s.pb.cc' % base, '%s.pb.h' % base]
+        return ["%s.pb.cc" % base, "%s.pb.h" % base]
 
     def generate(self):
         """Generate build code for proto files."""
@@ -355,18 +393,19 @@ class ProtoLibrary(CcTarget):
 
 
 def proto_library(
-        name,
-        srcs=[],
-        deps=[],
-        visibility=None,
-        tags=[],
-        optimize=None,
-        deprecated=False,
-        generate_descriptors=False,
-        target_languages=None,
-        plugins=[],
-        source_encoding='iso-8859-1',
-        **kwargs):
+    name,
+    srcs=[],
+    deps=[],
+    visibility=None,
+    tags=[],
+    optimize=None,
+    deprecated=False,
+    generate_descriptors=False,
+    target_languages=None,
+    plugins=[],
+    source_encoding="iso-8859-1",
+    **kwargs
+):
     """proto_library target.
     Args:
         generate_descriptors (bool): Whether generate binary protobuf descriptors.
@@ -375,18 +414,19 @@ def proto_library(
             NOTE: The `cpp` target code is always generated.
     """
     proto_library_target = ProtoLibrary(
-            name=name,
-            srcs=srcs,
-            deps=deps,
-            visibility=visibility,
-            tags=tags,
-            optimize=optimize,
-            deprecated=deprecated,
-            generate_descriptors=generate_descriptors,
-            target_languages=target_languages,
-            plugins=plugins,
-            source_encoding=source_encoding,
-            kwargs=kwargs)
+        name=name,
+        srcs=srcs,
+        deps=deps,
+        visibility=visibility,
+        tags=tags,
+        optimize=optimize,
+        deprecated=deprecated,
+        generate_descriptors=generate_descriptors,
+        target_languages=target_languages,
+        plugins=plugins,
+        source_encoding=source_encoding,
+        kwargs=kwargs,
+    )
     build_manager.instance.register_target(proto_library_target)
 
 

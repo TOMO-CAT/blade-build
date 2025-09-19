@@ -30,28 +30,23 @@ from blade.dependency_analyzer import analyze_deps
 from blade.load_build_files import load_targets
 from blade.backend import NinjaFileGenerator
 from blade.test_runner import TestRunner
-from blade.util import (cpu_count, md5sum_file, pickle)
+from blade.util import cpu_count, md5sum_file, pickle
 
 # Global build manager instance
 instance = None
 
 
 # Start of fingerprint line in each per-target ninja file
-_NINJA_FILE_FINGERPRINT_START = '#Fingerprint='
+_NINJA_FILE_FINGERPRINT_START = "#Fingerprint="
 
-_ALL_COMMAND_TARGETS = '__ALL_COMMAND_TARGETS__'
+_ALL_COMMAND_TARGETS = "__ALL_COMMAND_TARGETS__"
 
 
 class Blade(object):
     """Blade. A blade manager class."""
 
     # pylint: disable=too-many-public-methods
-    def __init__(self,
-                 blade_path,
-                 command,
-                 options,
-                 workspace,
-                 targets):
+    def __init__(self, blade_path, command, options, workspace, targets):
         """init method.
 
         Args:
@@ -62,7 +57,9 @@ class Blade(object):
         """
         self.__command_targets = targets
         # In query dependents mode, we must load all targets in workspace to get a whole view
-        self.__load_targets = ['.:...'] if command == 'query' and options.dependents else targets
+        self.__load_targets = (
+            [".:..."] if command == "query" and options.dependents else targets
+        )
         self.__blade_path = blade_path
         self.__root_dir = workspace.root_dir()
         self.__build_dir = workspace.build_dir()
@@ -72,7 +69,7 @@ class Blade(object):
         self.__command = command
 
         # Source dir of current loading BUILD file
-        self.__current_source_path = ''
+        self.__current_source_path = ""
 
         self.__blade_revision = None
 
@@ -105,22 +102,25 @@ class Blade(object):
         self.build_accelerator = BuildAccelerator(self.__build_toolchain)
         self.__build_jobs_num = 0
 
-        self.__build_script = os.path.join(self.__build_dir, 'build.ninja')
+        self.__build_script = os.path.join(self.__build_dir, "build.ninja")
 
         self.__all_rule_names = []
 
     def load_targets(self):
         """Load the targets."""
-        console.info('Loading BUILD files...')
-        excluded_targets = target_pattern.normalize_str_list(self.__options.exclude_targets,
-                                                             self.__working_dir, ',')
-        (self.__direct_targets,
-         self.__expanded_command_targets,
-         self.__build_targets) = load_targets(self.__load_targets, excluded_targets, self)
+        console.info("Loading BUILD files...")
+        excluded_targets = target_pattern.normalize_str_list(
+            self.__options.exclude_targets, self.__working_dir, ","
+        )
+        (
+            self.__direct_targets,
+            self.__expanded_command_targets,
+            self.__build_targets,
+        ) = load_targets(self.__load_targets, excluded_targets, self)
         if self.__command_targets != self.__load_targets:
             # In query dependents mode, we must use command targets to execute query
             self.__expanded_command_targets = self._expand_command_targets()
-        console.info('Loading done.')
+        console.info("Loading done.")
         return self.__direct_targets, self.__expanded_command_targets  # For test
 
     def _expand_command_targets(self):
@@ -134,11 +134,11 @@ class Blade(object):
 
     def analyze_targets(self):
         """Expand the targets."""
-        console.info('Analyzing dependency graph...')
+        console.info("Analyzing dependency graph...")
         self.__sorted_targets_keys = analyze_deps(self.__build_targets)
         self.__targets_expanded = True
 
-        console.info('Analyzing done.')
+        console.info("Analyzing done.")
         return self.__build_targets  # For test
 
     def build_script(self):
@@ -147,38 +147,41 @@ class Blade(object):
 
     def generate_build_code(self):
         """Generate the backend build code."""
-        console.info('Generating backend build code...')
+        console.info("Generating backend build code...")
         generator = NinjaFileGenerator(self.__build_script, self.__blade_path, self)
         generator.generate_build_script()  # generate Ninja files in build64_release/build.ninja
         self.__all_rule_names = generator.get_all_rule_names()
-        console.info('Generating done.')
+        console.info("Generating done.")
 
     def generate(self):
         """Generate the build script."""
-        if self.__command == 'query':
+        if self.__command == "query":
             return
         self._write_inclusion_declaration_file()
         self.generate_build_code()
 
     def _write_inclusion_declaration_file(self):
         from blade import cc_targets  # pylint: disable=import-outside-toplevel
-        inclusion_declaration_file = os.path.join(self.__build_dir, 'inclusion_declaration.data')
-        with open(inclusion_declaration_file, 'wb') as f:
+
+        inclusion_declaration_file = os.path.join(
+            self.__build_dir, "inclusion_declaration.data"
+        )
+        with open(inclusion_declaration_file, "wb") as f:
             pickle.dump(cc_targets.inclusion_declaration(), f)
 
     def _write_build_stamp_fime(self, start_time, exit_code):
         """Record some useful data for other tools."""
         stamp_data = {
-            'start_time': start_time,
-            'end_time': time.time(),
-            'exit_code': exit_code,
-            'direct_targets': list(self.__direct_targets),
-            'command_targets': list(self.__expanded_command_targets),
-            'build_targets': list(self.__build_targets.keys()),
-            'loaded_targets': list(self.__target_database.keys()),
+            "start_time": start_time,
+            "end_time": time.time(),
+            "exit_code": exit_code,
+            "direct_targets": list(self.__direct_targets),
+            "command_targets": list(self.__expanded_command_targets),
+            "build_targets": list(self.__build_targets.keys()),
+            "loaded_targets": list(self.__target_database.keys()),
         }
-        stamp_file = os.path.join(self.__build_dir, 'blade_build_stamp.json')
-        with open(stamp_file, 'w') as f:
+        stamp_file = os.path.join(self.__build_dir, "blade_build_stamp.json")
+        with open(stamp_file, "w") as f:
             json.dump(stamp_data, f, indent=4)
 
     def revision(self):
@@ -188,26 +191,28 @@ class Blade(object):
                 self.__blade_revision = md5sum_file(self.__blade_path)
             else:
                 # In develop mode, take the mtime of the `blade` directory
-                self.__blade_revision = str(os.path.getmtime(
-                    os.path.join(self.__blade_path, 'blade')))
+                self.__blade_revision = str(
+                    os.path.getmtime(os.path.join(self.__blade_path, "blade"))
+                )
         return self.__blade_revision
 
     def build(self):
         """Implement the "build" subcommand."""
-        console.info('Building...')
+        console.info("Building...")
         console.flush()
         start_time = time.time()
         returncode = ninja_runner.build(
             self.get_build_dir(),
             self.build_script(),
             self.build_jobs_num(),
-            targets='',  # FIXME: because not all targets has a targets
-            options=self.__options)
+            targets="",  # FIXME: because not all targets has a targets
+            options=self.__options,
+        )
         self._write_build_stamp_fime(start_time, returncode)
         if returncode != 0:
-            console.error('Build failure.')
+            console.error("Build failure.")
         else:
-            console.info('Build success.')
+            console.info("Build success.")
         return returncode
 
     def run(self):
@@ -219,7 +224,9 @@ class Blade(object):
 
     def _run(self):
         """Run the target."""
-        runner = BinaryRunner(self.__options, self.__target_database, self.__build_targets)
+        runner = BinaryRunner(
+            self.__options, self.__target_database, self.__build_targets
+        )
         return runner.run_target(list(self.__direct_targets)[0])
 
     def test(self):
@@ -234,8 +241,9 @@ class Blade(object):
         """Run tests."""
         exclude_tests = []
         if self.__options.exclude_tests:
-            exclude_tests = target_pattern.normalize_str_list(self.__options.exclude_tests,
-                                                              self.__working_dir, ',')
+            exclude_tests = target_pattern.normalize_str_list(
+                self.__options.exclude_tests, self.__working_dir, ","
+            )
         test_runner = TestRunner(
             self.__options,
             self.__target_database,
@@ -243,23 +251,24 @@ class Blade(object):
             self.__expanded_command_targets,
             self.__build_targets,
             exclude_tests,
-            self.test_jobs_num())
+            self.test_jobs_num(),
+        )
         return test_runner.run()
 
     @staticmethod
     def _remove_paths(paths):
         # The rm command can delete a large number of files at once, which is much faster than
         # using python's own remove functions (only supports deleting a single path at a time).
-        subprocess.call(['rm', '-fr'] + paths)
+        subprocess.call(["rm", "-fr"] + paths)
 
     def clean(self):
         """Clean specific generated target files or directories"""
-        console.info('Cleaning...')
+        console.info("Cleaning...")
         paths = []
         for key in self.__expanded_command_targets:
             target = self.__build_targets[key]
             clean_list = target.get_clean_list()
-            console.debug('Cleaning %s: %s' % (target.fullname, clean_list))
+            console.debug("Cleaning %s: %s" % (target.fullname, clean_list))
             # Batch removing is much faster than one by one
             paths += clean_list
             if len(paths) > 10000:  # Avoid 'Argument list too long' error.
@@ -267,7 +276,7 @@ class Blade(object):
                 paths[:] = []
         if paths:
             self._remove_paths(paths)
-        console.info('Cleaning done.')
+        console.info("Cleaning done.")
         return 0
 
     def query(self):
@@ -275,16 +284,18 @@ class Blade(object):
         output_file_name = self.__options.output_file
         if output_file_name:
             output_file_name = os.path.join(self.__working_dir, output_file_name)
-            output_file = open(output_file_name, 'w')
-            console.info('Query result will be written to file "%s"' % self.__options.output_file)
+            output_file = open(output_file_name, "w")
+            console.info(
+                'Query result will be written to file "%s"' % self.__options.output_file
+            )
         else:
             output_file = sys.stdout
-            console.info('Query result:')
+            console.info("Query result:")
 
         output_format = self.__options.output_format
-        if output_format == 'dot':
+        if output_format == "dot":
             self.query_dependency_dot(output_file)
-        elif output_format == 'tree':
+        elif output_format == "tree":
             self.query_dependency_tree(output_file)
         else:
             self.query_dependency_plain(output_file)
@@ -299,16 +310,18 @@ class Blade(object):
             for key in query_list:
                 print(file=output_file)
                 deps = all_targets[key].expanded_deps
-                print('//%s depends on the following targets:' % key, file=output_file)
+                print("//%s depends on the following targets:" % key, file=output_file)
                 for d in deps:
-                    print('%s' % d, file=output_file)
+                    print("%s" % d, file=output_file)
         if self.__options.dependents:
             for key in query_list:
                 print(file=output_file)
                 depended_by = all_targets[key].expanded_dependents
-                print('//%s is depended by the following targets:' % key, file=output_file)
+                print(
+                    "//%s is depended by the following targets:" % key, file=output_file
+                )
                 for d in depended_by:
-                    print('%s' % d, file=output_file)
+                    print("%s" % d, file=output_file)
 
     def print_dot_node(self, output_file, node):
         print('"%s" [label = "%s"]' % (node, node), file=output_file)
@@ -326,25 +339,25 @@ class Blade(object):
         query_list = self.__expanded_command_targets
         nodes = set(query_list)
         for key in query_list:
-            nodes |= set(getattr(self.__build_targets[key], 'expanded_' + attr_name))
+            nodes |= set(getattr(self.__build_targets[key], "expanded_" + attr_name))
 
-        print('digraph %s {' % attr_name, file=output_file)
+        print("digraph %s {" % attr_name, file=output_file)
         for i in nodes:
             self.print_dot_node(output_file, i)
         for i in nodes:
             self.print_dot_deps(output_file, i, nodes)
-        print('}', file=output_file)
+        print("}", file=output_file)
 
     def query_dependency_dot(self, output_file):
         if self.__options.deps:
-            self.__print_dot_graph('deps', output_file)
+            self.__print_dot_graph("deps", output_file)
         if self.__options.dependents:
-            self.__print_dot_graph('dependents', output_file)
+            self.__print_dot_graph("dependents", output_file)
 
     def query_dependency_tree(self, output_file):
         """Query the dependency tree of the specified targets."""
         path_to = self._parse_qyery_path_to()
-        query_attr = 'dependents' if self.__options.dependents else 'deps'
+        query_attr = "dependents" if self.__options.dependents else "deps"
         print(file=output_file)
         for key in self.__expanded_command_targets:
             self._query_dependency_tree(key, 0, query_attr, path_to, output_file)
@@ -356,26 +369,30 @@ class Blade(object):
             return set()
         result = set()
         for id in target_pattern.normalize_list(
-                self.__options.query_path_to.split(','),
-                self.__working_dir):
+            self.__options.query_path_to.split(","), self.__working_dir
+        ):
             if id not in self.__target_database:
-                console.fatal('Invalid argument: "--path-to=%s", target "%s" does not exist' % (
-                    self.__options.query_path_to, id))
+                console.fatal(
+                    'Invalid argument: "--path-to=%s", target "%s" does not exist'
+                    % (self.__options.query_path_to, id)
+                )
             result.add(id)
         return result
 
     def _query_dependency_tree(self, key, level, query_attr, path_to, output_file):
         """Query the dependency tree of the specified target recursively."""
         if level == 0:
-            output = '%s' % key
+            output = "%s" % key
         elif level == 1:
-            output = '%s %s' % ('+-', key)
+            output = "%s %s" % ("+-", key)
         else:
-            output = '%s%s %s' % ('|  ' * (level - 1), '+-', key)
+            output = "%s%s %s" % ("|  " * (level - 1), "+-", key)
         print(output, file=output_file)
         for dkey in getattr(self.__build_targets[key], query_attr):
             if self._query_path_match(dkey, path_to):
-                self._query_dependency_tree(dkey, level + 1, query_attr, path_to, output_file)
+                self._query_dependency_tree(
+                    dkey, level + 1, query_attr, path_to, output_file
+                )
 
     def _query_path_match(self, dkey, path_to):
         """Test whether we can reach `path_to` from `dkey`"""
@@ -404,14 +421,13 @@ class Blade(object):
     def _dump_compdb(self, output_file_name):
         """Implement the "dump --compdb" subcommand."""
         return ninja_runner.dump_compdb(
-            self.build_script(),
-            self.get_all_rule_names(),
-            output_file_name)
+            self.build_script(), self.get_all_rule_names(), output_file_name
+        )
 
     def _dump_targets(self, output_file_name):
         """Implement the "dump --targets" subcommand."""
         result = []
-        with open(output_file_name, 'w') as f:
+        with open(output_file_name, "w") as f:
             for target_key in self.__expanded_command_targets:
                 target = self.__target_database[target_key]
                 result.append(target.dump())
@@ -421,7 +437,7 @@ class Blade(object):
 
     def _dump_all_tags(self, output_file_name):
         """Implement the "dump --targets" subcommand."""
-        with open(output_file_name, 'w') as f:
+        with open(output_file_name, "w") as f:
             all_tags = set()
             for key, target in self.__build_targets.items():
                 all_tags.update(target.tags)
@@ -447,10 +463,10 @@ class Blade(object):
 
     def set_current_source_path(self, current_source_path):
         """Set the current source path."""
-        if current_source_path == '.':
+        if current_source_path == ".":
             # For the workspace root dir, we should normalize it to be empty,
             # otherwise other targets can't depend on it.
-            current_source_path = ''
+            current_source_path = ""
         self.__current_source_path = current_source_path
 
     def get_current_source_path(self):
@@ -484,7 +500,9 @@ class Blade(object):
         key = target.key
         # Check whether there is already a key in database
         if key in self.__target_database:
-            console.fatal('Target %s is duplicate in //%s/BUILD' % (target.name, target.path))
+            console.fatal(
+                "Target %s is duplicate in //%s/BUILD" % (target.name, target.path)
+            )
         self.__target_database[key] = target
 
     def _read_fingerprint(self, ninja_file):
@@ -493,38 +511,38 @@ class Blade(object):
             with open(ninja_file, buffering=64) as f:
                 first_line = f.readline()
                 if first_line.startswith(_NINJA_FILE_FINGERPRINT_START):
-                    return first_line[len(_NINJA_FILE_FINGERPRINT_START):].strip()
+                    return first_line[len(_NINJA_FILE_FINGERPRINT_START) :].strip()
         except IOError:
             pass
         return None
 
     def _write_target_ninja_file(self, target, ninja_file, code, fingerprint):
         """Generate per-target ninja file"""
-        target_dir = target._target_file_path('')
+        target_dir = target._target_file_path("")
         if not os.path.exists(target_dir):
             os.makedirs(target_dir)
-        with open(ninja_file, 'w') as f:
-            f.write('%s%s\n\n' % (_NINJA_FILE_FINGERPRINT_START, fingerprint))
+        with open(ninja_file, "w") as f:
+            f.write("%s%s\n\n" % (_NINJA_FILE_FINGERPRINT_START, fingerprint))
             f.writelines(code)
 
     def _find_or_generate_target_ninja_file(self, target):
         # The `.build.` infix is used to avoid the target ninja file with the
         # same name as the main build.ninja file (when target.name == 'build')
-        target_ninja = target._target_file_path('%s.build.ninja' % target.name)
+        target_ninja = target._target_file_path("%s.build.ninja" % target.name)
 
         old_fingerprint = self._read_fingerprint(target_ninja)
         fingerprint = target.fingerprint()
 
         if fingerprint == old_fingerprint:
-            console.debug('Using cached %s' % target_ninja)
+            console.debug("Using cached %s" % target_ninja)
             # If the command is "clean", we still need to generate rules to obtain the clean list
-            if self.__command == 'clean':
+            if self.__command == "clean":
                 target.get_build_code()
             return target_ninja
 
         code = target.get_build_code()
         if code:
-            console.debug('Generating %s' % target_ninja)
+            console.debug("Generating %s" % target_ninja)
             self._write_target_ninja_file(target, target_ninja, code, fingerprint)
             return target_ninja
 
@@ -533,20 +551,28 @@ class Blade(object):
     def generate_targets_build_code(self):
         """Generate backend build code for each build targets."""
         code = []
-        skip_test = getattr(self.__options, 'no_test', False)
-        skip_package = not getattr(self.__options, 'generate_package', False)
+        skip_test = getattr(self.__options, "no_test", False)
+        skip_package = not getattr(self.__options, "generate_package", False)
         command_target_outputs = []
         for k in self.__sorted_targets_keys:
             target = self.__build_targets[k]
-            if skip_test and target.type.endswith('_test') and k not in self.__direct_targets:
+            if (
+                skip_test
+                and target.type.endswith("_test")
+                and k not in self.__direct_targets
+            ):
                 continue
-            if skip_package and target.type == 'package' and k not in self.__direct_targets:
+            if (
+                skip_package
+                and target.type == "package"
+                and k not in self.__direct_targets
+            ):
                 continue
             target.before_generate()
             target_ninja = self._find_or_generate_target_ninja_file(target)
             if target_ninja:
                 target._remove_on_clean(target_ninja)
-                code += 'include %s\n' % target_ninja
+                code += "include %s\n" % target_ninja
                 if k in self.__expanded_command_targets:
                     command_target_outputs.append(target.get_outputs_goal())
         # TODO: reland this feature
@@ -566,17 +592,17 @@ class Blade(object):
         users that this flag is used incorrectly.
 
         """
-        keywords = ['thirdparty']
+        keywords = ["thirdparty"]
         return keywords
 
     def _build_jobs_num(self):
         """Calculate build jobs num."""
         # User has the highest priority
-        jobs_num = config.get_item('global_config', 'build_jobs')
+        jobs_num = config.get_item("global_config", "build_jobs")
         if jobs_num > 0:
             return jobs_num
         jobs_num = self.build_accelerator.adjust_jobs_num(cpu_count())
-        console.info('Adjust build jobs number(-j N) to be %d' % jobs_num)
+        console.info("Adjust build jobs number(-j N) to be %d" % jobs_num)
         return jobs_num
 
     def build_jobs_num(self):
@@ -588,7 +614,7 @@ class Blade(object):
     def test_jobs_num(self):
         """Calculate the number of test jobs"""
         # User has the highest priority
-        jobs_num = config.get_item('global_config', 'test_jobs')
+        jobs_num = config.get_item("global_config", "test_jobs")
         if jobs_num > 0:
             return jobs_num
         # In distcc enabled mode, the build_jobs_num may be quiet large, but we
@@ -599,7 +625,7 @@ class Blade(object):
         build_jobs_num = self.build_jobs_num()
         cpu_core_num = cpu_count()
         jobs_num = max(min(build_jobs_num, cpu_core_num) // 2, 1)
-        console.info('Adjust test jobs number(-j N) to be %d' % jobs_num)
+        console.info("Adjust test jobs number(-j N) to be %d" % jobs_num)
         return jobs_num
 
     def get_all_rule_names(self):

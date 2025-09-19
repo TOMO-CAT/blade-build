@@ -13,134 +13,143 @@ _IS_PY2 = sys.version_info.major == 2
 
 if _IS_PY2:
     # pylint: disable=import-error
-    import __builtin__ as builtins # pyright: ignore[reportMissingImports]
+    import __builtin__ as builtins  # pyright: ignore[reportMissingImports]
 else:
     # Do not attempt to use this package on Python2.7 as there
     # might be backports for this package such as future.
     import builtins
 
 _SAFE_NAMES = [
-    'None',
-    'False',
-    'True',
-    'abs',
-    'all',
-    'any',
-    'bool',
-    'bytes',
-    'callable',
-    'chr',
-    'complex',
-    'dict',
-    'divmod',
-    'enumerate',
-    'float',
-    'hash',
-    'hex',
-    'id',
-    'int',
-    'isinstance',
-    'issubclass',
-    'len',
-    'list',
-    'oct',
-    'ord',
-    'pow',
-    'range',
-    'repr',
-    'round',
-    'set',
-    'slice',
-    'sorted',
-    'str',
-    'tuple',
-    'zip',
-    'print'
+    "None",
+    "False",
+    "True",
+    "abs",
+    "all",
+    "any",
+    "bool",
+    "bytes",
+    "callable",
+    "chr",
+    "complex",
+    "dict",
+    "divmod",
+    "enumerate",
+    "float",
+    "hash",
+    "hex",
+    "id",
+    "int",
+    "isinstance",
+    "issubclass",
+    "len",
+    "list",
+    "oct",
+    "ord",
+    "pow",
+    "range",
+    "repr",
+    "round",
+    "set",
+    "slice",
+    "sorted",
+    "str",
+    "tuple",
+    "zip",
+    "print",
 ]
 
 _SAFE_EXCEPTIONS = [
-    'ArithmeticError',
-    'AssertionError',
-    'AttributeError',
-    'BaseException',
-    'BufferError',
-    'BytesWarning',
-    'DeprecationWarning',
-    'EOFError',
-    'EnvironmentError',
-    'Exception',
-    'FloatingPointError',
-    'FutureWarning',
-    'GeneratorExit',
-    'IOError',
-    'ImportError',
-    'ImportWarning',
-    'IndentationError',
-    'IndexError',
-    'KeyError',
-    'KeyboardInterrupt',
-    'LookupError',
-    'MemoryError',
-    'NameError',
-    'NotImplementedError',
-    'OSError',
-    'OverflowError',
-    'PendingDeprecationWarning',
-    'ReferenceError',
-    'RuntimeError',
-    'RuntimeWarning',
-    'StopIteration',
-    'SyntaxError',
-    'SyntaxWarning',
-    'SystemError',
-    'SystemExit',
-    'TabError',
-    'TypeError',
-    'UnboundLocalError',
-    'UnicodeDecodeError',
-    'UnicodeEncodeError',
-    'UnicodeError',
-    'UnicodeTranslateError',
-    'UnicodeWarning',
-    'UserWarning',
-    'ValueError',
-    'Warning',
-    'ZeroDivisionError',
+    "ArithmeticError",
+    "AssertionError",
+    "AttributeError",
+    "BaseException",
+    "BufferError",
+    "BytesWarning",
+    "DeprecationWarning",
+    "EOFError",
+    "EnvironmentError",
+    "Exception",
+    "FloatingPointError",
+    "FutureWarning",
+    "GeneratorExit",
+    "IOError",
+    "ImportError",
+    "ImportWarning",
+    "IndentationError",
+    "IndexError",
+    "KeyError",
+    "KeyboardInterrupt",
+    "LookupError",
+    "MemoryError",
+    "NameError",
+    "NotImplementedError",
+    "OSError",
+    "OverflowError",
+    "PendingDeprecationWarning",
+    "ReferenceError",
+    "RuntimeError",
+    "RuntimeWarning",
+    "StopIteration",
+    "SyntaxError",
+    "SyntaxWarning",
+    "SystemError",
+    "SystemExit",
+    "TabError",
+    "TypeError",
+    "UnboundLocalError",
+    "UnicodeDecodeError",
+    "UnicodeEncodeError",
+    "UnicodeError",
+    "UnicodeTranslateError",
+    "UnicodeWarning",
+    "UserWarning",
+    "ValueError",
+    "Warning",
+    "ZeroDivisionError",
 ]
 
 if _IS_PY2:
-    _SAFE_NAMES.extend([
-        'basestring',
-        'cmp',
-        'long',
-        'unichr',
-        'unicode',
-        'xrange',
-    ])
-    _SAFE_EXCEPTIONS.extend([
-        'StandardError',
-    ])
+    _SAFE_NAMES.extend(
+        [
+            "basestring",
+            "cmp",
+            "long",
+            "unichr",
+            "unicode",
+            "xrange",
+        ]
+    )
+    _SAFE_EXCEPTIONS.extend(
+        [
+            "StandardError",
+        ]
+    )
 else:
-    _SAFE_NAMES.extend([
-        '__build_class__',  # needed to define new classes
-    ])
+    _SAFE_NAMES.extend(
+        [
+            "__build_class__",  # needed to define new classes
+        ]
+    )
 
 
 # Replace some functions to better help users know how to deal with.
 _FORBIDDEN_FUNCTIONS = [
-    ('__import__', 'import'),
-    'exec',
-    'execfile',
-    'eval',
+    ("__import__", "import"),
+    "exec",
+    "execfile",
+    "eval",
 ]
 
 
 def _make_forbidden_wrapper(name):
     def wrapper(*args, **kwargs):
         src_loc = util.calling_source_location(1)  # Skip the `wrapper` function
-        error = '"%s" is forbidden in blade, please use the builtin `blade` module' % name
-        console.diagnose(src_loc, 'error', error)
+        error = (
+            '"%s" is forbidden in blade, please use the builtin `blade` module' % name
+        )
+        console.diagnose(src_loc, "error", error)
         # return None  # pylint: disable=useless-return
+
     return wrapper
 
 
@@ -149,7 +158,7 @@ def _open(name, mode=None, buffering=None):
     if mode is None and buffering is None:
         return open(name)
     if mode:
-        if 'w' in mode or 'a' in mode:
+        if "w" in mode or "a" in mode:
             raise ValueError('"open" only allow readonly mode')
     if buffering is None:
         return open(name, mode)
@@ -158,7 +167,7 @@ def _open(name, mode=None, buffering=None):
 
 # Replace some functions to better help users know how to deal with.
 _REPLACED_FUNCTIONS = {
-    'open': _open,
+    "open": _open,
 }
 
 

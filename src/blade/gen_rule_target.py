@@ -24,47 +24,50 @@ from blade.util import var_to_list
 
 
 # The rule template for gen_rule
-_RULE_FORMAT = '''\
+_RULE_FORMAT = """\
 rule %s
   command = %s && cd %s && ls ${out} > /dev/null
   description = %s
-'''
+"""
 
 
 class GenRuleTarget(Target):
     """General Rule Target"""
 
-    def __init__(self,
-                 name,
-                 srcs,
-                 src_exts,
-                 deps,
-                 visibility,
-                 tags,
-                 outs,
-                 cmd,
-                 cmd_name,
-                 generated_hdrs,
-                 generated_incs,
-                 export_incs,
-                 cleans,
-                 heavy,
-                 kwargs):
+    def __init__(
+        self,
+        name,
+        srcs,
+        src_exts,
+        deps,
+        visibility,
+        tags,
+        outs,
+        cmd,
+        cmd_name,
+        generated_hdrs,
+        generated_incs,
+        export_incs,
+        cleans,
+        heavy,
+        kwargs,
+    ):
         """Init method.
         Init the gen rule target.
         """
         srcs = var_to_list(srcs)
         deps = var_to_list(deps)
         super().__init__(
-                name=name,
-                type='gen_rule',
-                srcs=srcs,
-                src_exts=src_exts,
-                deps=deps,
-                visibility=visibility,
-                tags=tags,
-                kwargs=kwargs)
-        self._add_tags('type:gen_rule')
+            name=name,
+            type="gen_rule",
+            srcs=srcs,
+            src_exts=src_exts,
+            deps=deps,
+            visibility=visibility,
+            tags=tags,
+            kwargs=kwargs,
+        )
+        self._add_tags("type:gen_rule")
         if not outs:
             self.error('"outs" can not be empty')
         if not cmd:
@@ -73,11 +76,11 @@ class GenRuleTarget(Target):
         # self._check_path_list(outs, "outs", must_exist=False)
         outs = [os.path.normpath(o) for o in outs]
 
-        self.attr['outs'] = outs
-        self.attr['locations'] = []
-        self.attr['cmd'] = LOCATION_RE.sub(self._process_location_reference, cmd)
-        self.attr['cmd_name'] = cmd_name
-        self.attr['heavy'] = heavy
+        self.attr["outs"] = outs
+        self.attr["locations"] = []
+        self.attr["cmd"] = LOCATION_RE.sub(self._process_location_reference, cmd)
+        self.attr["cmd_name"] = cmd_name
+        self.attr["heavy"] = heavy
         self.cleans = var_to_list(cleans)
         for clean in self.cleans:
             self._remove_on_clean(self._target_file_path(clean))
@@ -87,7 +90,7 @@ class GenRuleTarget(Target):
                 generated_incs = var_to_list(generated_incs)
                 cc_targets.declare_hdr_dir(self, inc)
             generated_incs = [self._target_file_path(inc) for inc in generated_incs]
-            self.attr['generated_incs'] = generated_incs
+            self.attr["generated_incs"] = generated_incs
         else:
             if generated_hdrs is None:
                 # Auto judge
@@ -97,10 +100,10 @@ class GenRuleTarget(Target):
             if generated_hdrs:
                 cc_targets.declare_hdrs(self, generated_hdrs)
                 generated_hdrs = [self._target_file_path(h) for h in generated_hdrs]
-                self.attr['generated_hdrs'] = generated_hdrs
+                self.attr["generated_hdrs"] = generated_hdrs
 
         if export_incs:
-            self.attr['export_incs'] = self._expand_incs(var_to_list(export_incs))
+            self.attr["export_incs"] = self._expand_incs(var_to_list(export_incs))
 
     def _expand_incs(self, incs):
         """Expand incs"""
@@ -109,30 +112,32 @@ class GenRuleTarget(Target):
     def _process_location_reference(self, m):
         """Process target location reference in the command."""
         key, type = self._add_location_reference_target(m)
-        self.attr['locations'].append((key, type))
-        return '%s'  # Will be expanded in `_expand_command`
+        self.attr["locations"].append((key, type))
+        return "%s"  # Will be expanded in `_expand_command`
 
     def _allow_duplicate_source(self):
         return True
 
     def _expand_command(self):
         """Expand vars and location references in command"""
-        cmd = self.attr['cmd']
-        cmd = cmd.replace('$SRCS', '${in}')
-        cmd = cmd.replace('$OUTS', '${out}')
-        cmd = cmd.replace('$FIRST_SRC', '${_in_1}')
-        cmd = cmd.replace('$FIRST_OUT', '${_out_1}')
-        cmd = cmd.replace('$SRC_DIR', self.path)
-        cmd = cmd.replace('$OUT_DIR', os.path.join(self.build_dir, self.path))
-        cmd = cmd.replace('$BUILD_DIR', self.build_dir)
-        locations = self.attr['locations']
+        cmd = self.attr["cmd"]
+        cmd = cmd.replace("$SRCS", "${in}")
+        cmd = cmd.replace("$OUTS", "${out}")
+        cmd = cmd.replace("$FIRST_SRC", "${_in_1}")
+        cmd = cmd.replace("$FIRST_OUT", "${_out_1}")
+        cmd = cmd.replace("$SRC_DIR", self.path)
+        cmd = cmd.replace("$OUT_DIR", os.path.join(self.build_dir, self.path))
+        cmd = cmd.replace("$BUILD_DIR", self.build_dir)
+        locations = self.attr["locations"]
         if locations:
             targets = self.blade.get_build_targets()
             locations_paths = []
             for key, label in locations:
                 path = targets[key]._get_target_file(label)
                 if not path:
-                    self.error('Invalid location reference %s %s' % (':'.join(key), label))
+                    self.error(
+                        "Invalid location reference %s %s" % (":".join(key), label)
+                    )
                     continue
                 locations_paths.append(path)
             cmd = cmd % tuple(locations_paths)
@@ -162,43 +167,53 @@ class GenRuleTarget(Target):
         # We have to generate each `rule` for a `gen_rule` target but not sharing a predefined rule.
         # Because the `command` variable is not lazy evaluated although it can be overridden in a
         # `build` statement, so any other build scoped variables are expanded to empty.
-        rule = '%s__rule__' % regular_variable_name(self._source_file_path(self.name))
+        rule = "%s__rule__" % regular_variable_name(self._source_file_path(self.name))
         cmd = self._expand_command()
-        description = console.colored('%s %s' % (self.attr['cmd_name'], self.fullname), 'dimpurple')
-        self._write_rule(_RULE_FORMAT % (rule, cmd, self.blade.get_root_dir(), description))
+        description = console.colored(
+            "%s %s" % (self.attr["cmd_name"], self.fullname), "dimpurple"
+        )
+        self._write_rule(
+            _RULE_FORMAT % (rule, cmd, self.blade.get_root_dir(), description)
+        )
 
-        outputs = [self._target_file_path(o) for o in self.attr['outs']]
+        outputs = [self._target_file_path(o) for o in self.attr["outs"]]
         inputs = self._expand_srcs()
         vars = {}
-        if '${_in_1}' in cmd:
-            vars['_in_1'] = inputs[0]
-        if '${_out_1}' in cmd:
-            vars['_out_1'] = outputs[0]
-        if self.attr['heavy']:
-            vars['pool'] = 'heavy_pool'
-        self.generate_build(rule, outputs, inputs=inputs, implicit_deps=self.implicit_dependencies(),
-                            variables=vars)
+        if "${_in_1}" in cmd:
+            vars["_in_1"] = inputs[0]
+        if "${_out_1}" in cmd:
+            vars["_out_1"] = outputs[0]
+        if self.attr["heavy"]:
+            vars["pool"] = "heavy_pool"
+        self.generate_build(
+            rule,
+            outputs,
+            inputs=inputs,
+            implicit_deps=self.implicit_dependencies(),
+            variables=vars,
+        )
 
         for i, out in enumerate(outputs):
             self._add_target_file(str(i), out)
 
 
 def gen_rule(
-        name,
-        srcs=[],
-        src_exts=[],
-        deps=[],
-        visibility=None,
-        tags=[],
-        outs=[],
-        cmd='',
-        cmd_name='COMMAND',
-        generated_hdrs=None,
-        generated_incs=None,
-        export_incs=[],
-        cleans=[],
-        heavy=False,
-        **kwargs):
+    name,
+    srcs=[],
+    src_exts=[],
+    deps=[],
+    visibility=None,
+    tags=[],
+    outs=[],
+    cmd="",
+    cmd_name="COMMAND",
+    generated_hdrs=None,
+    generated_incs=None,
+    export_incs=[],
+    cleans=[],
+    heavy=False,
+    **kwargs
+):
     """General Build Rule
     Args:
         src_exts: List[str],
@@ -219,21 +234,22 @@ def gen_rule(
             cpu/memory.
     """
     gen_rule_target = GenRuleTarget(
-            name=name,
-            srcs=srcs,
-            src_exts=src_exts,
-            deps=deps,
-            visibility=visibility,
-            tags=tags,
-            outs=outs,
-            cmd=cmd,
-            cmd_name=cmd_name,
-            generated_hdrs=generated_hdrs,
-            generated_incs=generated_incs,
-            export_incs=export_incs,
-            cleans=cleans,
-            heavy=heavy,
-            kwargs=kwargs)
+        name=name,
+        srcs=srcs,
+        src_exts=src_exts,
+        deps=deps,
+        visibility=visibility,
+        tags=tags,
+        outs=outs,
+        cmd=cmd,
+        cmd_name=cmd_name,
+        generated_hdrs=generated_hdrs,
+        generated_incs=generated_incs,
+        export_incs=export_incs,
+        cleans=cleans,
+        heavy=heavy,
+        kwargs=kwargs,
+    )
     build_manager.instance.register_target(gen_rule_target)
 
 

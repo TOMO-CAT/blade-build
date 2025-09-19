@@ -5,7 +5,7 @@
 # Date:   October 20, 2011
 
 """
- This is the main test module for all targets.
+This is the main test module for all targets.
 """
 
 
@@ -28,24 +28,24 @@ class TargetTest(unittest.TestCase):
     * stdout 和 stderr 日志会被分别写到 build_output.txt 和 build_error.txt 文件中
     """
 
-    def doSetUp(self, path, target='...', full_targets=None):
+    def doSetUp(self, path, target="...", full_targets=None):
         """setup method."""
         if full_targets:
             self.targets = full_targets
         else:
-            self.targets = '%s:%s' % (path, target)
+            self.targets = "%s:%s" % (path, target)
         self.target_path = path
         self.cur_dir = os.getcwd()
-        self.blade_path = '../../blade'
-        self.working_dir = '.'
-        self.current_building_path = 'build64_release'
-        self.current_source_dir = '.'
+        self.blade_path = "../../blade"
+        self.working_dir = "."
+        self.current_building_path = "build64_release"
+        self.current_source_dir = "."
         self.build_output = []
-        self.build_output_file = 'build_output.txt'  # stdout 日志
+        self.build_output_file = "build_output.txt"  # stdout 日志
         self.build_error = []
-        self.build_error_file = 'build_error.txt'  # stderr 日志
-        os.chdir('testdata')  # 切换到 testdata 目录执行单测
-        self.removeTree('build64_release')
+        self.build_error_file = "build_error.txt"  # stderr 日志
+        os.chdir("testdata")  # 切换到 testdata 目录执行单测
+        self.removeTree("build64_release")
 
     def tearDown(self):
         """tear down method."""
@@ -57,57 +57,72 @@ class TargetTest(unittest.TestCase):
 
     def removeTree(self, path):
         try:
-            shutil.rmtree('build64_release', ignore_errors=True)
+            shutil.rmtree("build64_release", ignore_errors=True)
         except OSError as e:
             print(e)
 
     def removeFile(self, path):
         self.removeTree(path)
 
-    def runBlade(self, command='build', extra_args='', print_error=True):
+    def runBlade(self, command="build", extra_args="", print_error=True):
         # We can use pipe to capture stdout, but keep the output file make it
         # easy debugging.
         with subprocess.Popen(
-            '../../../blade %s %s --generate-dynamic --verbose %s > %s 2> %s' % (
-                command, self.targets, extra_args, self.build_output_file, self.build_error_file),
-            shell=True) as p:
+            "../../../blade %s %s --generate-dynamic --verbose %s > %s 2> %s"
+            % (
+                command,
+                self.targets,
+                extra_args,
+                self.build_output_file,
+                self.build_error_file,
+            ),
+            shell=True,
+        ) as p:
             try:
                 p.wait()
-                with io.open(self.build_output_file, encoding='utf-8') as f:
+                with io.open(self.build_output_file, encoding="utf-8") as f:
                     self.build_output = f.readlines()
-                with io.open(self.build_error_file, encoding='utf-8') as f:
+                with io.open(self.build_error_file, encoding="utf-8") as f:
                     self.build_error = f.readlines()
                 if p.returncode != 0 and print_error:
-                    sys.stderr.write('Exit with: %d\nstdout:\n%s\nstderr:\n%s\n' % (
-                        p.returncode, ''.join(self.build_output), ''.join(self.build_error)))
+                    sys.stderr.write(
+                        "Exit with: %d\nstdout:\n%s\nstderr:\n%s\n"
+                        % (
+                            p.returncode,
+                            "".join(self.build_output),
+                            "".join(self.build_error),
+                        )
+                    )
                 return p.returncode == 0
             except Exception:  # pylint: disable=broad-except
-                sys.stderr.write('Failed while dry running:\n%s\n' % str(sys.exc_info()))
+                sys.stderr.write(
+                    "Failed while dry running:\n%s\n" % str(sys.exc_info())
+                )
             return False
 
-    def dryRun(self, command='build', extra_args=''):
-        return self.runBlade(command, '--dry-run ' + extra_args)
+    def dryRun(self, command="build", extra_args=""):
+        return self.runBlade(command, "--dry-run " + extra_args)
 
     def printOutput(self):
         """Helper method for debugging"""
-        print(''.join(self.build_output))
+        print("".join(self.build_output))
 
-    def findBuildOutput(self, kwlist, file='stdout'):
+    def findBuildOutput(self, kwlist, file="stdout"):
         """Find a line in build output or error that contains all keywords in kwlist."""
         if not isinstance(kwlist, list):
             kwlist = [kwlist]
-        output = self.build_error if file == 'stderr' else self.build_output
+        output = self.build_error if file == "stderr" else self.build_output
         for lineno, line in enumerate(output):
             for kw in kwlist:
                 if kw not in line:
                     break
             else:
                 return line, lineno
-        self.assertFalse('%s not found' % kwlist)
-        return '', 0
+        self.assertFalse("%s not found" % kwlist)
+        return "", 0
 
     def findCommandAndLine(self, kwlist):
-        return self.findBuildOutput(kwlist, file='stdout')
+        return self.findBuildOutput(kwlist, file="stdout")
 
     def findCommand(self, kwlist):
         return self.findCommandAndLine(kwlist)[0]
@@ -116,21 +131,21 @@ class TargetTest(unittest.TestCase):
         return self.findCommand(kwlist)
 
     def inBuildError(self, kwlist):
-        return self.findBuildOutput(kwlist, file='stderr')[0]
+        return self.findBuildOutput(kwlist, file="stderr")[0]
 
     def _assertCxxCommonFlags(self, cmdline):
-        self.assertIn('-g', cmdline)
-        self.assertIn('-fPIC', cmdline)
+        self.assertIn("-g", cmdline)
+        self.assertIn("-fPIC", cmdline)
 
     def _assertCxxWarningFlags(self, cmdline):
-        self.assertIn('-Wall -Wextra', cmdline)
-        self.assertIn('-Wframe-larger-than=69632', cmdline)
-        self.assertIn('-Werror=vla', cmdline)
+        self.assertIn("-Wall -Wextra", cmdline)
+        self.assertIn("-Wframe-larger-than=69632", cmdline)
+        self.assertIn("-Werror=vla", cmdline)
 
     def _assertCxxNoWarningFlags(self, cmdline):
-        self.assertNotIn('-Wall -Wextra', cmdline)
-        self.assertNotIn('-Wframe-larger-than=69632', cmdline)
-        self.assertNotIn('-Werror=overloaded-virtual', cmdline)
+        self.assertNotIn("-Wall -Wextra", cmdline)
+        self.assertNotIn("-Wframe-larger-than=69632", cmdline)
+        self.assertNotIn("-Werror=overloaded-virtual", cmdline)
 
     def assertCxxFlags(self, cmdline):
         self._assertCxxCommonFlags(cmdline)
@@ -146,16 +161,15 @@ class TargetTest(unittest.TestCase):
         pass
 
     def assertStaticLinkFlags(self, cmdline):
-        self.assertNotIn('-shared', cmdline)
+        self.assertNotIn("-shared", cmdline)
 
     def assertDynamicLinkFlags(self, cmdline):
-        self.assertIn('-shared', cmdline)
+        self.assertIn("-shared", cmdline)
 
 
 def run(class_name):
     suite_test = unittest.TestSuite()
-    suite_test.addTests(
-        [unittest.defaultTestLoader.loadTestsFromTestCase(class_name)])
+    suite_test.addTests([unittest.defaultTestLoader.loadTestsFromTestCase(class_name)])
     runner = unittest.TextTestRunner()
     result = runner.run(suite_test)
     if not result.wasSuccessful():

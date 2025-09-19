@@ -36,10 +36,10 @@ repos:
         # 指定需要额外加载的依赖包或者模块
         additional_dependencies:
           - colorama
-  # - repo: https://github.com/psf/black
-  #   rev: 25.9.0
-  #   hooks:
-  #     - id: black  # 著名的 Python 代码格式化工具
+  - repo: https://github.com/psf/black
+    rev: 25.9.0
+    hooks:
+      - id: black  # 著名的 Python 代码格式化工具
   # - repo: https://github.com/PyCQA/isort
   #   rev: 5.13.2
   #   hooks:

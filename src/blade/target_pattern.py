@@ -20,18 +20,18 @@ from blade import util
 
 def _split(target):
     """Split target patten into path and name."""
-    if ':' in target:
-        path, name = target.rsplit(':', 1)
+    if ":" in target:
+        path, name = target.rsplit(":", 1)
     else:
-        if target.endswith('...'):
+        if target.endswith("..."):
             path = target[:-3]
-            name = '...'
+            name = "..."
         else:
             path = target
-            name = '*'
+            name = "*"
     path = os.path.normpath(path)
-    if path == '.':
-        path = ''
+    if path == ".":
+        path = ""
     return path, name
 
 
@@ -44,16 +44,16 @@ def normalize(target, working_dir):
               '*'   if target is dir
               '...' if target is dir/...
     """
-    if target.startswith('//'):
+    if target.startswith("//"):
         target = target[2:]
-    elif target.startswith('/'):
+    elif target.startswith("/"):
         console.error('Invalid target "%s" starting from root path.' % target)
         target = target[1:]  # Try correct to keep going
     else:  # Relative path
-        if working_dir != '.':
+        if working_dir != ".":
             target = os.path.join(working_dir, target)
     path, name = _split(target)
-    return '%s:%s' % (path, name)
+    return "%s:%s" % (path, name)
 
 
 def normalize_list(targets, working_dir):
@@ -68,16 +68,16 @@ def normalize_str_list(targets, working_dir, sep):
 
 def match(target_id, pattern):
     """Check whether a atrget id match a target pattern"""
-    t_path, t_name = target_id.split(':')
-    p_path, p_name = pattern.split(':')
+    t_path, t_name = target_id.split(":")
+    p_path, p_name = pattern.split(":")
 
-    if p_name == '...':
+    if p_name == "...":
         return util.path_under_dir(t_path, p_path)
-    if p_name == '*':
+    if p_name == "*":
         return t_path == p_path
     return target_id == pattern
 
 
 def is_valid_in_build(pattern):
     """Is a valid target pattern in BUILD file"""
-    return pattern.startswith('//') or pattern.startswith(':')
+    return pattern.startswith("//") or pattern.startswith(":")

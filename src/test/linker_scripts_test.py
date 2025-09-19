@@ -1,4 +1,3 @@
-
 # Copyright (c) 2022 Tencent Inc.
 # All rights reserved.
 #
@@ -7,7 +6,7 @@
 
 
 """
- This is the test module for cc_plugin target.
+This is the test module for cc_plugin target.
 
 """
 
@@ -17,14 +16,15 @@ import blade_test
 
 class LinkerScriptsTest(blade_test.TargetTest):
     """Test cc linker scripts."""
+
     def setUp(self):
         """setup method."""
-        self.doSetUp('linker_scripts')
+        self.doSetUp("linker_scripts")
 
     def testGenerateRules(self):
         """Test that rules are generated correctly."""
         self.assertTrue(self.runBlade())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     blade_test.run(LinkerScriptsTest)

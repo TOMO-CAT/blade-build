@@ -95,10 +95,10 @@ def _expand_target_deps(target_id, targets, root_targets=None):
     for d in target.deps:
         # loop dependency
         if d in root_targets:
-            err_msg = ''
+            err_msg = ""
             for t in root_targets:
-                err_msg += '//%s --> ' % t
-            console.fatal('Loop dependency found: //%s --> [%s]' % (d, err_msg))
+                err_msg += "//%s --> " % t
+            console.fatal("Loop dependency found: //%s --> [%s]" % (d, err_msg))
         new_deps_list.append(d)
         new_deps_list += _expand_target_deps(d, targets, root_targets)
 

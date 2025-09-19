@@ -66,6 +66,7 @@ from xml.sax import saxutils
 #   >>> logging.basicConfig(stream=HTMLTestRunner.stdout_redirector)
 #   >>>
 
+
 class OutputRedirector(object):
     """Wrapper to redirect stdout or stderr."""
 
@@ -88,6 +89,7 @@ stderr_redirector = OutputRedirector(sys.stderr)
 
 # ----------------------------------------------------------------------
 # Template
+
 
 class Template_mixin(object):
     """
@@ -130,13 +132,13 @@ class Template_mixin(object):
     """
 
     STATUS = {
-        0: 'pass',
-        1: 'fail',
-        2: 'error',
+        0: "pass",
+        1: "fail",
+        2: "error",
     }
 
-    DEFAULT_TITLE = 'Unit Test Report'
-    DEFAULT_DESCRIPTION = ''
+    DEFAULT_TITLE = "Unit Test Report"
+    DEFAULT_DESCRIPTION = ""
 
     # ------------------------------------------------------------------------
     # HTML Template
@@ -516,13 +518,13 @@ class _TestResult(TestResult):
         self.success_count += 1
         TestResult.addSuccess(self, test)
         output = self.complete_output()
-        self.result.append((0, test, output, ''))
+        self.result.append((0, test, output, ""))
         if self.verbosity > 1:
-            sys.stderr.write('ok ')
+            sys.stderr.write("ok ")
             sys.stderr.write(str(test))
-            sys.stderr.write('\n')
+            sys.stderr.write("\n")
         else:
-            sys.stderr.write('.')
+            sys.stderr.write(".")
 
     def addError(self, test, err):
         self.error_count += 1
@@ -531,11 +533,11 @@ class _TestResult(TestResult):
         output = self.complete_output()
         self.result.append((2, test, output, _exc_str))
         if self.verbosity > 1:
-            sys.stderr.write('E  ')
+            sys.stderr.write("E  ")
             sys.stderr.write(str(test))
-            sys.stderr.write('\n')
+            sys.stderr.write("\n")
         else:
-            sys.stderr.write('E')
+            sys.stderr.write("E")
 
     def addFailure(self, test, err):
         self.failure_count += 1
@@ -544,11 +546,11 @@ class _TestResult(TestResult):
         output = self.complete_output()
         self.result.append((1, test, output, _exc_str))
         if self.verbosity > 1:
-            sys.stderr.write('F  ')
+            sys.stderr.write("F  ")
             sys.stderr.write(str(test))
-            sys.stderr.write('\n')
+            sys.stderr.write("\n")
         else:
-            sys.stderr.write('F')
+            sys.stderr.write("F")
 
 
 class HTMLTestRunner(Template_mixin):
@@ -574,7 +576,7 @@ class HTMLTestRunner(Template_mixin):
         test(result)
         self.stopTime = datetime.datetime.now()
         self.generateReport(test, result)
-        sys.stderr.write('\nTime Elapsed: %s\n' % (self.stopTime - self.startTime))
+        sys.stderr.write("\nTime Elapsed: %s\n" % (self.stopTime - self.startTime))
         return result
 
     def sortResult(self, result_list):
@@ -600,24 +602,24 @@ class HTMLTestRunner(Template_mixin):
         duration = str(self.stopTime - self.startTime)
         status = []
         if result.success_count:
-            status.append('Pass %s' % result.success_count)
+            status.append("Pass %s" % result.success_count)
         if result.failure_count:
-            status.append('Failure %s' % result.failure_count)
+            status.append("Failure %s" % result.failure_count)
         if result.error_count:
-            status.append('Error %s' % result.error_count)
+            status.append("Error %s" % result.error_count)
         if status:
-            status = ' '.join(status)
+            status = " ".join(status)
         else:
-            status = 'none'
+            status = "none"
         return [
-            ('Start Time', startTime),
-            ('Duration', duration),
-            ('Status', status),
+            ("Start Time", startTime),
+            ("Duration", duration),
+            ("Status", status),
         ]
 
     def generateReport(self, test, result):
         report_attrs = self.getReportAttributes(result)
-        generator = 'HTMLTestRunner %s' % __version__
+        generator = "HTMLTestRunner %s" % __version__
         stylesheet = self._generate_stylesheet()
         heading = self._generate_heading(report_attrs)
         report = self._generate_report(result)
@@ -630,7 +632,7 @@ class HTMLTestRunner(Template_mixin):
             "report": report,
             "ending": ending,
         }
-        self.stream.write(output.encode('utf8'))
+        self.stream.write(output.encode("utf8"))
 
     def _generate_stylesheet(self):
         return self.STYLESHEET_TMPL
@@ -645,7 +647,7 @@ class HTMLTestRunner(Template_mixin):
             a_lines.append(line)
         heading = self.HEADING_TMPL % {
             "title": saxutils.escape(self.title),
-            "parameters": ''.join(a_lines),
+            "parameters": "".join(a_lines),
             "description": saxutils.escape(self.description),
         }
         return heading
@@ -670,16 +672,20 @@ class HTMLTestRunner(Template_mixin):
             else:
                 name = "%s.%s" % (cls.__module__, cls.__name__)
             doc = cls.__doc__ and cls.__doc__.split("\n")[0] or ""
-            desc = doc and '%s: %s' % (name, doc) or name
+            desc = doc and "%s: %s" % (name, doc) or name
 
             row = self.REPORT_CLASS_TMPL % {
-                "style": ne > 0 and 'errorClass' or nf > 0 and 'failClass' or 'passClass',
+                "style": ne > 0
+                and "errorClass"
+                or nf > 0
+                and "failClass"
+                or "passClass",
                 "desc": desc,
                 "count": np + nf + ne,
                 "Pass": np,
                 "fail": nf,
                 "error": ne,
-                "cid": 'c%s' % (cid + 1),
+                "cid": "c%s" % (cid + 1),
             }
             rows.append(row)
 
@@ -687,8 +693,10 @@ class HTMLTestRunner(Template_mixin):
                 self._generate_report_test(rows, cid, tid, n, t, o, e)
 
         report = self.REPORT_TMPL % {
-            "test_list": ''.join(rows),
-            "count": str(result.success_count + result.failure_count + result.error_count),
+            "test_list": "".join(rows),
+            "count": str(
+                result.success_count + result.failure_count + result.error_count
+            ),
             "Pass": str(result.success_count),
             "fail": str(result.failure_count),
             "error": str(result.error_count),
@@ -698,23 +706,27 @@ class HTMLTestRunner(Template_mixin):
     def _generate_report_test(self, rows, cid, tid, n, t, o, e):
         # e.g. 'pt1.1', 'ft1.1', etc
         has_output = bool(o or e)
-        tid = (n == 0 and 'p' or 'f') + 't%s.%s' % (cid + 1, tid + 1)
-        name = t.id().split('.')[-1]
+        tid = (n == 0 and "p" or "f") + "t%s.%s" % (cid + 1, tid + 1)
+        name = t.id().split(".")[-1]
         doc = t.shortDescription() or ""
-        desc = doc and ('%s: %s' % (name, doc)) or name
-        tmpl = self.REPORT_TEST_WITH_OUTPUT_TMPL if has_output else self.REPORT_TEST_NO_OUTPUT_TMPL
+        desc = doc and ("%s: %s" % (name, doc)) or name
+        tmpl = (
+            self.REPORT_TEST_WITH_OUTPUT_TMPL
+            if has_output
+            else self.REPORT_TEST_NO_OUTPUT_TMPL
+        )
 
         # o and e should be byte string because they are collected from stdout and stderr?
         if isinstance(o, str):
             # TODO: some problem with 'string_escape': it escape \n and mess up formating
             # uo = unicode(o.encode('string_escape'))
-            uo = o.decode('latin-1')
+            uo = o.decode("latin-1")
         else:
             uo = o
         if isinstance(e, str):
             # TODO: some problem with 'string_escape': it escape \n and mess up formating
             # ue = unicode(e.encode('string_escape'))
-            ue = e.decode('latin-1')
+            ue = e.decode("latin-1")
         else:
             ue = e
 
@@ -725,8 +737,8 @@ class HTMLTestRunner(Template_mixin):
 
         row = tmpl % {
             "tid": tid,
-            "Class": (n == 0 and 'hiddenRow' or 'none'),
-            "style": n == 2 and 'errorCase' or (n == 1 and 'failCase' or 'none'),
+            "Class": (n == 0 and "hiddenRow" or "none"),
+            "style": n == 2 and "errorCase" or (n == 1 and "failCase" or "none"),
             "desc": desc,
             "script": script,
             "status": self.STATUS[n],
@@ -740,6 +752,7 @@ class HTMLTestRunner(Template_mixin):
 ##############################################################################
 # Facilities for running tests from the command line
 ##############################################################################
+
 
 # Note: Reuse unittest.TestProgram to launch test. In the future we may
 # build our own launcher to support more specific command line

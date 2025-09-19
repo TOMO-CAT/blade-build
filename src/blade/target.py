@@ -36,25 +36,25 @@ def _is_likely_concatenated_filenames(string, exts):
         'second.h' will be concatenated with 'third.h' to be 'first.hsecond.h'
     """
     # Convert exts to regex, e.g., ['h', 'hpp'] to "(h|hpp)"
-    ext_pattern = '(%s)' % '|'.join(e.replace('+', r'\+') for e in exts)
-    return re.search(r'\w+\.{ext}.+\.{ext}$'.format(ext=ext_pattern), string)
+    ext_pattern = "(%s)" % "|".join(e.replace("+", r"\+") for e in exts)
+    return re.search(r"\w+\.{ext}.+\.{ext}$".format(ext=ext_pattern), string)
 
 
 # Target regex
-_TARGET_RE = re.compile(r'(?P<path>((//)?[\w./+-]+)?:|#)(?P<name>[\w.+-]*)$')
+_TARGET_RE = re.compile(r"(?P<path>((//)?[\w./+-]+)?:|#)(?P<name>[\w.+-]*)$")
 
 # Location reference macro regex
-LOCATION_RE = re.compile(r'\$\(location\s+(\S*:\S+)(\s+\w*)?\)')
+LOCATION_RE = re.compile(r"\$\(location\s+(\S*:\S+)(\s+\w*)?\)")
 
 
 def _check_path(path):
     msg = []
-    if path.startswith('//'):
+    if path.startswith("//"):
         path = path[2:]
-    if path.startswith('/'):
-        msg.append('absolute path is not allowed')
+    if path.startswith("/"):
+        msg.append("absolute path is not allowed")
         result = False
-    if '..' in path:
+    if ".." in path:
         msg.append('parent path ".." is not allowed')
     return msg
 
@@ -76,18 +76,18 @@ def _parse_target(dep):
         return _parse_target.cache[dep]
     match = _TARGET_RE.match(dep)
     if not match:
-        msg = 'format error'
-        if dep.count(':') > 1:
+        msg = "format error"
+        if dep.count(":") > 1:
             msg += ', missing "," between targets?'
         msgs = [msg]
     else:
-        path = match.group('path').rstrip(':')
-        name = match.group('name')
+        path = match.group("path").rstrip(":")
+        name = match.group("name")
         msgs = _check_path(path)
         if not name:
-            msgs.append('empty name')
+            msgs.append("empty name")
     if msgs:
-        result = ('', '', msgs)
+        result = ("", "", msgs)
     else:
         if path:
             path = os.path.normpath(path)
@@ -107,22 +107,16 @@ class Target(object):
 
     """
 
-    def __init__(self,
-                 name,
-                 type,
-                 srcs,
-                 src_exts,
-                 deps,
-                 visibility,
-                 tags,
-                 kwargs,
-                 cmd=''):
+    def __init__(
+        self, name, type, srcs, src_exts, deps, visibility, tags, kwargs, cmd=""
+    ):
         """Init method.
 
         Init the target.
 
         """
         from blade import build_manager  # pylint: disable=import-outside-toplevel
+
         self.blade = build_manager.instance
         self.target_database = self.blade.get_target_database()
 
@@ -133,18 +127,24 @@ class Target(object):
         current_source_path = self.blade.get_current_source_path()
         self.path = current_source_path
         self.build_dir = self.blade.get_build_dir()
-        self.target_dir = os.path.normpath(os.path.join(self.build_dir, current_source_path))
+        self.target_dir = os.path.normpath(
+            os.path.join(self.build_dir, current_source_path)
+        )
 
         # The unique key of this target, for internal use mainly.
-        self.key = '%s:%s' % (current_source_path, name)
+        self.key = "%s:%s" % (current_source_path, name)
         # The full qualified target id, to be displayed in diagnostic message
-        self.fullname = '//' + self.key
-        self.source_location = source_location(os.path.join(current_source_path, 'BUILD'))
+        self.fullname = "//" + self.key
+        self.source_location = source_location(
+            os.path.join(current_source_path, "BUILD")
+        )
         self.srcs = srcs
         self.deps = []
 
         # Expanded dependencies, includes direct and indirect dependencies.
-        self.expanded_deps = []    # Provide type info then make lints happy(not-an-iterable).
+        self.expanded_deps = (
+            []
+        )  # Provide type info then make lints happy(not-an-iterable).
         self.expanded_deps = None  # Set to None to indicate not constructed.
 
         self.dependents = set()  # Target keys which depends on this
@@ -160,7 +160,7 @@ class Target(object):
         # may correspond to several target files, such as:
         # proto_library: static lib/shared lib/jar variables
         self.__targets = {}
-        self.__default_target = ''
+        self.__default_target = ""
         self.__clean_list = []  # Paths to be cleaned
 
         # Target related attributes, they should be set only before generating build rules.
@@ -172,7 +172,7 @@ class Target(object):
         self.tags = set()
 
         # TODO: Remove it, make a `TestTargetMixin`
-        self.attr['test_timeout'] = config.get_item('global_config', 'test_timeout')
+        self.attr["test_timeout"] = config.get_item("global_config", "test_timeout")
 
         self._check_name()
         self._check_kwargs(kwargs)
@@ -186,15 +186,15 @@ class Target(object):
     def dump(self):
         """Dump to a dict"""
         target = {
-            'type': self.type,
-            'path': self.path,
-            'name': self.name,
-            'srcs': self.srcs,
-            'deps': self.deps,
-            'visibility': list(self._visibility),
-            'tags': sorted(self.tags)
+            "type": self.type,
+            "path": self.path,
+            "name": self.name,
+            "srcs": self.srcs,
+            "deps": self.deps,
+            "visibility": list(self._visibility),
+            "tags": sorted(self.tags),
         }
-        target.update({k: v for k, v in self.attr.items() if not k.startswith('_')})
+        target.update({k: v for k, v in self.attr.items() if not k.startswith("_")})
         return target
 
     def _fingerprint_entropy(self):
@@ -215,14 +215,16 @@ class Target(object):
         if self.__fingerprint is None:
             # All build related factors should be added to avoid outdated ninja file beeing used.
             entropy = {
-                'blade_revision': self.blade.revision(),
-                'config': config.digest(),
-                'type': self.type,
-                'name': self.name,
-                'srcs': self.srcs,
+                "blade_revision": self.blade.revision(),
+                "config": config.digest(),
+                "type": self.type,
+                "name": self.name,
+                "srcs": self.srcs,
             }
-            entropy['deps'] = [self.target_database[dep].fingerprint() for dep in self.deps]
-            entropy['cmd'] = self.cmd
+            entropy["deps"] = [
+                self.target_database[dep].fingerprint() for dep in self.deps
+            ]
+            entropy["cmd"] = self.cmd
 
             # Add more entropy
             entropy.update(self._fingerprint_entropy())
@@ -234,37 +236,37 @@ class Target(object):
             # which is changed in different build, so it should not be used as stable hash entropy.
             # If this assert failed, remove the culprit element from entropy if it is unrelated or
             # override it's `__repe__` if it is related.
-            assert ' object at 0x' not in entropy_str
+            assert " object at 0x" not in entropy_str
             self.__fingerprint = md5sum(entropy_str)
         return self.__fingerprint
 
     def _format_message(self, level, msg):
-        return '%s: %s: %s: %s' % (self.source_location, level, self.name, msg)
+        return "%s: %s: %s: %s" % (self.source_location, level, self.name, msg)
 
     def debug(self, msg):
         """Print message with target full name prefix"""
-        console.debug(self._format_message('debug', msg), prefix=False)
+        console.debug(self._format_message("debug", msg), prefix=False)
 
     def info(self, msg):
         """Print message with target full name prefix"""
-        console.info(self._format_message('info', msg), prefix=False)
+        console.info(self._format_message("info", msg), prefix=False)
 
     def warning(self, msg):
         """Print message with target full name prefix"""
-        console.warning(self._format_message('warning', msg), prefix=False)
+        console.warning(self._format_message("warning", msg), prefix=False)
 
     def error(self, msg):
         """Print message with target full name prefix"""
-        console.error(self._format_message('error', msg), prefix=False)
+        console.error(self._format_message("error", msg), prefix=False)
 
     def fatal(self, msg, code=1):
         """Print message with target full name prefix and exit"""
         # NOTE: VSCode's problem matcher doesn't recognize 'fatal', use 'error' instead
-        console.fatal(self._format_message('error', msg), code=code, prefix=False)
+        console.fatal(self._format_message("error", msg), code=code, prefix=False)
 
     def _prepare_to_generate_rule(self):
         """Should be overridden."""
-        self.error('_prepare_to_generate_rule should be overridden in subclasses')
+        self.error("_prepare_to_generate_rule should be overridden in subclasses")
 
     def _add_tags(self, *tags):
         for tag in tags:
@@ -280,12 +282,12 @@ class Target(object):
         return False
 
     def _check_name(self):
-        if '/' in self.name:
-            self.error('Invalid target name, should not contain dir part')
+        if "/" in self.name:
+            self.error("Invalid target name, should not contain dir part")
 
     def _check_kwargs(self, kwargs):
         if kwargs:
-            self.error('Unrecognized options %s' % kwargs)
+            self.error("Unrecognized options %s" % kwargs)
 
     def _allow_duplicate_source(self):
         """Whether the target allows duplicate source file with other targets"""
@@ -298,11 +300,16 @@ class Target(object):
         if must_exist and not os.path.exists(os.path.join(self.path, path)):
             self.error('Invalid path "%s" for "%s", does not exist' % (path, attr_name))
             return False
-        if '..' in path:
-            self.error('Invalid path "%s" for "%s". can not contains ".."' % (path, attr_name))
+        if ".." in path:
+            self.error(
+                'Invalid path "%s" for "%s". can not contains ".."' % (path, attr_name)
+            )
             return False
-        if path.startswith('/'):
-            self.error('Invalid path "%s" for "%s". can not be absolute path' % (path, attr_name))
+        if path.startswith("/"):
+            self.error(
+                'Invalid path "%s" for "%s". can not be absolute path'
+                % (path, attr_name)
+            )
             return False
         return True
 
@@ -319,23 +326,31 @@ class Target(object):
                 dups.append(src)
             else:
                 srcset.add(src)
-            if '..' in src or src.startswith('/'):
-                self.error('Invalid %s file path: %s. can only be relative path, and must '
-                           'in current directory or subdirectories.' % (file_kind, src))
+            if ".." in src or src.startswith("/"):
+                self.error(
+                    "Invalid %s file path: %s. can only be relative path, and must "
+                    "in current directory or subdirectories." % (file_kind, src)
+                )
             if not exts:
                 continue
             _, ext = os.path.splitext(src)
             if ext:
                 ext = ext[1:]
             if ext not in exts:
-                self.error('Invalid %s file name: "%s", must ends with %s' % (file_kind, src, list(exts)))
+                self.error(
+                    'Invalid %s file name: "%s", must ends with %s'
+                    % (file_kind, src, list(exts))
+                )
             full_path = self._source_file_path(src)
             if not os.path.exists(full_path):
                 if ext and _is_likely_concatenated_filenames(src, exts):
-                    self.warning('File "%s" does not exist, missing "," between file names?' % src)
+                    self.warning(
+                        'File "%s" does not exist, missing "," between file names?'
+                        % src
+                    )
 
         if dups:
-            self.error('Duplicate %s file paths: %s ' % (file_kind, dups))
+            self.error("Duplicate %s file paths: %s " % (file_kind, dups))
 
     # Keep the relationship of all src -> target.
     # Used by build rules to ensure that a source file occurs in
@@ -344,9 +359,9 @@ class Target(object):
 
     def _check_srcs(self, src_exts):
         """Check the "src" attribute."""
-        self._check_sources('source', self.srcs, src_exts)
+        self._check_sources("source", self.srcs, src_exts)
         # Check if one file belongs to two different targets.
-        action = config.get_item('global_config', 'duplicated_source_action')
+        action = config.get_item("global_config", "duplicated_source_action")
         for src in self.srcs:
             full_src = os.path.normpath(os.path.join(self.path, src))
             target = self.fullname, self._allow_duplicate_source()
@@ -362,21 +377,24 @@ class Target(object):
                     elif target[1]:
                         pass
                     else:
-                        message = '"%s" is already in srcs of "%s"' % (src, target_existed[0])
-                        if action == 'error':
+                        message = '"%s" is already in srcs of "%s"' % (
+                            src,
+                            target_existed[0],
+                        )
+                        if action == "error":
                             self.error(message)
-                        elif action == 'warning':
+                        elif action == "warning":
                             self.warning(message)
 
     def _add_implicit_library(self, implicit_deps):
         """Add implicit dep list to key's deps."""
         for dep in implicit_deps:
-            if not dep.startswith('//') and not dep.startswith('#'):
-                dep = '//' + dep
+            if not dep.startswith("//") and not dep.startswith("#"):
+                dep = "//" + dep
             dkey = self._unify_dep(dep)
             if not dkey:
                 return
-            if dkey[0] == '#':
+            if dkey[0] == "#":
                 self._add_system_library(dkey, dkey[2:])
             if dkey not in self.deps:
                 self.deps.append(dkey)
@@ -430,7 +448,7 @@ class Target(object):
 
         key, type = m.groups()
         if not type:
-            type = ''
+            type = ""
         type = type.strip()
         key = self._unify_dep(key)
         if key and key not in self.deps:
@@ -446,14 +464,14 @@ class Target(object):
                 self.error('Invalid dependency "%s", ' % dep + msg)
             return None
 
-        if path == '#':
+        if path == "#":
             # System libaray, they don't have entry in BUILD so we need
             # to add deps manually.
-            dkey = '#:' + name
+            dkey = "#:" + name
             self._add_system_library(dkey, name)
             return dkey
 
-        if path.startswith('//'):
+        if path.startswith("//"):
             # Depend on library in remote directory
             path = path[2:]
         else:
@@ -464,7 +482,7 @@ class Target(object):
                 # Depend on library in current directory
                 path = self.path
 
-        return '%s:%s' % (path, name)
+        return "%s:%s" % (path, name)
 
     def _init_target_deps(self, deps):
         """Init the target deps.
@@ -502,18 +520,18 @@ class Target(object):
         other.
         """
         if visibility is None:
-            global_config = config.get_section('global_config')
-            if self.key in global_config.get('legacy_public_targets'):
-                visibility = {'PUBLIC'}
+            global_config = config.get_section("global_config")
+            if self.key in global_config.get("legacy_public_targets"):
+                visibility = {"PUBLIC"}
             else:
-                visibility = global_config.get('default_visibility')
+                visibility = global_config.get("default_visibility")
             self._visibility.update(visibility)
             return
 
         self._visibility_is_default = False
         visibility = var_to_list(visibility)
-        if 'PUBLIC' in visibility:
-            self._visibility.add('PUBLIC')
+        if "PUBLIC" in visibility:
+            self._visibility.add("PUBLIC")
             return
 
         self._visibility.clear()
@@ -529,7 +547,7 @@ class Target(object):
         if self.path == dep.path:
             return True
         visibility = dep._visibility
-        if 'PUBLIC' in visibility:
+        if "PUBLIC" in visibility:
             return True
         if self.key in visibility:  # Strict match
             return True
@@ -544,11 +562,16 @@ class Target(object):
         for dep_id in self.deps:
             dep = self.target_database[dep_id]
             if not self._match_visibility(dep):
-                self.error('Not allowed to depend on "//%s" because of its visibility,' % dep_id)
+                self.error(
+                    'Not allowed to depend on "//%s" because of its visibility,'
+                    % dep_id
+                )
                 if dep._visibility_is_default:
-                    dep.info('No explicit "visibility" declaration, defaults to private, see document for details')
+                    dep.info(
+                        'No explicit "visibility" declaration, defaults to private, see document for details'
+                    )
                 else:
-                    dep.info('which is declared here')
+                    dep.info("which is declared here")
 
     def _check_deprecated_deps(self):
         """check that whether it depends upon deprecated target.
@@ -582,7 +605,7 @@ class Target(object):
         """
         prefix = self.build_dir + os.sep
         if path.startswith(prefix):
-            return path[len(prefix):]
+            return path[len(prefix) :]
         return path
 
     def _add_target_file(self, label, path):
@@ -616,7 +639,7 @@ class Target(object):
         self.__default_target = path
         self._add_target_file(label, path)
 
-    def _get_target_file(self, label=''):
+    def _get_target_file(self, label=""):
         """
         Parameters
         -----------
@@ -635,7 +658,7 @@ class Target(object):
         # TODO: _declare_output in __init__
         self.get_build_code()
         if label:
-            return self.__targets.get(label, '')
+            return self.__targets.get(label, "")
         return self.__default_target
 
     def _get_target_files(self):
@@ -671,15 +694,23 @@ class Target(object):
         Args:
             rule: the rule generated by certain target
         """
-        self.__build_code.append('%s\n' % rule)
+        self.__build_code.append("%s\n" % rule)
 
     def generate(self):
         """Generate build code for specific target."""
         raise NotImplementedError(self.fullname)
 
-    def generate_build(self, rule, outputs, inputs=None,
-                       implicit_deps=None, order_only_deps=None,
-                       variables=None, implicit_outputs=None, clean=None):
+    def generate_build(
+        self,
+        rule,
+        outputs,
+        inputs=None,
+        implicit_deps=None,
+        order_only_deps=None,
+        variables=None,
+        implicit_outputs=None,
+        clean=None,
+    ):
         """Generate a ninja build statement with specified parameters.
         Args:
             clean:list[str], files to be removed on clean, defaults to outputs + implicit_outputs,
@@ -691,16 +722,16 @@ class Target(object):
         implicit_outputs = var_to_list(implicit_outputs)
         outs = outputs[:]
         if implicit_outputs:
-            outs.append('|')
+            outs.append("|")
             outs += implicit_outputs
         ins = var_to_list(inputs)
         if implicit_deps:
-            ins.append('|')
+            ins.append("|")
             ins += var_to_list(implicit_deps)
         if order_only_deps:
-            ins.append('||')
+            ins.append("||")
             ins += var_to_list(order_only_deps)
-        self._write_rule('build %s: %s %s' % (' '.join(outs), rule, ' '.join(ins)))
+        self._write_rule("build %s: %s %s" % (" ".join(outs), rule, " ".join(ins)))
         clean = (outputs + implicit_outputs) if clean is None else var_to_list(clean)
         if clean:
             self._remove_on_clean(*clean)
@@ -710,14 +741,14 @@ class Target(object):
             for name, v in iteritems(variables):
                 assert v is not None
                 if v:
-                    self._write_rule('  %s = %s' % (name, v))
+                    self._write_rule("  %s = %s" % (name, v))
                 else:
-                    self._write_rule('  %s =' % name)
-        self._write_rule('')  # An empty line to improve readability
+                    self._write_rule("  %s =" % name)
+        self._write_rule("")  # An empty line to improve readability
 
     def get_outputs_goal(self):
         """A phony build goal to represent all output files."""
-        return os.path.join(self.build_dir, self.path, self.name + '.__outputs__')
+        return os.path.join(self.build_dir, self.path, self.name + ".__outputs__")
 
     def get_build_code(self):
         """Return generated build code."""
@@ -727,7 +758,9 @@ class Target(object):
             self.generate()
             # Generate a phony goal to identify all it's outputs.
             if self.__build_code:
-                self.generate_build('phony', self.get_outputs_goal(), self._get_target_files())
+                self.generate_build(
+                    "phony", self.get_outputs_goal(), self._get_target_files()
+                )
         return self.__build_code
 
 
@@ -735,16 +768,17 @@ class SystemLibrary(Target):
     def __init__(self, name):
         super().__init__(
             name=name,
-            type='system_library',
+            type="system_library",
             srcs=[],
             src_exts=[],
             deps=[],
-            visibility=['PUBLIC'],
-            tags=['lang:cc', 'type:library', 'type:system'],
-            kwargs={})
-        self.path = '#'
-        self.key = '#:' + name
-        self.fullname = '//' + self.key
+            visibility=["PUBLIC"],
+            tags=["lang:cc", "type:library", "type:system"],
+            kwargs={},
+        )
+        self.path = "#"
+        self.key = "#:" + name
+        self.fullname = "//" + self.key
 
     def generate(self):
         pass

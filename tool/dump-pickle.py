@@ -10,7 +10,7 @@ import pprint
 import sys
 
 try:
-    import cPickle as pickle # pyright: ignore[reportMissingImports]
+    import cPickle as pickle  # pyright: ignore[reportMissingImports]
 except ImportError:
     import pickle
 
@@ -20,10 +20,10 @@ def main():
         print("Usage: %s <filepath>" % sys.argv[0])
         sys.exit(1)
     filename = sys.argv[1]
-    with open(filename, 'rb') as f:
+    with open(filename, "rb") as f:
         content = pickle.load(f)
     pprint.pprint(content)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

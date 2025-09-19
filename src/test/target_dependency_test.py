@@ -6,8 +6,8 @@
 
 
 """
- This is the Target dependency analyzing test module
- which tests the dependency analyzing module of blade.
+This is the Target dependency analyzing test module
+which tests the dependency analyzing module of blade.
 
 """
 
@@ -19,9 +19,11 @@ import blade_test
 
 class TestDepsAnalyzing(blade_test.TargetTest):
     """Test dependency analyzing."""
+
     def setUp(self):
         """setup method."""
-        self.doSetUp('test_dependency')
+        self.doSetUp("test_dependency")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     blade_test.run(TestDepsAnalyzing)

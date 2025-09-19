@@ -36,15 +36,21 @@ def load_config(options, root_dir):
 
 
 def setup_console(options):
-    if options.color != 'auto':
-        console.enable_color(options.color == 'yes')
+    if options.color != "auto":
+        console.enable_color(options.color == "yes")
     console.set_verbosity(options.verbosity)
 
 
 def adjust_config_by_options(config, options):
     # Shared options between config and command line
     shared_options = {
-        'global_config': ['debug_info_level', 'backend_builder', 'build_jobs', 'test_jobs', 'run_unrepaired_tests'],
+        "global_config": [
+            "debug_info_level",
+            "backend_builder",
+            "build_jobs",
+            "test_jobs",
+            "run_unrepaired_tests",
+        ],
     }
     for section, names in shared_options.items():
         for name in names:
@@ -57,7 +63,7 @@ def _check_error_log(stage):
     """Check whether any error log occur during stage."""
     error_count = console.error_count()
     if error_count > 0:
-        console.error('There are %s errors in the %s stage' % (error_count, stage))
+        console.error("There are %s errors in the %s stage" % (error_count, stage))
         return 1
     return 0
 
@@ -65,18 +71,18 @@ def _check_error_log(stage):
 def run_subcommand(blade_path, command, options, ws, targets):
     """Run particular subcommands."""
     # The 'dump' command is special, some kind of dump items should be ran before loading.
-    if command == 'dump' and options.dump_config:
+    if command == "dump" and options.dump_config:
         output_file_name = os.path.join(ws.working_dir(), options.dump_to_file)
         config.dump(output_file_name)
-        return _check_error_log('dump')
+        return _check_error_log("dump")
 
     builder = build_manager.initialize(blade_path, command, options, ws, targets)
 
     # Prepare the targets
     stages = [
-        ('load', builder.load_targets),
-        ('analyze', builder.analyze_targets),
-        ('generate', builder.generate),
+        ("load", builder.load_targets),
+        ("analyze", builder.analyze_targets),
+        ("generate", builder.generate),
     ]
     for stage, action in stages:
         action()
@@ -94,21 +100,29 @@ def run_subcommand(blade_path, command, options, ws, targets):
 
 def run_subcommand_profile(blade_path, command, options, ws, targets):
     """Run subcommand within profile."""
-    pstats_file = os.path.join(ws.build_dir(), 'blade.pstats')
+    pstats_file = os.path.join(ws.build_dir(), "blade.pstats")
     # NOTE: can't use an plain int variable to receive exit_code
     # because in python int is an immutable object, assign to it in the runctx
     # wll not modify the local exit_code.
     # so we use a mutable object list to obtain the return value of run_subcommand
     exit_code = [-1]
-    cProfile.runctx("exit_code[0] = run_subcommand(blade_path, command, options, ws, targets)",
-                    globals(), locals(), pstats_file)
+    cProfile.runctx(
+        "exit_code[0] = run_subcommand(blade_path, command, options, ws, targets)",
+        globals(),
+        locals(),
+        pstats_file,
+    )
     p = pstats.Stats(pstats_file)
-    p.sort_stats('cumulative').print_stats(20)
-    p.sort_stats('time').print_stats(20)
-    console.output('Binary profile file `%s` is also generated, '
-                   'you can use `gprof2dot` or `vprof` to convert it to graph, eg:' % pstats_file)
-    console.output('  gprof2dot.py -f pstats --color-nodes-by-selftime %s'
-                   ' | dot -T pdf -o blade.pdf' % pstats_file)
+    p.sort_stats("cumulative").print_stats(20)
+    p.sort_stats("time").print_stats(20)
+    console.output(
+        "Binary profile file `%s` is also generated, "
+        "you can use `gprof2dot` or `vprof` to convert it to graph, eg:" % pstats_file
+    )
+    console.output(
+        "  gprof2dot.py -f pstats --color-nodes-by-selftime %s"
+        " | dot -T pdf -o blade.pdf" % pstats_file
+    )
     return exit_code[0]
 
 
@@ -122,11 +136,11 @@ def _main(blade_path, argv):
     load_config(options, ws.root_dir())
 
     adjust_config_by_options(config, options)
-    if _check_error_log('config'):
+    if _check_error_log("config"):
         return 1
 
     if not targets:
-        targets = ['.']
+        targets = ["."]
     targets = target_pattern.normalize_list(targets, ws.working_dir())
 
     ws.setup_build_dir()
@@ -151,11 +165,11 @@ def format_timedelta(seconds):
     seconds %= 60
     hours = mins // 60
     mins %= 60
-    result = '%.3gs' % seconds
+    result = "%.3gs" % seconds
     if hours > 0 or mins > 0:
-        result = '%sm' % mins + result
+        result = "%sm" % mins + result
     if hours > 0:
-        result = '%sh' % hours + result
+        result = "%sh" % hours + result
     return result
 
 
@@ -165,16 +179,16 @@ def main(blade_path, argv):
         start_time = time.time()
         exit_code = _main(blade_path, argv)
         cost_time = time.time() - start_time
-        console.info('Cost time %s' % format_timedelta(cost_time))
+        console.info("Cost time %s" % format_timedelta(cost_time))
     except SystemExit as e:
         # pylint misreport e.code as classobj
         exit_code = e.code
     except KeyboardInterrupt:
-        console.error('KeyboardInterrupt')
+        console.error("KeyboardInterrupt")
         exit_code = -signal.SIGINT
     except:  # pylint: disable=bare-except
         exit_code = 1
         console.error(traceback.format_exc())
     if exit_code != 0:
-        console.error('Failure')
+        console.error("Failure")
     return exit_code

@@ -20,7 +20,8 @@ from blade import console
 from blade.util import var_to_list, iteritems, run_command
 
 # example: Cuda compilation tools, release 11.0, V11.0.194
-_nvcc_version_re = re.compile(r'V(\d+\.\d+\.\d+)')
+_nvcc_version_re = re.compile(r"V(\d+\.\d+\.\d+)")
+
 
 class BuildArchitecture(object):
     """
@@ -28,43 +29,41 @@ class BuildArchitecture(object):
     across various platforms/compilers combined with the input from
     command line.
     """
+
     _build_architecture = {
-        'i386': {
-            'alias': ['x86'],
-            'bits': '32',
+        "i386": {
+            "alias": ["x86"],
+            "bits": "32",
         },
-        'x86_64': {
-            'alias': ['amd64'],
-            'bits': '64',
-            'models': {
-                '32': 'i386',
-            }
+        "x86_64": {
+            "alias": ["amd64"],
+            "bits": "64",
+            "models": {
+                "32": "i386",
+            },
         },
-        'arm': {
-            'alias': [],
-            'bits': '32'
+        "arm": {"alias": [], "bits": "32"},
+        "aarch64": {
+            "alias": ["arm64"],
+            "bits": "64",
         },
-        'aarch64': {
-            'alias': ['arm64'],
-            'bits': '64',
+        "ppc": {
+            "alias": ["powerpc"],
+            "bits": "32",
         },
-        'ppc': {
-            'alias': ['powerpc'],
-            'bits': '32',
+        "ppc64": {
+            "alias": ["powerpc64"],
+            "bits": "64",
+            "models": {
+                "32": "ppc",
+            },
         },
-        'ppc64': {
-            'alias': ['powerpc64'],
-            'bits': '64',
-            'models': {
-                '32': 'ppc',
-            }
-        },
-        'ppc64le': {
-            'alias': ['powerpc64le'],
-            'bits': '64',
-            'models': {
-                '32': 'ppcle',
-            }
+        "ppc64le": {
+            "alias": ["powerpc64le"],
+            "bits": "64",
+            "models": {
+                "32": "ppcle",
+            },
         },
     }
 
@@ -73,7 +72,7 @@ class BuildArchitecture(object):
         """Get the canonical architecture from the specified arch."""
         canonical_arch = None
         for k, v in iteritems(BuildArchitecture._build_architecture):
-            if arch == k or arch in v['alias']:
+            if arch == k or arch in v["alias"]:
                 canonical_arch = k
                 break
         return canonical_arch
@@ -83,7 +82,7 @@ class BuildArchitecture(object):
         """Get the architecture bits."""
         arch = BuildArchitecture.get_canonical_architecture(arch)
         if arch:
-            return BuildArchitecture._build_architecture[arch]['bits']
+            return BuildArchitecture._build_architecture[arch]["bits"]
         return None
 
     @staticmethod
@@ -96,9 +95,9 @@ class BuildArchitecture(object):
         """
         arch = BuildArchitecture.get_canonical_architecture(arch)
         if arch:
-            if bits == BuildArchitecture._build_architecture[arch]['bits']:
+            if bits == BuildArchitecture._build_architecture[arch]["bits"]:
                 return arch
-            models = BuildArchitecture._build_architecture[arch].get('models')
+            models = BuildArchitecture._build_architecture[arch].get("models")
             if models and bits in models:
                 return models[bits]
         return None
@@ -108,35 +107,36 @@ class ToolChain(object):
     """The build platform handles and gets the platform information."""
 
     def __init__(self):
-        self.cc = self._get_cc_command('CC', 'gcc')
-        self.cxx = self._get_cc_command('CXX', 'g++')
-        self.ld = self._get_cc_command('LD', 'g++')
+        self.cc = self._get_cc_command("CC", "gcc")
+        self.cxx = self._get_cc_command("CXX", "g++")
+        self.ld = self._get_cc_command("LD", "g++")
         self.cc_version = self._get_cc_version()
-        self.ar = self._get_cc_command('AR', 'ar')
+        self.ar = self._get_cc_command("AR", "ar")
 
     @staticmethod
     def _get_cc_command(env, default):
-        """Get a cc command.
-        """
-        return os.path.join(os.environ.get('TOOLCHAIN_DIR', ''), os.environ.get(env, default))
+        """Get a cc command."""
+        return os.path.join(
+            os.environ.get("TOOLCHAIN_DIR", ""), os.environ.get(env, default)
+        )
 
     def _get_cc_version(self):
-        version = ''
-        returncode, stdout, stderr = run_command(self.cc + ' -dumpversion', shell=True)
+        version = ""
+        returncode, stdout, stderr = run_command(self.cc + " -dumpversion", shell=True)
         if returncode == 0:
             version = stdout.strip()
         if not version:
-            console.fatal('Failed to obtain cc toolchain.')
+            console.fatal("Failed to obtain cc toolchain.")
         return version
 
     @staticmethod
     def get_cc_target_arch():
         """Get the cc target architecture."""
-        cc = ToolChain._get_cc_command('CC', 'gcc')
-        returncode, stdout, stderr = run_command(cc + ' -dumpmachine', shell=True)
+        cc = ToolChain._get_cc_command("CC", "gcc")
+        returncode, stdout, stderr = run_command(cc + " -dumpmachine", shell=True)
         if returncode == 0:
             return stdout.strip()
-        return ''
+        return ""
 
     def get_cc_commands(self):
         return self.cc, self.cxx, self.ld
@@ -154,7 +154,7 @@ class ToolChain(object):
         """Is cc is used for C/C++ compilation match vendor."""
         return vendor in self.cc
 
-    def filter_cc_flags(self, flag_list, language='c'):
+    def filter_cc_flags(self, flag_list, language="c"):
         """Filter out the unrecognized compilation flags."""
         flag_list = var_to_list(flag_list)
         valid_flags, unrecognized_flags = [], []
@@ -163,10 +163,12 @@ class ToolChain(object):
         # because the command line with '--coverage' below exit
         # with status 1 which makes '--coverage' unsupported
         # echo "int main() { return 0; }" | gcc -o /dev/null -c -x c --coverage - > /dev/null 2>&1
-        fd, obj = tempfile.mkstemp('.o', 'filter_cc_flags_test')
-        cmd = ('export LC_ALL=C; echo "int main() { return 0; }" | '
-               '%s -o %s -c -x %s -Werror %s -' % (
-                   self.cc, obj, language, ' '.join(flag_list)))
+        fd, obj = tempfile.mkstemp(".o", "filter_cc_flags_test")
+        cmd = (
+            'export LC_ALL=C; echo "int main() { return 0; }" | '
+            "%s -o %s -c -x %s -Werror %s -"
+            % (self.cc, obj, language, " ".join(flag_list))
+        )
         returncode, _, stderr = run_command(cmd, shell=True)
 
         try:
@@ -188,7 +190,9 @@ class ToolChain(object):
                 valid_flags.append(flag)
 
         if unrecognized_flags:
-            console.warning('config: Unrecognized %s flags: %s' % (
-                    language, ', '.join(unrecognized_flags)))
+            console.warning(
+                "config: Unrecognized %s flags: %s"
+                % (language, ", ".join(unrecognized_flags))
+            )
 
         return valid_flags

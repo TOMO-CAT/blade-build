@@ -20,6 +20,7 @@ __build_rules = {}
 
 __native = Native()
 
+
 def register_variable(name, value):
     """Register a variable that accessiable in BUILD file."""
     __build_rules[name] = value
@@ -40,5 +41,5 @@ def get_all():
 def get_all_for_extension():
     """Get the globals dict, 'native' is only visible to extensions."""
     result = get_all()
-    result['native'] = __native
+    result["native"] = __native
     return result

@@ -42,7 +42,7 @@ else:
 
 def md5sum_bytes(content):
     """Calculate md5sum of a byte string."""
-    assert isinstance(content, bytes), 'Invalid type %s' % type(content)
+    assert isinstance(content, bytes), "Invalid type %s" % type(content)
     m = hashlib.md5()
     m.update(content)
     return m.hexdigest()
@@ -50,13 +50,13 @@ def md5sum_bytes(content):
 
 def md5sum_str(content):
     """Calculate md5sum of a string."""
-    assert isinstance(content, str), 'Invalid type %s' % type(content)
-    return md5sum_bytes(content.encode('utf-8'))
+    assert isinstance(content, str), "Invalid type %s" % type(content)
+    return md5sum_bytes(content.encode("utf-8"))
 
 
 def md5sum_file(file_name):
     """Calculate md5sum of a file."""
-    with open(file_name, 'rb') as f:
+    with open(file_name, "rb") as f:
         digest = md5sum_bytes(f.read())
     return digest
 
@@ -67,7 +67,7 @@ def md5sum(obj):
         return md5sum_bytes(obj)
     if isinstance(obj, str):
         return md5sum_str(obj)
-    raise TypeError('Invalid type %s' % type(str))
+    raise TypeError("Invalid type %s" % type(str))
 
 
 def lock_file(filename):
@@ -121,8 +121,8 @@ def to_string(text):
     if isinstance(text, str):
         return text
     if isinstance(text, bytes):
-        return text.decode('utf-8')
-    raise TypeError('Unknown type %s' % type(text))
+        return text.decode("utf-8")
+    raise TypeError("Unknown type %s" % type(text))
 
 
 def get_cwd():
@@ -133,13 +133,13 @@ def get_cwd():
     So in practice we simply use system('pwd') to get current working directory.
 
     """
-    p = subprocess.Popen(['pwd'], stdout=subprocess.PIPE, shell=True)
+    p = subprocess.Popen(["pwd"], stdout=subprocess.PIPE, shell=True)
     return to_string(p.communicate()[0].strip())
 
 
 def find_file_bottom_up(name, from_dir=None):
     """Find the specified file/dir from from_dir bottom up until found or failed.
-       Returns abspath if found, or empty if failed.
+    Returns abspath if found, or empty if failed.
     """
     if from_dir is None:
         from_dir = get_cwd()
@@ -148,10 +148,10 @@ def find_file_bottom_up(name, from_dir=None):
         path = os.path.join(finding_dir, name)
         if os.path.exists(path):
             return path
-        if finding_dir == '/':
+        if finding_dir == "/":
             break
         finding_dir = os.path.dirname(finding_dir)
-    return ''
+    return ""
 
 
 def path_under_dir(path, dir):
@@ -159,7 +159,12 @@ def path_under_dir(path, dir):
 
     Both path and dir must be normalized, and they must be both relative or relative path.
     """
-    return dir == '.' or path == dir or path.startswith(dir) and path[len(dir)] == os.path.sep
+    return (
+        dir == "."
+        or path == dir
+        or path.startswith(dir)
+        and path[len(dir)] == os.path.sep
+    )
 
 
 def mkdir_p(path):
@@ -184,14 +189,12 @@ def _echo(stdout, stderr):
 
 def shell(cmd, env=None):
     if isinstance(cmd, list):
-        cmdline = ' '.join(cmd)
+        cmdline = " ".join(cmd)
     else:
         cmdline = cmd
-    p = subprocess.Popen(cmdline,
-                         env=env,
-                         stderr=subprocess.PIPE,
-                         stdout=subprocess.PIPE,
-                         shell=True)
+    p = subprocess.Popen(
+        cmdline, env=env, stderr=subprocess.PIPE, stdout=subprocess.PIPE, shell=True
+    )
     stdout, stderr = p.communicate()
     if p.returncode:
         if p.returncode != -signal.SIGINT:
@@ -207,8 +210,8 @@ def shell(cmd, env=None):
 def run_command(args, **kwargs):
     """Run a command without echo, return returncode, stdout and stderr (always as string)."""
 
-    kwargs.setdefault('stdout', subprocess.PIPE)
-    kwargs.setdefault('stderr', subprocess.PIPE)
+    kwargs.setdefault("stdout", subprocess.PIPE)
+    kwargs.setdefault("stderr", subprocess.PIPE)
 
     if _IN_PY3:
         r = subprocess.run(args, universal_newlines=True, **kwargs, check=False)
@@ -219,12 +222,12 @@ def run_command(args, **kwargs):
 
 
 def load_scm(build_dir):
-    revision = url = 'unknown'
-    path = os.path.join(build_dir, 'scm.json')
+    revision = url = "unknown"
+    path = os.path.join(build_dir, "scm.json")
     if os.path.exists(path):
         with open(path) as f:
             scm = json.load(f)
-            revision, url = scm['revision'], scm['url']
+            revision, url = scm["revision"], scm["url"]
     return revision, url
 
 
@@ -232,7 +235,7 @@ def environ_add_path(env, key, path):
     """Add path to PATH link environments, such as PATH, LD_LIBRARY_PATH, etc"""
     old = env.get(key)
     if old:
-        env[key] = path + ':' + old
+        env[key] = path + ":" + old
     else:
         env[key] = path
 
@@ -240,27 +243,34 @@ def environ_add_path(env, key, path):
 def cpu_count():
     try:
         import multiprocessing  # pylint: disable=import-outside-toplevel
+
         return multiprocessing.cpu_count()
     except ImportError:
-        return int(os.sysconf('SC_NPROCESSORS_ONLN'))
+        return int(os.sysconf("SC_NPROCESSORS_ONLN"))
 
 
-_TRANS_TABLE = (str if _IN_PY3 else string).maketrans(',-/:.+*', '_______')
+_TRANS_TABLE = (str if _IN_PY3 else string).maketrans(",-/:.+*", "_______")
 
 
 def regular_variable_name(name):
     """convert some name to a valid identifier name"""
     return name.translate(_TRANS_TABLE)
 
+
 # Some python 2/3 compatibility helpers.
 if _IN_PY3:
+
     def iteritems(d):
         return d.items()
+
     def itervalues(d):
         return d.values()
+
 else:
+
     def iteritems(d):
         return d.iteritems()
+
     def itervalues(d):
         return d.itervalues()
 
@@ -268,13 +278,13 @@ else:
 def exec_file_content(filename, content, globals, locals):
     """Execute code content as filename"""
     # pylint: disable=exec-used
-    exec(compile(content, filename, 'exec'), globals, locals)
+    exec(compile(content, filename, "exec"), globals, locals)
 
 
 def exec_file(filename, globals, locals):
     """Same as python2's execfile builtin function, but python3 has no execfile"""
     # pylint: disable=exec-used
-    with open(filename, 'rb') as f:
+    with open(filename, "rb") as f:
         exec_file_content(filename, f.read(), globals, locals)
 
 
@@ -301,7 +311,7 @@ def source_location(filename):
             lineno = frame.f_lineno
             break
         frame = frame.f_back
-    return '%s:%s' % (full_filename, lineno)
+    return "%s:%s" % (full_filename, lineno)
 
 
 def calling_source_location(skip=0):
@@ -311,7 +321,7 @@ def calling_source_location(skip=0):
     frame = inspect.currentframe()
     while frame:
         if skipped == skip:
-            return '%s:%s' % (frame.f_code.co_filename, frame.f_lineno)
+            return "%s:%s" % (frame.f_code.co_filename, frame.f_lineno)
         frame = frame.f_back
         skipped += 1
     raise ValueError('Invalid value "%d" for "skip"' % skip)
@@ -329,13 +339,13 @@ def parse_command_line(argv):
     options = {}
     args = []
     for arg in argv:
-        if arg.startswith('--'):
-            pos = arg.find('=')
+        if arg.startswith("--"):
+            pos = arg.find("=")
             if pos < 0:
                 args.append(arg)
                 continue
             name = arg[2:pos]
-            value = arg[pos+1:]
+            value = arg[pos + 1 :]
             options[name] = value
         else:
             args.append(arg)
@@ -345,12 +355,22 @@ def parse_command_line(argv):
 def open_zip_file_for_write(filename, compression_level):
     """Open a zip file for writing with specified compression level."""
     compression = zipfile.ZIP_DEFLATED
-    if sys.version_info.major < 3 or sys.version_info.major == 3 and sys.version_info.minor < 7:
+    if (
+        sys.version_info.major < 3
+        or sys.version_info.major == 3
+        and sys.version_info.minor < 7
+    ):
         if compression_level == "0":
             compression = zipfile.ZIP_STORED
-        return zipfile.ZipFile(filename, 'w', compression, allowZip64=True)
+        return zipfile.ZipFile(filename, "w", compression, allowZip64=True)
     # pylint: disable=unexpected-keyword-arg
-    return zipfile.ZipFile(filename, 'w', compression, compresslevel=int(compression_level), allowZip64=True)
+    return zipfile.ZipFile(
+        filename,
+        "w",
+        compression,
+        compresslevel=int(compression_level),
+        allowZip64=True,
+    )
 
 
 def which(cmd):
