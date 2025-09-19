@@ -10,3 +10,4 @@
 - [x] .pylintrc 如何生效
 - [ ] 引入 pre-commit
 - [ ] pre-commit 中增加 markdownlint 并修复
+- [ ] github action 支持运行 pre-commit

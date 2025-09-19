@@ -77,8 +77,8 @@ RUN echo "${USER_NAME} ALL=NOPASSWD: ALL" >> /etc/sudoers
 USER ${USER_NAME}
 ENV PATH=${PATH}:/home/${USER_NAME}/.local/bin
 
-# test 依赖
-RUN python3 -m pip install coverage==7.10.6 coveralls==4.0.1
+# python 依赖
+RUN python3 -m pip install coverage==7.10.6 coveralls==4.0.1 colorama==0.4.6
 
 # pre-commit
 RUN python3 -m pip install pylint==3.3.8 pre-commit==3.5.0

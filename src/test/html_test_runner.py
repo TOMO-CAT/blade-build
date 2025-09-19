@@ -51,7 +51,6 @@ except ImportError:
     from io import StringIO
 
 import sys
-import time
 import unittest
 from xml.sax import saxutils
 
@@ -466,9 +465,10 @@ class _TestResult(TestResult):
     # It lacks the output and reporting ability compares to unittest._TextTestResult.
 
     def __init__(self, verbosity=1):
-        super(_TextTestResult, self).__init__()
+        super().__init__()
         self.stdout0 = None
         self.stderr0 = None
+        self.outputBuffer = None
         self.success_count = 0
         self.failure_count = 0
         self.error_count = 0
@@ -566,6 +566,7 @@ class HTMLTestRunner(Template_mixin):
             self.description = description
 
         self.startTime = datetime.datetime.now()
+        self.stopTime = -1
 
     def run(self, test):
         "Run the given test case or test suite."
@@ -598,9 +599,12 @@ class HTMLTestRunner(Template_mixin):
         startTime = str(self.startTime)[:19]
         duration = str(self.stopTime - self.startTime)
         status = []
-        if result.success_count: status.append('Pass %s' % result.success_count)
-        if result.failure_count: status.append('Failure %s' % result.failure_count)
-        if result.error_count:   status.append('Error %s' % result.error_count)
+        if result.success_count:
+            status.append('Pass %s' % result.success_count)
+        if result.failure_count:
+            status.append('Failure %s' % result.failure_count)
+        if result.error_count:
+            status.append('Error %s' % result.error_count)
         if status:
             status = ' '.join(status)
         else:
@@ -618,14 +622,14 @@ class HTMLTestRunner(Template_mixin):
         heading = self._generate_heading(report_attrs)
         report = self._generate_report(result)
         ending = self._generate_ending()
-        output = self.HTML_TMPL % dict(
-            title=saxutils.escape(self.title),
-            generator=generator,
-            stylesheet=stylesheet,
-            heading=heading,
-            report=report,
-            ending=ending,
-        )
+        output = self.HTML_TMPL % {
+            "title": saxutils.escape(self.title),
+            "generator": generator,
+            "stylesheet": stylesheet,
+            "heading": heading,
+            "report": report,
+            "ending": ending,
+        }
         self.stream.write(output.encode('utf8'))
 
     def _generate_stylesheet(self):
@@ -634,16 +638,16 @@ class HTMLTestRunner(Template_mixin):
     def _generate_heading(self, report_attrs):
         a_lines = []
         for name, value in report_attrs:
-            line = self.HEADING_ATTRIBUTE_TMPL % dict(
-                name=saxutils.escape(name),
-                value=saxutils.escape(value),
-            )
+            line = self.HEADING_ATTRIBUTE_TMPL % {
+                "name": saxutils.escape(name),
+                "value": saxutils.escape(value),
+            }
             a_lines.append(line)
-        heading = self.HEADING_TMPL % dict(
-            title=saxutils.escape(self.title),
-            parameters=''.join(a_lines),
-            description=saxutils.escape(self.description),
-        )
+        heading = self.HEADING_TMPL % {
+            "title": saxutils.escape(self.title),
+            "parameters": ''.join(a_lines),
+            "description": saxutils.escape(self.description),
+        }
         return heading
 
     def _generate_report(self, result):
@@ -668,27 +672,27 @@ class HTMLTestRunner(Template_mixin):
             doc = cls.__doc__ and cls.__doc__.split("\n")[0] or ""
             desc = doc and '%s: %s' % (name, doc) or name
 
-            row = self.REPORT_CLASS_TMPL % dict(
-                style=ne > 0 and 'errorClass' or nf > 0 and 'failClass' or 'passClass',
-                desc=desc,
-                count=np + nf + ne,
-                Pass=np,
-                fail=nf,
-                error=ne,
-                cid='c%s' % (cid + 1),
-            )
+            row = self.REPORT_CLASS_TMPL % {
+                "style": ne > 0 and 'errorClass' or nf > 0 and 'failClass' or 'passClass',
+                "desc": desc,
+                "count": np + nf + ne,
+                "Pass": np,
+                "fail": nf,
+                "error": ne,
+                "cid": 'c%s' % (cid + 1),
+            }
             rows.append(row)
 
             for tid, (n, t, o, e) in enumerate(cls_results):
                 self._generate_report_test(rows, cid, tid, n, t, o, e)
 
-        report = self.REPORT_TMPL % dict(
-            test_list=''.join(rows),
-            count=str(result.success_count + result.failure_count + result.error_count),
-            Pass=str(result.success_count),
-            fail=str(result.failure_count),
-            error=str(result.error_count),
-        )
+        report = self.REPORT_TMPL % {
+            "test_list": ''.join(rows),
+            "count": str(result.success_count + result.failure_count + result.error_count),
+            "Pass": str(result.success_count),
+            "fail": str(result.failure_count),
+            "error": str(result.error_count),
+        }
         return report
 
     def _generate_report_test(self, rows, cid, tid, n, t, o, e):
@@ -698,7 +702,7 @@ class HTMLTestRunner(Template_mixin):
         name = t.id().split('.')[-1]
         doc = t.shortDescription() or ""
         desc = doc and ('%s: %s' % (name, doc)) or name
-        tmpl = has_output and self.REPORT_TEST_WITH_OUTPUT_TMPL or self.REPORT_TEST_NO_OUTPUT_TMPL
+        tmpl = self.REPORT_TEST_WITH_OUTPUT_TMPL if has_output else self.REPORT_TEST_NO_OUTPUT_TMPL
 
         # o and e should be byte string because they are collected from stdout and stderr?
         if isinstance(o, str):
@@ -714,22 +718,20 @@ class HTMLTestRunner(Template_mixin):
         else:
             ue = e
 
-        script = self.REPORT_TEST_OUTPUT_TMPL % dict(
-            id=tid,
-            output=saxutils.escape(uo + ue),
-        )
+        script = self.REPORT_TEST_OUTPUT_TMPL % {
+            "id": tid,
+            "output": saxutils.escape(uo + ue),
+        }
 
-        row = tmpl % dict(
-            tid=tid,
-            Class=(n == 0 and 'hiddenRow' or 'none'),
-            style=n == 2 and 'errorCase' or (n == 1 and 'failCase' or 'none'),
-            desc=desc,
-            script=script,
-            status=self.STATUS[n],
-        )
+        row = tmpl % {
+            "tid": tid,
+            "Class": (n == 0 and 'hiddenRow' or 'none'),
+            "style": n == 2 and 'errorCase' or (n == 1 and 'failCase' or 'none'),
+            "desc": desc,
+            "script": script,
+            "status": self.STATUS[n],
+        }
         rows.append(row)
-        if not has_output:
-            return
 
     def _generate_ending(self):
         return self.ENDING_TMPL

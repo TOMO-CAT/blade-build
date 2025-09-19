@@ -1,5 +1,5 @@
-import lib
 import unittest
+import lib
 
 
 class LibTestCase(unittest.TestCase):

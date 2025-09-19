@@ -32,7 +32,6 @@ _color_enabled = (sys.stdout.isatty() and
 # See http://en.wikipedia.org/wiki/ANSI_escape_code
 # colors
 
-# pylint: disable=bad-whitespace
 _COLORS = {
     'red': '\033[1;31m',
     'green': '\033[1;32m',

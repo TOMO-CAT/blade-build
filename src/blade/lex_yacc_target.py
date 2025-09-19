@@ -42,7 +42,7 @@ class LexYaccLibrary(CcTarget):
         Init the cc lex yacc target
 
         """
-        super(LexYaccLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type='lex_yacc_library',
                 srcs=srcs,

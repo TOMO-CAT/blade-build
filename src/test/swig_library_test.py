@@ -19,7 +19,7 @@ class TestSwigLibrary(blade_test.TargetTest):
     """Test swig_library."""
     def setUp(self):
         """setup method."""
-        self.doSetUp('test_swig_library', generate_php=False)
+        # self.doSetUp('test_swig_library', generate_php=False)
 
     @unittest.skip('TODO: swig is not implemented`')
     def testGenerateRules(self):

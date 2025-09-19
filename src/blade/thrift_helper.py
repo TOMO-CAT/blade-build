@@ -120,7 +120,7 @@ class FBThriftHelper(ThriftParser):
 
 class ThriftHelper(ThriftParser):
     def __init__(self, dir, src):
-        super(ThriftHelper, self).__init__(os.path.join(dir, src))
+        super().__init__(os.path.join(dir, src))
         self.src = src
 
     def get_generated_cpp_files(self):

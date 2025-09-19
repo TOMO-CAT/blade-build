@@ -32,7 +32,8 @@ def process_targets(build_targets, options):
         details_file = os.path.join('blade-bin', dir, name + '.incchk.details')
         if not os.path.exists(details_file):
             continue
-        details = pickle.load(open(details_file, 'rb'))
+        with open(details_file, 'rb') as f:
+            details = pickle.load(f)
         if details:
             if 'missing_dep' in details:
                 full_missing[str(target)] = details['missing_dep']
@@ -47,7 +48,8 @@ def process_targets(build_targets, options):
 
 def main():
     options = parse_args()
-    stamp = json.load(open('blade-bin/blade_build_stamp.json'))
+    with open('blade-bin/blade_build_stamp.json') as f:
+        stamp = json.load(f)
     process_targets(stamp['build_targets'], options)
 
 

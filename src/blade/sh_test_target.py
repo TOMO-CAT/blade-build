@@ -44,7 +44,7 @@ class ShellTest(Target):
         deps = var_to_list(deps)
         testdata = var_to_list(testdata)
 
-        super(ShellTest, self).__init__(
+        super().__init__(
                 name=name,
                 type='sh_test',
                 srcs=srcs,

@@ -81,7 +81,7 @@ class TestRunner(binary_runner.BinaryRunner):
             test_jobs_num:int, max number of concurrent test jobs
         """
         # pylint: disable=too-many-locals, too-many-statements
-        super(TestRunner, self).__init__(options, target_database, build_targets)
+        super().__init__(options, target_database, build_targets)
         self.__direct_targets = direct_targets
         self.__command_targets = command_targets
         self.__test_jobs_num = test_jobs_num

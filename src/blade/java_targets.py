@@ -626,7 +626,7 @@ class JavaTarget(Target, JavaTargetMixIn):
         deps = var_to_list(deps)
         resources = var_to_list(resources)
 
-        super(JavaTarget, self).__init__(
+        super().__init__(
                 name=name,
                 type=type,
                 srcs=srcs,
@@ -710,7 +710,7 @@ class JavaLibrary(JavaTarget):
         exported_deps = var_to_list(exported_deps)
         provided_deps = var_to_list(provided_deps)
         all_deps = var_to_list(deps) + exported_deps + provided_deps
-        super(JavaLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type=type,
                 srcs=srcs,
@@ -757,7 +757,7 @@ class JavaBinary(JavaTarget):
             main_class,
             exclusions,
             kwargs):
-        super(JavaBinary, self).__init__(
+        super().__init__(
                 name=name,
                 type='java_binary',
                 srcs=srcs,
@@ -814,7 +814,7 @@ class JavaFatLibrary(JavaTarget):
             warnings,
             exclusions,
             kwargs):
-        super(JavaFatLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type='java_fat_library',
                 srcs=srcs,
@@ -852,7 +852,7 @@ class JavaTest(JavaBinary):
             testdata,
             target_under_test,
             kwargs):
-        super(JavaTest, self).__init__(
+        super().__init__(
                 name=name,
                 srcs=srcs,
                 deps=deps,

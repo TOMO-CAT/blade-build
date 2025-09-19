@@ -31,7 +31,7 @@ TestRunResult = namedtuple('TestRunResult', ['exit_code', 'start_time', 'cost_ti
 
 
 def _signal_map():
-    result = dict()
+    result = {}
     for name in dir(signal):
         if not name.startswith('SIG') or name.startswith('SIG_'):
             continue
@@ -50,7 +50,7 @@ _SIGNAL_MAP = _signal_map()
 class WorkerThread(threading.Thread):
     def __init__(self, index, job_queue, job_handler, redirect):
         """Init methods for this thread."""
-        super(WorkerThread, self).__init__()
+        super().__init__()
         self.index = index
         self.running = True
         self.job_queue = job_queue

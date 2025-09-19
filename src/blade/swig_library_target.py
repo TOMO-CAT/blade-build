@@ -33,7 +33,7 @@ class SwigLibrary(CcTarget):
                  optimize,
                  extra_swigflags,
                  kwargs):
-        super(SwigLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type='swig_library',
                 srcs=srcs,

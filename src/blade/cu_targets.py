@@ -54,7 +54,7 @@ class CuTarget(CcTarget):
         extra_cuflags = var_to_list(extra_cuflags)
         extra_linkflags = var_to_list(extra_linkflags)
 
-        super(CuTarget, self).__init__(
+        super().__init__(
             name=name,
             type=type,
             srcs=srcs,
@@ -289,7 +289,7 @@ class CuBinary(CuTarget):
                  extra_cuflags,
                  extra_linkflags,
                  kwargs):
-        super(CuBinary, self).__init__(
+        super().__init__(
             name=name,
             type='cu_binary',
             srcs=srcs,
@@ -406,7 +406,7 @@ class CuTest(CuBinary):
                  exclusive,
                  kwargs):
         # pylint: disable=too-many-locals
-        super(CuTest, self).__init__(
+        super().__init__(
             name=name,
             srcs=srcs,
             cuda_path=cuda_path,

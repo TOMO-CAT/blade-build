@@ -9,8 +9,8 @@ def main():
     p.name = 'chenfeng'
     p.id = 9527
     p.email = 'chen3feng@gmail.com'
-    print ab
-    print sys.argv
+    print(ab)
+    print(sys.argv)
 
 
 if __name__ == '__main__':

@@ -316,7 +316,7 @@ class CommandLineParser(object):
 
         parser.add_argument(
             '-t', '--test-jobs', dest='test_jobs', type=int,
-            help=(constants.HELP.test_jobs))
+            help=constants.HELP.test_jobs)
 
         parser.add_argument(
             '--show-details', action='store_true',

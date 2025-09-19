@@ -756,7 +756,7 @@ class Target(object):
 
 class SystemLibrary(Target):
     def __init__(self, name):
-        super(SystemLibrary, self).__init__(
+        super().__init__(
             name=name,
             type='system_library',
             srcs=[],

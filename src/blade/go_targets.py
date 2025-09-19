@@ -47,7 +47,7 @@ class GoTarget(Target):
         deps = var_to_list(deps)
         extra_goflags = ' '.join(var_to_list(extra_goflags))
 
-        super(GoTarget, self).__init__(
+        super().__init__(
                 name=name,
                 type=type,
                 srcs=srcs,
@@ -141,7 +141,7 @@ class GoLibrary(GoTarget):
     """GoLibrary generates build rules for a go package."""
 
     def __init__(self, name, srcs, deps, visibility, tags, extra_goflags, kwargs):
-        super(GoLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type='go_library',
                 srcs=srcs,
@@ -166,7 +166,7 @@ class GoBinary(GoTarget):
     """GoBinary generates build rules for a go command executable."""
 
     def __init__(self, name, srcs, deps, visibility, tags, extra_goflags, kwargs):
-        super(GoBinary, self).__init__(
+        super().__init__(
                 name=name,
                 type='go_binary',
                 srcs=srcs,
@@ -184,7 +184,7 @@ class GoTest(GoTarget):
     """GoTest generates build rules for a go test binary."""
 
     def __init__(self, name, srcs, deps, visibility, tags, testdata, extra_goflags, kwargs):
-        super(GoTest, self).__init__(
+        super().__init__(
                 name=name,
                 type='go_test',
                 srcs=srcs,

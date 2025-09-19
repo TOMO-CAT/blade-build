@@ -20,7 +20,8 @@ def main():
         print("Usage: %s <filepath>" % sys.argv[0])
         sys.exit(1)
     filename = sys.argv[1]
-    content = pickle.load(open(filename, 'rb'))
+    with open(filename, 'rb') as f:
+        content = pickle.load(f)
     pprint.pprint(content)
 
 

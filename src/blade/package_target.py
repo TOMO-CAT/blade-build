@@ -53,7 +53,7 @@ class PackageTarget(Target):
         srcs = var_to_list(srcs)
         deps = var_to_list(deps)
 
-        super(PackageTarget, self).__init__(
+        super().__init__(
                 name=name,
                 type='package',
                 srcs=[],

@@ -95,7 +95,7 @@ class ProtoLibrary(CcTarget, java_targets.JavaTargetMixIn):
         """
         # pylint: disable=too-many-locals
         srcs = var_to_list(srcs)
-        super(ProtoLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type='proto_library',
                 srcs=srcs,

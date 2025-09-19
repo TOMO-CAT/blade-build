@@ -47,7 +47,7 @@ class ScalaTarget(Target, JavaTargetMixIn):
         deps = var_to_list(deps)
         resources = var_to_list(resources)
 
-        super(ScalaTarget, self).__init__(
+        super().__init__(
                 name=name,
                 type=type,
                 srcs=srcs,
@@ -125,7 +125,7 @@ class ScalaLibrary(ScalaTarget):
         exported_deps = var_to_list(exported_deps)
         provided_deps = var_to_list(provided_deps)
         all_deps = var_to_list(deps) + exported_deps + provided_deps
-        super(ScalaLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type='scala_library',
                 srcs=srcs,
@@ -162,7 +162,7 @@ class ScalaFatLibrary(ScalaTarget):
             warnings,
             exclusions,
             kwargs):
-        super(ScalaFatLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type='scala_fat_library',
                 srcs=srcs,
@@ -198,7 +198,7 @@ class ScalaTest(ScalaFatLibrary):
             exclusions,
             testdata,
             kwargs):
-        super(ScalaTest, self).__init__(
+        super().__init__(
                 name=name,
                 srcs=srcs,
                 deps=deps,

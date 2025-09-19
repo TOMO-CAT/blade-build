@@ -8,7 +8,7 @@ def main():
     p.name = 'chenfeng'
     p.id = 9527
     p.email = 'chen3feng@gmail.com'
-    print ab
+    print(ab)
 
 
 if __name__ == '__main__':

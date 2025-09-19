@@ -8,6 +8,7 @@
  This is the main test module for all targets.
 """
 
+
 import io
 import os
 import shutil
@@ -15,19 +16,17 @@ import subprocess
 import sys
 import unittest
 
-"""
-
-TargetTest 作为所有测试类的基类, 提供了通用的测试方法和属性
-
-所有的测试类都应该继承自 TargetTest, 细节如下:
-* unittest 的测试发现机制会自动查找类中所有以 test 开头的方法并依次执行
-* stdout 和 stderr 日志会被分别写到 build_output.txt 和 build_error.txt 文件中
-
-"""
 
 # pylint: disable=attribute-defined-outside-init
 class TargetTest(unittest.TestCase):
-    """base class Test."""
+    """base class Test.
+
+    TargetTest 作为所有测试类的基类, 提供了通用的测试方法和属性
+
+    所有的测试类都应该继承自 TargetTest, 细节如下:
+    * unittest 的测试发现机制会自动查找类中所有以 test 开头的方法并依次执行
+    * stdout 和 stderr 日志会被分别写到 build_output.txt 和 build_error.txt 文件中
+    """
 
     def doSetUp(self, path, target='...', full_targets=None):
         """setup method."""
@@ -42,9 +41,9 @@ class TargetTest(unittest.TestCase):
         self.current_building_path = 'build64_release'
         self.current_source_dir = '.'
         self.build_output = []
-        self.build_output_file = 'build_output.txt' # stdout 日志
+        self.build_output_file = 'build_output.txt'  # stdout 日志
         self.build_error = []
-        self.build_error_file = 'build_error.txt' # stderr 日志
+        self.build_error_file = 'build_error.txt'  # stderr 日志
         os.chdir('testdata')  # 切换到 testdata 目录执行单测
         self.removeTree('build64_release')
 
@@ -68,21 +67,23 @@ class TargetTest(unittest.TestCase):
     def runBlade(self, command='build', extra_args='', print_error=True):
         # We can use pipe to capture stdout, but keep the output file make it
         # easy debugging.
-        p = subprocess.Popen(
+        with subprocess.Popen(
             '../../../blade %s %s --generate-dynamic --verbose %s > %s 2> %s' % (
                 command, self.targets, extra_args, self.build_output_file, self.build_error_file),
-            shell=True)
-        try:
-            p.wait()
-            self.build_output = io.open(self.build_output_file, encoding='utf-8').readlines()
-            self.build_error = io.open(self.build_error_file, encoding='utf-8').readlines()
-            if p.returncode != 0 and print_error:
-                sys.stderr.write('Exit with: %d\nstdout:\n%s\nstderr:\n%s\n' % (
-                    p.returncode, ''.join(self.build_output), ''.join(self.build_error)))
-            return p.returncode == 0
-        except Exception:  # pylint: disable=broad-except
-            sys.stderr.write('Failed while dry running:\n%s\n' % str(sys.exc_info()))
-        return False
+            shell=True) as p:
+            try:
+                p.wait()
+                with io.open(self.build_output_file, encoding='utf-8') as f:
+                    self.build_output = f.readlines()
+                with io.open(self.build_error_file, encoding='utf-8') as f:
+                    self.build_error = f.readlines()
+                if p.returncode != 0 and print_error:
+                    sys.stderr.write('Exit with: %d\nstdout:\n%s\nstderr:\n%s\n' % (
+                        p.returncode, ''.join(self.build_output), ''.join(self.build_error)))
+                return p.returncode == 0
+            except Exception:  # pylint: disable=broad-except
+                sys.stderr.write('Failed while dry running:\n%s\n' % str(sys.exc_info()))
+            return False
 
     def dryRun(self, command='build', extra_args=''):
         return self.runBlade(command, '--dry-run ' + extra_args)

@@ -21,7 +21,8 @@ import time
 try:
     import queue
 except ImportError:
-    import Queue as queue  # pyright: reportMissingImports=false, for python2
+    # pyright: reportMissingImports=false, for python2
+    import Queue as queue
 
 from blade import config
 from blade import console
@@ -166,7 +167,7 @@ class MavenCache(object):
         cmd += ' -e -X'  # More detailed debug message
         target.debug(cmd)
         if subprocess.call('%s > %s' % (cmd, log_path), shell=True) != 0:
-            message = ('Error downloading maven_jar %s, see "%s" for details.' % (id, log_path))
+            message = 'Error downloading maven_jar %s, see "%s" for details.' % (id, log_path)
             # Rertry without transitive
             cmd += ' -Dtransitive=false'
             with open(log_path, 'a') as f:

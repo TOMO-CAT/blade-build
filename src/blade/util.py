@@ -212,12 +212,11 @@ def run_command(args, **kwargs):
     kwargs.setdefault('stderr', subprocess.PIPE)
 
     if _IN_PY3:
-        r = subprocess.run(args, universal_newlines=True, **kwargs)
+        r = subprocess.run(args, universal_newlines=True, **kwargs, check=False)
         return r.returncode, r.stdout, r.stderr
-    else:
-        p = subprocess.Popen(args, universal_newlines=True, **kwargs)
-        stdout, stderr = p.communicate()
-        return p.returncode, stdout, stderr
+    p = subprocess.Popen(args, universal_newlines=True, **kwargs)
+    stdout, stderr = p.communicate()
+    return p.returncode, stdout, stderr
 
 
 def load_scm(build_dir):

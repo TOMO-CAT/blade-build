@@ -39,7 +39,7 @@ class PythonTarget(Target):
         srcs = var_to_list(srcs)
         deps = var_to_list(deps)
 
-        super(PythonTarget, self).__init__(
+        super().__init__(
             name=name,
             type=type,
             srcs=srcs,
@@ -84,7 +84,7 @@ class PythonLibrary(PythonTarget):
                  tags,
                  kwargs):
         """Init method."""
-        super(PythonLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type='py_library',
                 srcs=srcs,
@@ -119,7 +119,7 @@ class PrebuiltPythonLibrary(PythonTarget):
                  base,
                  kwargs):
         """Init method."""
-        super(PrebuiltPythonLibrary, self).__init__(
+        super().__init__(
                 name=name,
                 type='prebuilt_py_library',
                 srcs=srcs,
@@ -195,7 +195,7 @@ class PythonBinary(PythonLibrary):
         srcs = var_to_list(srcs)
         deps = var_to_list(deps)
 
-        super(PythonBinary, self).__init__(
+        super().__init__(
                 name=name,
                 srcs=srcs,
                 deps=deps,
@@ -285,7 +285,7 @@ class PythonTest(PythonBinary):
                  testdata,
                  kwargs):
         """Init method."""
-        super(PythonTest, self).__init__(
+        super().__init__(
                 name=name,
                 srcs=srcs,
                 deps=deps,
