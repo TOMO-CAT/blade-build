@@ -12,6 +12,7 @@ A clear and concise description of what the bug is.
 
 **To Reproduce**
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Run '...'
 3. See error
@@ -23,9 +24,10 @@ A clear and concise description of what you expected to happen.
 If applicable, add an error message to help explain your problem.
 
 **System (please complete the following information):**
- - OS: [e.g. Ubuntu 18.4, MacOS 10.15.4]
- - Python version: [e.g. 2.7.17]
- - Version [Via `blade --version`]
+
+- OS: [e.g. Ubuntu 18.4, MacOS 10.15.4]
+- Python version: [e.g. 2.7.17]
+- Version [Via `blade --version`]
 
 **Additional context**
 Add any other context about the problem here.
