@@ -106,7 +106,6 @@ syn keyword bladeArg protobuf_go_path
 syn keyword bladeArg protobuf_incs
 syn keyword bladeArg protobuf_libs
 syn keyword bladeArg protobuf_path
-syn keyword bladeArg protobuf_php_path
 syn keyword bladeArg protobuf_python_libs
 syn keyword bladeArg protoc
 syn keyword bladeArg protoc_direct_dependencies
