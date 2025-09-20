@@ -28,4 +28,3 @@ echo -e "    ]\n)\n"
 for src in *_test.{c,cc,cpp,cxx} *Test.{c,cc,cpp,cxx}; do
     echo -e "\ncc_test(\n    name = '${src/.*/}',\n    srcs = ['$src'],\n    deps = [':$libname']\n)\n"
 done
-

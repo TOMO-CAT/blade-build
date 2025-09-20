@@ -91,7 +91,7 @@ visibility = ['//module3:...']                              # 仅对 module3 及
 
 Blade 对各种构建目标预设了一些标签：
 
-- 按编程语言：`lang:cc`, `lang:java`, `lang:py`, `lang:proto` 等。
+- 按编程语言：`lang:cc`, `lang:py`, `lang:proto` 等。
 - 按类型：`type:binary`, `type:test`, `type:library`
 - 其他额外属性：`type:prebuilt`
 
@@ -106,11 +106,8 @@ Blade 对各种构建目标预设了一些标签：
 
 - [构建C/C++目标](build_rules/cc.md)
 - [构建protobuf和thrift](build_rules/idl.md)
-- [构建Java](build_rules/java.md)
-- [构建Scala](build_rules/scala.md)
 - [构建Python](build_rules/python.md)
 - [构建Lex和Yacc](build_rules/lexyacc.md)
-- [构建SWIG](build_rules/swig.md)
 - [Bash测试](build_rules/shell.md)
 - [自定义规则构建](build_rules/gen_rule.md)
 - [文件打包](build_rules/package.md)

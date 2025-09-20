@@ -2,18 +2,19 @@
 
 import argparse
 import logging
-from operator import truediv
-import subprocess
 import os
-from colorama import Fore, Style
-from typing import Optional
 import shutil
+import subprocess
+import sys
 from pathlib import Path
+from typing import Optional
+
+from colorama import Fore, Style
 
 logger = logging.getLogger("docker")
 
-USER_NAME = os.environ.get('USER') or os.environ.get('USERNAME')
-HOME = os.environ.get('HOME')
+USER_NAME = os.environ.get("USER") or os.environ.get("USERNAME")
+HOME = os.environ.get("HOME")
 PROJECT_BASE_DIR = os.getcwd()
 
 
@@ -85,7 +86,11 @@ def init_logger():
     logger.setLevel(logging.DEBUG)
     console_handler = logging.StreamHandler()
     console_handler.setLevel(logging.INFO)
-    console_handler.setFormatter(ColorFormatter('[%(asctime)s][%(levelname)s][%(filename)s:%(lineno)d] %(message)s'))
+    console_handler.setFormatter(
+        ColorFormatter(
+            "[%(asctime)s][%(levelname)s][%(filename)s:%(lineno)d] %(message)s"
+        )
+    )
     logger.addHandler(console_handler)
 
 
@@ -93,19 +98,28 @@ def execute_shell_command(cmd: str, check: bool = True) -> Optional[str]:
     # check: 如果命令非零退出码则失败, 抛出异常
     # text: 以字符串返回输出, 默认返回字节流 bytes
     try:
-        result = subprocess.run(cmd, shell=True, check=check, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run(
+            cmd,
+            shell=True,
+            check=check,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
     except subprocess.CalledProcessError:
         logger.error(f"run cmd [{cmd}] failed")
-        exit(1)
+        sys.exit(1)
     return result.stdout.strip() if result.stdout else None
 
 
 def execute_shell_command_with_stdout(cmd: str):
     try:
-        with subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True) as process:
+        with subprocess.Popen(
+            cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True
+        ) as process:
             while True:
                 output = process.stdout.readline()
-                if output == '' and process.poll() is not None:
+                if output == "" and process.poll() is not None:
                     break
                 if output:
                     print(output.strip())
@@ -113,11 +127,12 @@ def execute_shell_command_with_stdout(cmd: str):
             if returncode == 0:
                 logger.info(f"execute command [{cmd}] successfully")
                 return True
-            else:
-                logger.warning(f"execute command [{cmd}] fail with ret code [{returncode}]")
-                return False
-    except subprocess.subprocess.CalledProcessError as e:
-        logger.error(f"try execute shell command [{cmd}] fail with ret code [{returncode}]")
+            logger.warning(f"execute command [{cmd}] fail with ret code [{returncode}]")
+            return False
+    except subprocess.CalledProcessError:
+        logger.error(
+            f"try execute shell command [{cmd}] fail with ret code [{returncode}]"
+        )
         return False
 
 
@@ -154,23 +169,20 @@ def docker_build(
     else:
         logger.warning(f"docker image [{docker_image}] don't exist")
         # 编译镜像
-        docker_build_cmd = (
-            ["docker", "build"]
-            + [
-                "--build-arg",
-                f"USER_NAME={USER_NAME}",
-                "--progress=plain",
-                "-t",
-                f"{docker_image}",
-                "-f",
-                f"{docker_file}",
-                "."
-            ]
-        )
+        docker_build_cmd = ["docker", "build"] + [
+            "--build-arg",
+            f"USER_NAME={USER_NAME}",
+            "--progress=plain",
+            "-t",
+            f"{docker_image}",
+            "-f",
+            f"{docker_file}",
+            ".",
+        ]
         logger.info(f"build docker cmd: [{' '.join(docker_build_cmd)}]")
-        if not execute_shell_command_with_stdout(' '.join(docker_build_cmd)):
+        if not execute_shell_command_with_stdout(" ".join(docker_build_cmd)):
             logger.error(f"build docker [{docker_image}] fail")
-            exit(1)
+            sys.exit(1)
 
     if if_docker_container_exist(docker_container):
         logger.info(f"docker container [{docker_container}] already exists")
@@ -191,9 +203,11 @@ def docker_build(
         docker_run_cmd = (
             ["docker", "run"]
             + [
-                "-it", "-d",
+                "-it",
+                "-d",
                 "--privileged",
-                "--restart", "always",
+                "--restart",
+                "always",
                 f"--name {docker_container}",
                 "--env DOCKER_USER=root",
                 f"--env USER={USER_NAME}",
@@ -204,9 +218,9 @@ def docker_build(
                 f"--volume {PROJECT_BASE_DIR}:/{PROJECT_BASE_DIR}",
                 f"--volume {HOME}/.gitconfig:{HOME}/.gitconfig",
                 f"--volume {HOME}/.ssh:{HOME}/.ssh",
-                f"--volume /etc/passwd:/etc/passwd:ro",
-                f"--volume /etc/group:/etc/group:ro",
-                f"--volume /etc/localtime:/etc/localtime:ro",
+                "--volume /etc/passwd:/etc/passwd:ro",
+                "--volume /etc/group:/etc/group:ro",
+                "--volume /etc/localtime:/etc/localtime:ro",
                 # 挂载 /etc/resolv.conf 出现 DNS 解析错误, 这里让 docker 自动管理 DNS
                 # "--volume /etc/resolv.conf:/etc/resolv.conf:ro",
                 "--net host",
@@ -217,15 +231,13 @@ def docker_build(
                 f"--add-host {execute_shell_command('hostname')}:127.0.0.1",
                 "--hostname in_dev_docker",
                 f"--workdir {PROJECT_BASE_DIR}",
-            ] + [
-                f"{docker_image}",
-                "/bin/bash"
             ]
+            + [f"{docker_image}", "/bin/bash"]
         )
         # print(' '.join(docker_run_cmd))
-        if not execute_shell_command_with_stdout(' '.join(docker_run_cmd)):
+        if not execute_shell_command_with_stdout(" ".join(docker_run_cmd)):
             logger.error(f"run docker image [{docker_image}] fail")
-            exit(1)
+            sys.exit(1)
 
 
 def docker_run(
@@ -235,26 +247,28 @@ def docker_run(
     logger.info(f"start exec docker container [{docker_container}]")
     # 默认开发环境用当前用户
     # if arch == "ubuntu_2204":
-    if True:
-        docker_run_cmd = [
-            "docker", "exec", "-it",
-            docker_container,
-            "/bin/bash", "-c",
-            f"source /home/{USER_NAME}/.profile && /bin/bash"
-        ]
-    else:
-        # 以 root 用户进入
-        docker_run_cmd = [
-            "docker", "exec", "-it",
-            docker_container,
-            "/bin/bash"
-        ]
+    docker_run_cmd = [
+        "docker",
+        "exec",
+        "-it",
+        docker_container,
+        "/bin/bash",
+        "-c",
+        f"source /home/{USER_NAME}/.profile && /bin/bash",
+    ]
+    # # 以 root 用户进入
+    # docker_run_cmd = [
+    #     "docker", "exec", "-it",
+    #     docker_container,
+    #     "/bin/bash"
+    # ]
 
-    docker_run_cmd_str = ' '.join(docker_run_cmd)
+    docker_run_cmd_str = " ".join(docker_run_cmd)
     logger.info(docker_run_cmd_str)
 
     # 直接运行命令, 保持交互式
     subprocess.run(docker_run_cmd, check=True)
+
 
 def docker_clear(
     docker_image: str,
@@ -262,23 +276,17 @@ def docker_clear(
 ) -> None:
     if if_docker_container_exist(docker_container):
         logger.info(f"stop docker container [{docker_container}]")
-        stop_container_cmd = [
-            "docker", "container", "stop", docker_container
-        ]
-        execute_shell_command_with_stdout(' '.join(stop_container_cmd))
-        remove_container_cmd = [
-            "docker", "container", "rm", "-f", docker_container
-        ]
-        execute_shell_command_with_stdout(' '.join(remove_container_cmd))
+        stop_container_cmd = ["docker", "container", "stop", docker_container]
+        execute_shell_command_with_stdout(" ".join(stop_container_cmd))
+        remove_container_cmd = ["docker", "container", "rm", "-f", docker_container]
+        execute_shell_command_with_stdout(" ".join(remove_container_cmd))
     else:
         logger.warning(f"docker container [{docker_container}] don't exist")
 
     if if_docker_image_exist(docker_image):
         logger.info(f"remove docker image [{docker_image}]")
-        remove_image_cmd = [
-            "docker", "rmi", docker_image
-        ]
-        execute_shell_command_with_stdout(' '.join(remove_image_cmd))
+        remove_image_cmd = ["docker", "rmi", docker_image]
+        execute_shell_command_with_stdout(" ".join(remove_image_cmd))
     else:
         logger.warning(f"docker image [{docker_image}] don't exist")
 
@@ -321,4 +329,4 @@ if __name__ == "__main__":
         docker_build(docker_image, docker_container, docker_file)
     else:
         logger.error(f"invalid command [{args.command}]")
-        exit(1)
+        sys.exit(1)

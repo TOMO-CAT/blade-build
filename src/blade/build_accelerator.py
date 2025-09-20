@@ -8,8 +8,7 @@
 Build accelerator (ccache, distcc, etc.) manage module.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 
 class BuildAccelerator(object):
@@ -25,7 +24,7 @@ class BuildAccelerator(object):
         """
         cc, cxx, ld = self.__toolchain.get_cc_commands()
         return cc, cxx, ld
-    
+
     def get_ar_command(self):
         return self.__toolchain.get_ar()
 

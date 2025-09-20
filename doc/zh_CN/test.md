@@ -54,23 +54,9 @@ cc_test(
 
 ## 测试覆盖率 ##
 
-构建和运行测试时，加上 --coverage 参数，blade 就会加入覆盖率相关的编译选项，并在运行时收集测试覆盖率数据，目前仅支持 C++、Java 和 Scala。
+构建和运行测试时，加上 --coverage 参数，blade 就会加入覆盖率相关的编译选项，并在运行时收集测试覆盖率数据，目前仅支持 C++。
 
 C/C++ 测试覆盖率，是通过 gcc 的 [gcov](https://gcc.gnu.org/onlinedocs/gcc/Gcov.html) 实现的。测试运行完后，需要自己执行 gcov 或者 lcov 之类的第三方工具生成测试覆盖报告。
-
-要生成 Java/Scala 测试覆盖率报告，你需要下载并解压 [jacoco](https://www.jacoco.org/)，然后进行配置：
-
-```python
-java_test_config(
-    ...
-    jacoco_home = 'path/to/jacoco',
-    ...
-)
-```
-
-测试报告会生成到 build 目录下的 `jacoco_coverage_report` 目录里。
-
-如果调试符号级别 `global_config.debug_info_level`太低，低于或等于 `low`，那么生成的覆盖率报告里会缺少行覆盖率。Jacoco 需要 `-g:line` 编译选项才能生成行覆盖率。
 
 ## 排除指定的测试 ##
 

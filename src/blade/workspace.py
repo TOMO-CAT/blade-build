@@ -6,8 +6,7 @@
 
 """The workspace module represent current workspace."""
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 import errno
 import json
@@ -15,21 +14,19 @@ import os
 import re
 import string
 
-from blade import config
-from blade import console
-from blade import util
+from blade import config, console, util
 
 
 def _generate_scm_svn():
-    url = revision = 'unknown'
-    returncode, stdout, stderr = util.run_command('svn info', shell=True)
+    url = revision = "unknown"
+    returncode, stdout, stderr = util.run_command("svn info", shell=True)
     if returncode != 0:
-        console.debug('Failed to generate svn scm: %s' % stderr)
+        console.debug("Failed to generate svn scm: %s" % stderr)
     else:
         for line in stdout.splitlines():
-            if line.startswith('URL: '):
+            if line.startswith("URL: "):
                 url = line.strip().split()[-1]
-            if line.startswith('Revision: '):
+            if line.startswith("Revision: "):
                 revision = line.strip().split()[-1]
                 break
 
@@ -37,43 +34,46 @@ def _generate_scm_svn():
 
 
 def _generate_scm_git():
-    url = revision = 'unknown'
+    url = revision = "unknown"
 
     def git(cmd):
         returncode, stdout, stderr = util.run_command(cmd, shell=True)
         if returncode != 0:
-            console.debug('Failed to generate git scm: %s' % stderr)
-            return ''
+            console.debug("Failed to generate git scm: %s" % stderr)
+            return ""
         return stdout
 
-    out = git('git rev-parse HEAD')
+    out = git("git rev-parse HEAD")
     if out:
         revision = out.strip()
-    out = git('git remote -v')
+    out = git("git remote -v")
     # $ git remote -v
     # origin  https://github.com/chen3feng/blade-build.git (fetch)
     # origin  https://github.com/chen3feng/blade-build.git (push)
     if out:
         url = out.splitlines()[0].split()[1]
         # Remove userinfo (such as username and password) from url, if any.
-        url = re.sub(r'(?<=://).*:.*@', '', url)
+        url = re.sub(r"(?<=://).*:.*@", "", url)
     return url, revision
 
 
 def _generate_scm(build_dir):
-    if os.path.isdir('.git'):
+    if os.path.isdir(".git"):
         url, revision = _generate_scm_git()
-    elif os.path.isdir('.svn'):
+    elif os.path.isdir(".svn"):
         url, revision = _generate_scm_svn()
     else:
-        console.debug('Unknown scm.')
+        console.debug("Unknown scm.")
         return
-    path = os.path.join(build_dir, 'scm.json')
-    with open(path, 'w') as f:
-        json.dump({
-            'revision': revision,
-            'url': url,
-        }, f)
+    path = os.path.join(build_dir, "scm.json")
+    with open(path, "w") as f:
+        json.dump(
+            {
+                "revision": revision,
+                "url": url,
+            },
+            f,
+        )
 
 
 class Workspace(object):
@@ -84,7 +84,7 @@ class Workspace(object):
         working_dir = util.get_cwd()
         self.__root_dir = self._find_root_dir(working_dir)
         self.__working_dir = os.path.relpath(working_dir, self.__root_dir)
-        self.__build_dir = ''
+        self.__build_dir = ""
 
     def root_dir(self):
         return self.__root_dir
@@ -100,25 +100,27 @@ class Workspace(object):
         if self.__root_dir != self.__working_dir:
             # This message is required by vim quickfix mode if pwd is changed during
             # the building, DO NOT change the pattern of this message.
-            if self.__options.verbosity != 'quiet':
+            if self.__options.verbosity != "quiet":
                 print("Blade: Entering directory `%s'" % self.__root_dir)
             os.chdir(self.__root_dir)
 
     def setup_build_dir(self):
         """Setup build dir."""
-        build_path_format = config.get_item('global_config', 'build_path_template')
+        build_path_format = config.get_item("global_config", "build_path_template")
         s = string.Template(build_path_format)
-        build_dir = s.substitute(bits=self.__options.bits, profile=self.__options.profile)
+        build_dir = s.substitute(
+            bits=self.__options.bits, profile=self.__options.profile
+        )
 
         if not os.path.exists(build_dir):
             os.mkdir(build_dir)
         try:
-            os.remove('blade-bin')
+            os.remove("blade-bin")
         except os.error:
             pass
-        os.symlink(os.path.abspath(build_dir), 'blade-bin')
+        os.symlink(os.path.abspath(build_dir), "blade-bin")
 
-        log_file = os.path.join(build_dir, 'blade.log')
+        log_file = os.path.join(build_dir, "blade.log")
         console.set_log_file(log_file)
         _generate_scm(build_dir)
 
@@ -127,13 +129,17 @@ class Workspace(object):
 
     def lock(self):
         """Lock current workspace."""
-        _BUILDING_LOCK_FILE = '.blade.building.lock'
-        lock_file_fd, ret_code = util.lock_file(os.path.join(self.__build_dir, _BUILDING_LOCK_FILE))
+        _BUILDING_LOCK_FILE = ".blade.building.lock"
+        lock_file_fd, ret_code = util.lock_file(
+            os.path.join(self.__build_dir, _BUILDING_LOCK_FILE)
+        )
         if lock_file_fd == -1:
             if ret_code == errno.EAGAIN:
-                console.fatal('There is already an active building in current workspace.')
+                console.fatal(
+                    "There is already an active building in current workspace."
+                )
             else:
-                console.fatal('Lock exception, please try it later.')
+                console.fatal("Lock exception, please try it later.")
         return lock_file_fd
 
     def unlock(self, lock_id):
@@ -147,14 +153,16 @@ class Workspace(object):
         directory of the current working directory, and containing a file
         named BLADE_ROOT.
         """
-        blade_root = util.find_file_bottom_up('BLADE_ROOT', from_dir=working_dir)
+        blade_root = util.find_file_bottom_up("BLADE_ROOT", from_dir=working_dir)
         if not blade_root:
             console.fatal(
                 "Can't find the file 'BLADE_ROOT' in this or any upper directory.\n"
                 "Blade need this file as a placeholder to locate the root source directory "
                 "(aka the directory where you #include start from).\n"
-                "You should create it manually at the first time.")
+                "You should create it manually at the first time."
+            )
         return os.path.dirname(blade_root)
+
 
 # singleton
 __instance = None

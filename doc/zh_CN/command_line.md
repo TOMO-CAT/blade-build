@@ -58,7 +58,7 @@ subcommand是一个子命令，目前有：
 示例：
 
 - `--tags-filter='lang:cc'` 过滤出 `cc_*` 目标
-- `--tags-filter='lang:cc,java'` 过滤出 `cc_*` 和 `java_*` 目标
+- `--tags-filter='lang:cc,go'` 过滤出 `cc_*` 和 `go_*` 目标
 - `--tags-filter='lang:cc and type:test'` 过滤出 `cc_test` 目标
 - `--tags-filter='lang:cc and not type:test'` 过滤出 `cc_test` 外的 `cc_*` 目标
 
@@ -71,7 +71,6 @@ subcommand是一个子命令，目前有：
 $ blade dump --all-tags ...
 [
   "lang:cc",
-  "lang:java",
   "lang:lexyacc",
   "lang:proto",
   "lang:py",
@@ -132,15 +131,13 @@ generate 参数（blade clean 命令也继承了）：
 
 - `--generate-dynamic`：强制生成动态库
 - `--generate-package`
-- `--generate-java`：为 proto_library 和 swig_library 生成 java 文件
-- `--generate-php`：为 proto_library 和 swig_library 生成 php 文件
 - `--generate-python`：为 proto_library 和 thrift_library 生成 python 文件
 - `--generate-go`：为 proto_library 生成 go 文件
 
 coverage 参数：
 
 - `--gprof`：支持 GNU gprof
-- `--coverage`：支持生成覆盖率，目前支持 GNU gcov 和 Java jacoco
+- `--coverage`：支持生成覆盖率，目前支持 GNU gcov
 - `--gcov`：FIXME: 现在是 SUPPRESS 状态
 
 pgo 参数：

@@ -28,7 +28,7 @@ class TargetAttributes(object):
         return self.options.arch
 
     def is_debug(self):
-        return self.options.profile == 'debug'
+        return self.options.profile == "debug"
 
 
 def initialize(options):

@@ -16,4 +16,3 @@ py_binary(
     ],
     main = 'exe2.py',
 )
-

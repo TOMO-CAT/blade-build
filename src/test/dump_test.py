@@ -11,33 +11,42 @@ This is the test module to test dump function of blade.
 
 import json
 import os
+
 import blade_test
 
 
 class TestDump(blade_test.TargetTest):
     def setUp(self):
-        self.doSetUp('cc', target='...')
+        self.doSetUp("cc", target="...")
 
     def doTearDown(self):
-        self.removeFile('blade-bin/dump.config')
-        self.removeFile('blade-bin/compdb.json')
-        self.removeFile('blade-bin/targets.json')
+        self.removeFile("blade-bin/dump.config")
+        self.removeFile("blade-bin/compdb.json")
+        self.removeFile("blade-bin/targets.json")
 
     def testDumpConfig(self):
-        self.assertTrue(self.runBlade('dump', '--config'))
-        self.assertTrue(self.runBlade('dump', '--config --to-file=blade-bin/dump.config'))
-        self.assertTrue(os.path.isfile('blade-bin/dump.config'))
-
+        self.assertTrue(self.runBlade("dump", "--config"))
+        self.assertTrue(
+            self.runBlade("dump", "--config --to-file=blade-bin/dump.config")
+        )
+        self.assertTrue(os.path.isfile("blade-bin/dump.config"))
 
     def testDumpCompdb(self):
-        self.assertTrue(self.runBlade('dump', '--compdb'))
-        self.assertTrue(self.runBlade('dump', '--compdb --to-file=blade-bin/compdb.json'))
-        json.load(open('blade-bin/compdb.json'))
+        self.assertTrue(self.runBlade("dump", "--compdb"))
+        self.assertTrue(
+            self.runBlade("dump", "--compdb --to-file=blade-bin/compdb.json")
+        )
+        with open("blade-bin/compdb.json") as f:
+            json.load(f)
 
     def testDumpTargets(self):
-        self.assertTrue(self.runBlade('dump', '--targets'))
-        self.assertTrue(self.runBlade('dump', '--targets  --to-file=blade-bin/targets.json'))
-        json.load(open('blade-bin/targets.json'))
+        self.assertTrue(self.runBlade("dump", "--targets"))
+        self.assertTrue(
+            self.runBlade("dump", "--targets  --to-file=blade-bin/targets.json")
+        )
+        with open("blade-bin/targets.json") as f:
+            json.load(f)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     blade_test.run(TestDump)

@@ -14,10 +14,11 @@ import blade_test
 
 class TestQuery(blade_test.TargetTest):
     """Test the query command."""
+
     def setUp(self):
         """setup method."""
-        self.doSetUp('test_query', full_targets=['.:...'])
+        self.doSetUp("test_query", full_targets=[".:..."])
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     blade_test.run(TestQuery)

@@ -14,8 +14,7 @@ from BUILD files and will find all of the targets needed by the target and
 add extra options according to different target types.
 """
 
-from __future__ import absolute_import
-from __future__ import print_function
+from __future__ import absolute_import, print_function
 
 from blade import console
 from blade.util import iteritems, itervalues
@@ -62,7 +61,6 @@ def _expand_deps(targets):
     for target_id in targets:
         target = targets[target_id]
         _expand_target_deps(target_id, targets)
-        target._expand_deps_generation()
 
 
 def _unique_deps(new_deps_list):
@@ -96,10 +94,10 @@ def _expand_target_deps(target_id, targets, root_targets=None):
     for d in target.deps:
         # loop dependency
         if d in root_targets:
-            err_msg = ''
+            err_msg = ""
             for t in root_targets:
-                err_msg += '//%s --> ' % t
-            console.fatal('Loop dependency found: //%s --> [%s]' % (d, err_msg))
+                err_msg += "//%s --> " % t
+            console.fatal("Loop dependency found: //%s --> [%s]" % (d, err_msg))
         new_deps_list.append(d)
         new_deps_list += _expand_target_deps(d, targets, root_targets)
 

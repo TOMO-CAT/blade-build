@@ -9,4 +9,3 @@ cc_library(
     hdrs = [],
     visibility = ['PUBLIC'],
 )
-

@@ -8,18 +8,26 @@ import os
 import pprint
 
 try:
-    import cPickle as pickle
+    import cPickle as pickle  # pyright: ignore[reportMissingImports]
 except ImportError:
     import pickle
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser = argparse.ArgumentParser(description="Process some integers.")
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('--missing', action='store_true', default=False,
-                       help='Colloect header dependency missing information')
-    group.add_argument('--undeclared', action='store_true', default=False,
-                       help='Colloect undeclared headers')
+    group.add_argument(
+        "--missing",
+        action="store_true",
+        default=False,
+        help="Colloect header dependency missing information",
+    )
+    group.add_argument(
+        "--undeclared",
+        action="store_true",
+        default=False,
+        help="Colloect undeclared headers",
+    )
 
     return parser.parse_args()
 
@@ -28,16 +36,17 @@ def process_targets(build_targets, options):
     full_missing = {}
     undeclared_hdrs = set()
     for target in build_targets:
-        dir, name = target.split(':')
-        details_file = os.path.join('blade-bin', dir, name + '.incchk.details')
+        dir, name = target.split(":")
+        details_file = os.path.join("blade-bin", dir, name + ".incchk.details")
         if not os.path.exists(details_file):
             continue
-        details = pickle.load(open(details_file, 'rb'))
+        with open(details_file, "rb") as f:
+            details = pickle.load(f)
         if details:
-            if 'missing_dep' in details:
-                full_missing[str(target)] = details['missing_dep']
-            if 'undeclared' in details:
-                undeclared_hdrs.update(details['undeclared'])
+            if "missing_dep" in details:
+                full_missing[str(target)] = details["missing_dep"]
+            if "undeclared" in details:
+                undeclared_hdrs.update(details["undeclared"])
 
     if options.missing:
         pprint.pprint(full_missing, indent=4)
@@ -47,9 +56,10 @@ def process_targets(build_targets, options):
 
 def main():
     options = parse_args()
-    stamp = json.load(open('blade-bin/blade_build_stamp.json'))
-    process_targets(stamp['build_targets'], options)
+    with open("blade-bin/blade_build_stamp.json") as f:
+        stamp = json.load(f)
+    process_targets(stamp["build_targets"], options)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

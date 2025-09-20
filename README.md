@@ -34,8 +34,7 @@ Blade 是一个方便易用高性能的现代化代码构建系统，特别适�
 master 分支上的代码是开发版，应当视为 alpha 版。正式环境请优先考虑使用 tag 上的版本。我们会不定期地把内部大规模代码库上验证过的版本发布到 tag 上。
 
 * Blade 发布 2.0，包含以下特性：
-  * python 最低版本要求 2.7，并支持 python 3
-  * 对 Java，scala 构建的完善支持
+  * 逐步废弃 python2, 仅支持 python3
   * 全面支持 Python 构建
   * 支持自定义扩展
   * 后端只支持 [ninja](doc/zh_CN/config.md#global_config) 构建系统，大幅度提高构建性能
@@ -109,7 +108,7 @@ blade test -m32 -pdebug common...
 * 支持 distcc
 * 支持基于构建多平台目标
 * 支持构建时选择编译器（不同版本的 gcc，clang 等）
-* 支持编译 protobuf，lex, yacc, swig
+* 支持编译 protobuf，lex, yacc
 * 支持自定义规则
 * 支持测试，在命令行跑多个测试
 * 支持并行测试（多个测试进程并发运行）
@@ -131,7 +130,7 @@ blade test -m32 -pdebug common...
 git clone git@github.com:TOMO-CAT/blade-build.git
 cd blade-build/
 ./install
-source ~/.profile
+source ~/.bashrc
 ```
 
 ## 文档
@@ -139,3 +138,8 @@ source ~/.profile
 看到这里，你应该觉得 Blade 是个不错的工具，那么，阅读 [完整文档](doc/zh_CN/README.md)，开始使用吧。
 
 如果遇到有问题，可以试试先查一下 [FAQ](doc/zh_CN/FAQ.md)，也许有你需要的信息。
+
+## 最佳实践
+
+* IDE: vscode
+* 操作系统: ubuntu22.04 / ubuntu24.04

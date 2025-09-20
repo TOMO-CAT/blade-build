@@ -81,41 +81,6 @@ syn keyword bladeArg link_jobs
 syn keyword bladeTarget cuda_config
 syn keyword bladeArg cuflags
 
-" Java
-syn keyword bladeTarget java_config
-syn keyword bladeArg java_home
-syn keyword bladeArg fat_jar_conflict_severity
-syn keyword bladeArg maven
-syn keyword bladeArg maven_central
-syn keyword bladeArg maven_download_concurrency
-syn keyword bladeArg maven_jar_allowed_dirs
-syn keyword bladeArg maven_jar_allowed_dirs_exempts
-syn keyword bladeArg maven_snapshot_update_interval
-syn keyword bladeArg maven_snapshot_update_policy
-syn keyword bladeArg source_encoding
-syn keyword bladeArg source_version
-syn keyword bladeArg target_version
-syn keyword bladeArg version
-syn keyword bladeArg warnings
-
-syn keyword bladeTarget java_binary_config
-syn keyword bladeArg one_jar_boot_jar
-
-syn keyword bladeTarget java_test_config
-syn keyword bladeArg coverage_reporter
-syn keyword bladeArg jacoco_home
-syn keyword bladeArg junit_libs
-
-" Scala
-syn keyword bladeTarget scala_config
-syn keyword bladeArg scala_home
-syn keyword bladeArg source_encoding
-syn keyword bladeArg target_platform
-syn keyword bladeArg warnings
-
-syn keyword bladeTarget scala_test_config
-syn keyword bladeArg scalatest_libs
-
 " Go
 syn keyword bladeTarget go_config
 syn keyword bladeArg go
@@ -139,8 +104,6 @@ syn keyword bladeArg fbthrift_incs
 syn keyword bladeTarget proto_library_config
 syn keyword bladeArg protobuf_go_path
 syn keyword bladeArg protobuf_incs
-syn keyword bladeArg protobuf_java_incs
-syn keyword bladeArg protobuf_java_libs
 syn keyword bladeArg protobuf_libs
 syn keyword bladeArg protobuf_path
 syn keyword bladeArg protobuf_php_path
@@ -148,7 +111,6 @@ syn keyword bladeArg protobuf_python_libs
 syn keyword bladeArg protoc
 syn keyword bladeArg protoc_direct_dependencies
 syn keyword bladeArg protoc_go_plugin
-syn keyword bladeArg protoc_java
 syn keyword bladeArg protoc_php_plugin
 syn keyword bladeArg well_known_protos
 

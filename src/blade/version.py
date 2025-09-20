@@ -28,16 +28,16 @@ Every version number class implements the following interface:
     of the same class, thus must follow the same rules)
 """
 
+import contextlib
 import re
 import warnings
-import contextlib
 
 
 @contextlib.contextmanager
 def suppress_known_deprecation():
     with warnings.catch_warnings(record=True) as ctx:
         warnings.filterwarnings(
-            action='default',
+            action="default",
             category=DeprecationWarning,
             message="distutils Version classes are deprecated.",
         )
@@ -55,8 +55,7 @@ class Version:
         if vstring:
             self.parse(vstring)
         warnings.warn(
-            "distutils Version classes are deprecated. "
-            "Use packaging.version instead.",
+            "distutils Version classes are deprecated. Use packaging.version instead.",
             DeprecationWarning,
             stacklevel=2,
         )
@@ -113,7 +112,6 @@ class Version:
 
 
 class StrictVersion(Version):
-
     """Version numbering for anal retentives and software idealists.
     Implements the standard interface for version number classes as
     described above.  A version number consists of two or three
@@ -149,9 +147,7 @@ class StrictVersion(Version):
     in the distutils documentation.
     """
 
-    version_re = re.compile(
-        r'^(\d+) \. (\d+) (\. (\d+))? ([ab](\d+))?$', re.VERBOSE
-    )
+    version_re = re.compile(r"^(\d+) \. (\d+) (\. (\d+))? ([ab](\d+))?$", re.VERBOSE)
 
     def parse(self, vstring):
         match = self.version_re.match(vstring)
@@ -172,9 +168,9 @@ class StrictVersion(Version):
 
     def __str__(self):
         if self.version[2] == 0:
-            vstring = '.'.join(map(str, self.version[0:2]))
+            vstring = ".".join(map(str, self.version[0:2]))
         else:
-            vstring = '.'.join(map(str, self.version))
+            vstring = ".".join(map(str, self.version))
 
         if self.prerelease:
             vstring = vstring + self.prerelease[0] + str(self.prerelease[1])
@@ -288,7 +284,6 @@ class StrictVersion(Version):
 
 
 class LooseVersion(Version):
-
     """Version numbering for anarchists and software realists.
     Implements the standard interface for version number classes as
     described above.  A version number consists of a series of numbers,
@@ -320,14 +315,14 @@ class LooseVersion(Version):
     of "want").
     """
 
-    component_re = re.compile(r'(\d+ | [a-z]+ | \.)', re.VERBOSE)
+    component_re = re.compile(r"(\d+ | [a-z]+ | \.)", re.VERBOSE)
 
     def parse(self, vstring):
         # I've given up on thinking I can reconstruct the version string
         # from the parsed tuple -- so I just store the string here for
         # use by __str__
         self.vstring = vstring
-        components = [x for x in self.component_re.split(vstring) if x and x != '.']
+        components = [x for x in self.component_re.split(vstring) if x and x != "."]
         for i, obj in enumerate(components):
             try:
                 components[i] = int(obj)

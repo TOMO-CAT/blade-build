@@ -1,9 +1,8 @@
 {
-    "python.linting.pylintEnabled": true,
-    "python.analysis.extraPaths": [
-        "src",
-        "src/test"
-    ],
+    // "python.analysis.extraPaths": [
+    //     "src",
+    //     "src/test"
+    // ],
     "cSpell.words": [
         "aspp",
         "atoso",
@@ -29,8 +28,11 @@
         "debugpy",
         "devel",
         "distcc",
+        "dkey",
+        "dkeys",
         "DNDEBUG",
         "DPROFILE",
+        "edkey",
         "Feng",
         "fime",
         "fprofile",
@@ -51,8 +53,7 @@
         "incchk",
         "iputils",
         "isystem",
-        "jacoco",
-        "javac",
+        "jaxen",
         "jemalloc",
         "kubuntu",
         "libstdc",
@@ -68,8 +69,12 @@
         "perftools",
         "pprof",
         "Protoc",
+        "pylint",
         "pylintrc",
+        "scalac",
+        "scalacflags",
         "secretcc",
+        "segs",
         "srcs",
         "STDC",
         "suppressd",
@@ -92,5 +97,6 @@
     "editor.formatOnSave": false,
     "cSpell.enabledFileTypes": {
         "jsonc": false
-    }
+    },
+    "pylint.enabled": true
 }

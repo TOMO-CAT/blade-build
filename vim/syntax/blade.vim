@@ -59,35 +59,12 @@ syn keyword bladeTarget resource_library
 
 syn keyword bladeTarget cu_binary cu_library cu_test
 
-" Java targets
-
-syn keyword bladeTarget java_library java_fat_library
-syn keyword bladeArg coverage exported_deps provided_deps resources source_encoding warnings
-
-syn keyword bladeTarget java_binary
-syn keyword bladeArg main_class exclusions
-
-syn keyword bladeTarget java_test
-
-syn keyword bladeTarget maven_jar
-syn keyword bladeArg binary_jar classifier transitive
-
-" Scala Targets
-syn keyword bladeTarget scala_library scala_test scala_fat_library
-
-syn keyword bladeTarget py_binary py_library py_test
-syn keyword bladeArg base main
-
-syn keyword bladeTarget sh_test
-
 " Protobuf Targets
 syn keyword bladeTarget proto_library
 syn keyword bladeArg generate_descriptors plugins target_languages
 
 " Thrift Targets
 syn keyword bladeTarget thrift_library
-
-syn keyword bladeTarget swig_library
 
 syn keyword bladeTarget package
 syn keyword bladeArg out

@@ -6,30 +6,30 @@
 
 
 """
- This is the test module for resource_library target.
+This is the test module for resource_library target.
 
 """
-
 
 import blade_test
 
 
 class TestResourceLibrary(blade_test.TargetTest):
     """Test resource_library."""
+
     def setUp(self):
         """setup method."""
-        self.doSetUp('cc')
+        self.doSetUp("cc")
 
     def testGenerateRules(self):
         """Test that rules are generated correctly."""
         self.assertTrue(self.runBlade())
-        com_lower_line = self.findCommand(['plowercase.cpp.o', '-c'])
-        com_forms_line = self.findCommand(['forms.js.c.o', '-c'])
-        com_poppy_line = self.findCommand(['poppy.html.c.o', '-c'])
-        static_so_line = self.findCommand(['-shared', 'libstatic_resource.so'])
-        lower_depends_libs = self.findCommand(['-shared', 'liblowercase.so'])
-        gen_forms_line = self.findCommand(['forms.js.c', 'forms.js '])
-        gen_poppy_line = self.findCommand(['poppy.html.c', 'poppy.html '])
+        com_lower_line = self.findCommand(["plowercase.cpp.o", "-c"])
+        com_forms_line = self.findCommand(["forms.js.c.o", "-c"])
+        com_poppy_line = self.findCommand(["poppy.html.c.o", "-c"])
+        # static_so_line = self.findCommand(["-shared", "libstatic_resource.so"])
+        lower_depends_libs = self.findCommand(["-shared", "liblowercase.so"])
+        gen_forms_line = self.findCommand(["forms.js.c", "forms.js "])
+        gen_poppy_line = self.findCommand(["poppy.html.c", "poppy.html "])
 
         self.assertTrue(gen_forms_line)
         self.assertTrue(gen_poppy_line)
@@ -41,5 +41,5 @@ class TestResourceLibrary(blade_test.TargetTest):
         self.assertDynamicLinkFlags(lower_depends_libs)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     blade_test.run(TestResourceLibrary)

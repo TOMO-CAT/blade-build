@@ -1,5 +1,6 @@
-import py.proto.address_book_pb2
+# pylint: disable=c-extension-no-member
+import py.proto.libaddress_book_proto  # pyright: ignore[reportMissingImports]
+
 
 def NewAddressBook():
-    return py.proto.address_book_pb2.AddressBook()
-
+    return py.proto.libaddress_book_proto.AddressBook()
