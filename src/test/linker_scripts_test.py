@@ -10,7 +10,6 @@ This is the test module for cc_plugin target.
 
 """
 
-
 import blade_test
 
 

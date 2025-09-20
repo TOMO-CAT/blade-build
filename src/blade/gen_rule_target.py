@@ -206,7 +206,7 @@ def gen_rule(
     export_incs=[],
     cleans=[],
     heavy=False,
-    **kwargs
+    **kwargs,
 ):
     """General Build Rule
     Args:

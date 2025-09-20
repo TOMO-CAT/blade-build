@@ -29,7 +29,6 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         apt update
         apt install -y google-perftools libgoogle-perftools-dev
-        apt install -y openjdk-11-jdk
         apt install -y thrift-compiler libthrift-dev
         apt install -y bison
         apt install -y flex

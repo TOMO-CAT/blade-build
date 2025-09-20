@@ -553,7 +553,6 @@ class _TestResult(TestResult):
 
 
 class HTMLTestRunner(Template_mixin):
-
     def __init__(self, stream=sys.stdout, verbosity=1, title=None, description=None):
         self.stream = stream
         self.verbosity = verbosity

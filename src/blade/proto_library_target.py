@@ -218,11 +218,6 @@ class ProtoLibrary(CcTarget):
             self._target_file_path("%s.pb.h" % proto_name),
         )
 
-    def _proto_gen_php_file(self, src):
-        """Generate the php file name."""
-        proto_name = src[:-6]
-        return self._target_file_path("%s.pb.php" % proto_name)
-
     def _proto_gen_python_file(self, src):
         """Generate the python file name."""
         proto_name = src[:-6]
@@ -400,7 +395,7 @@ def proto_library(
     target_languages=None,
     plugins=[],
     source_encoding="iso-8859-1",
-    **kwargs
+    **kwargs,
 ):
     """proto_library target.
     Args:

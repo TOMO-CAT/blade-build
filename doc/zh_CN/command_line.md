@@ -131,7 +131,6 @@ generate 参数（blade clean 命令也继承了）：
 
 - `--generate-dynamic`：强制生成动态库
 - `--generate-package`
-- `--generate-php`：为 proto_library 和 swig_library 生成 php 文件
 - `--generate-python`：为 proto_library 和 thrift_library 生成 python 文件
 - `--generate-go`：为 proto_library 生成 go 文件
 

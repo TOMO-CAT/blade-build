@@ -11,7 +11,6 @@ which tests the dependency analyzing module of blade.
 
 """
 
-
 # import os
 # import unittest
 import blade_test

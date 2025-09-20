@@ -85,7 +85,7 @@ def resource_library(
     tags=[],
     optimize=None,
     extra_cppflags=[],
-    **kwargs
+    **kwargs,
 ):
     """resource_library."""
     target = ResourceLibrary(

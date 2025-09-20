@@ -5,7 +5,6 @@ Dump the content of a pickle file.
 such as the `incchk`, `blade-bin/blade_inclusion.data`, etc.
 """
 
-
 import pprint
 import sys
 

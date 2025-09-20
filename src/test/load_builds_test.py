@@ -28,15 +28,15 @@ class TestLoadBuilds(blade_test.TargetTest):
         """Test that all targets in the test project BUILD files
         are in the all command targets list.
         """
-        proto_library = (self.target_path, "rpc_meta_info_proto")
-        cc_library = (self.target_path, "poppy")
-        static_resource = (self.target_path, "static_resource")
-        cc_test = (self.target_path, "rpc_channel_test")
-        swig_library = (self.target_path, "poppy_client")
-        lex_yacc_library = (self.target_path, "parser")
-        cc_plugin = (self.target_path, "meter_business")
-        gen_rule = (self.target_path, "search_service_echo")
-        cc_binary = (self.target_path, "echoserver")
+        # TODO: 应该是没用到的? 目前注释掉后单测覆盖率不变
+        # proto_library = (self.target_path, "rpc_meta_info_proto")
+        # cc_library = (self.target_path, "poppy")
+        # static_resource = (self.target_path, "static_resource")
+        # cc_test = (self.target_path, "rpc_channel_test")
+        # lex_yacc_library = (self.target_path, "parser")
+        # cc_plugin = (self.target_path, "meter_business")
+        # gen_rule = (self.target_path, "search_service_echo")
+        # cc_binary = (self.target_path, "echoserver")
 
 
 if __name__ == "__main__":

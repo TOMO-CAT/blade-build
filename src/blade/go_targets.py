@@ -241,7 +241,7 @@ def go_test(
     tags=[],
     testdata=[],
     extra_goflags=None,
-    **kwargs
+    **kwargs,
 ):
     build_manager.instance.register_target(
         GoTest(

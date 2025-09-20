@@ -10,7 +10,6 @@ This is the test module for cc_gen_rule target.
 
 """
 
-
 import blade_test
 
 

@@ -67,11 +67,12 @@ _py2_fs_encoding = "ascii"
 
 
 def _py2_fsencode(parts):
+    raise NotImplementedError("This function is not supported in Python 3.")
     # py2 => minimal unicode support
-    return [
-        part.encode(_py2_fs_encoding) if isinstance(part, unicode) else part
-        for part in parts
-    ]
+    # return [
+    #     part.encode(_py2_fs_encoding) if isinstance(part, unicode) else part
+    #     for part in parts
+    # ]
 
 
 def _is_wildcard_pattern(pat):
@@ -356,7 +357,6 @@ class _Accessor:
 
 
 class _NormalAccessor(_Accessor):
-
     def _wrap_strfunc(strfunc):
         @functools.wraps(strfunc)
         def wrapped(pathobj, *args):
@@ -490,13 +490,11 @@ class _Selector:
 
 
 class _TerminatingSelector:
-
     def _select_from(self, parent_path, is_dir, exists, listdir):
         yield parent_path
 
 
 class _PreciseSelector(_Selector):
-
     def __init__(self, name, child_parts):
         self.name = name
         _Selector.__init__(self, child_parts)
@@ -511,7 +509,6 @@ class _PreciseSelector(_Selector):
 
 
 class _WildcardSelector(_Selector):
-
     def __init__(self, pat, child_parts):
         self.pat = re.compile(fnmatch.translate(pat))
         _Selector.__init__(self, child_parts)
@@ -529,7 +526,6 @@ class _WildcardSelector(_Selector):
 
 
 class _RecursiveWildcardSelector(_Selector):
-
     def __init__(self, pat, child_parts):
         _Selector.__init__(self, child_parts)
 
@@ -1202,7 +1198,7 @@ class Path(PurePath):
         """
         if sys.version_info < (3, 3):
             raise NotImplementedError(
-                "replace() is only available " "with Python 3.3 and later"
+                "replace() is only available with Python 3.3 and later"
             )
         self._accessor.replace(self, target)
 

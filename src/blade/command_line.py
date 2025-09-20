@@ -217,14 +217,6 @@ class CommandLineParser(object):
         )
 
         parser.add_argument(
-            "--generate-php",
-            dest="generate_php",
-            action="store_true",
-            default=False,
-            help="Generate php files for proto_library and swig_library",
-        )
-
-        parser.add_argument(
             "--generate-python",
             dest="generate_python",
             action="store_true",

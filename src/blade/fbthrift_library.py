@@ -94,7 +94,7 @@ def fbthrift_library(
     visibility=None,
     tags=[],
     deprecated=False,
-    **kwargs
+    **kwargs,
 ):
     """fbthrift_library target."""
     fbthrift_library_target = FBThriftLibrary(

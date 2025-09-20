@@ -48,9 +48,10 @@ repos:
         # 解决 black 和 isort 相互冲突的问题
         # @see https://pycqa.github.io/isort/docs/configuration/black_compatibility.html
         args: ["--profile", "black", "--filter-files"]
-  # - repo: https://github.com/astral-sh/ruff-pre-commit
-  #   rev: v0.13.1
-  #   hooks:
-  #     - id: ruff
-  #       args: [ --fix ] # 自动修复部分简单问题
-  #     - id: ruff-format
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.13.1
+    hooks:
+      - id: ruff-check
+        # args: [ --fix ] # 自动修复部分简单问题
+      # ruff-format 会和 black formatter 冲突, 所以我们只开 ruff-check
+      # - id: ruff-format

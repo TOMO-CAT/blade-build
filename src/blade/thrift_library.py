@@ -107,7 +107,7 @@ def thrift_library(
     tags=[],
     optimize=None,
     deprecated=False,
-    **kwargs
+    **kwargs,
 ):
     """thrift_library target."""
     thrift_library_target = ThriftLibrary(

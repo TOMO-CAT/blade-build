@@ -108,7 +108,7 @@ blade test -m32 -pdebug common...
 * 支持 distcc
 * 支持基于构建多平台目标
 * 支持构建时选择编译器（不同版本的 gcc，clang 等）
-* 支持编译 protobuf，lex, yacc, swig
+* 支持编译 protobuf，lex, yacc
 * 支持自定义规则
 * 支持测试，在命令行跑多个测试
 * 支持并行测试（多个测试进程并发运行）

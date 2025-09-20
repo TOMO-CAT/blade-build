@@ -1193,7 +1193,7 @@ def prebuilt_cc_library(
     link_all_symbols=False,
     binary_link_only=False,
     deprecated=False,
-    **kwargs
+    **kwargs,
 ):
     """prebuilt_cc_library rule"""
     target = PrebuiltCcLibrary(
@@ -1239,7 +1239,7 @@ def cc_library(
     secret=False,
     secret_revision_file=None,
     secure=False,
-    **kwargs
+    **kwargs,
 ):
     """cc_library target.
 
@@ -1266,7 +1266,7 @@ def cc_library(
             link_all_symbols=link_all_symbols,
             binary_link_only=binary_link_only,
             deprecated=deprecated,
-            **kwargs
+            **kwargs,
         )
         # target.warning('"cc_library.prebuilt" is deprecated, please use the standalone '
         #                '"prebuilt_cc_library" rule')
@@ -1411,7 +1411,7 @@ def foreign_cc_library(
     visibility=None,
     tags=[],
     deprecated=False,
-    **kwargs
+    **kwargs,
 ):
     """Similar to a prebuilt cc_library, but it is built by a foreign build system,
     such as autotools, cmake, etc.
@@ -1618,7 +1618,7 @@ def cc_binary(
     linker_scripts=[],
     version_scripts=[],
     export_dynamic=False,
-    **kwargs
+    **kwargs,
 ):
     """cc_binary target."""
     cc_binary_target = CcBinary(
@@ -1783,7 +1783,7 @@ def cc_plugin(
     version_scripts=[],
     allow_undefined=True,
     strip=False,
-    **kwargs
+    **kwargs,
 ):
     """cc_plugin target."""
     target = CcPlugin(
@@ -1923,7 +1923,7 @@ def cc_test(
     exclusive=False,
     heap_check=None,
     heap_check_debug=False,
-    **kwargs
+    **kwargs,
 ):
     """cc_test target."""
     # pylint: disable=too-many-locals

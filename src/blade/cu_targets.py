@@ -264,7 +264,7 @@ def cu_library(
     extra_cppflags=[],
     extra_cuflags=[],
     extra_linkflags=[],
-    **kwargs
+    **kwargs,
 ):
     target = CuLibrary(
         name,
@@ -396,7 +396,7 @@ def cu_binary(
     extra_cppflags=[],
     extra_cuflags=[],
     extra_linkflags=[],
-    **kwargs
+    **kwargs,
 ):
     target = CuBinary(
         name=name,
@@ -491,7 +491,7 @@ def cu_test(
     testdata=[],
     always_run=False,
     exclusive=False,
-    **kwargs
+    **kwargs,
 ):
     target = CuTest(
         name=name,

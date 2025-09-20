@@ -130,7 +130,7 @@ def py_library(
     tags=[],
     base=None,
     prebuilt=None,
-    **kwargs
+    **kwargs,
 ):
     """python library."""
     if prebuilt:
@@ -231,7 +231,7 @@ def py_binary(
     main=None,
     base=None,
     exclusions=[],
-    **kwargs
+    **kwargs,
 ):
     """python binary."""
     target = PythonBinary(
@@ -285,7 +285,7 @@ def py_test(
     main=None,
     base=None,
     testdata=[],
-    **kwargs
+    **kwargs,
 ):
     """python test."""
     target = PythonTest(

@@ -10,6 +10,7 @@
         "ms-python.pylint",
         "ms-python.python",
         "ms-python.black-formatter",
+        "charliermarsh.ruff",
         // 使用 black
         // "ms-python.autopep8"
     ]

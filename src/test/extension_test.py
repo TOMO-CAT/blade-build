@@ -9,7 +9,6 @@
 This is the test for extension functionality.
 """
 
-
 import blade_test
 
 

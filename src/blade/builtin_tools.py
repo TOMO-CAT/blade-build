@@ -9,7 +9,6 @@ This module defines various build functions for building
 targets from sources and custom parameters.
 """
 
-
 from __future__ import absolute_import, division, print_function
 
 import fnmatch
@@ -451,7 +450,7 @@ def generate_python_binary(pybin, basedir, exclusions, mainentry, args):
     # Insert bootstrap before zip, it is also a valid zip file.
     # unzip will seek actually start until meet the zip magic number.
     bootstrap = (
-        "#!/bin/sh\n\n" 'PYTHONPATH="$0:$PYTHONPATH" exec python -m "%s" "$@"\n'
+        '#!/bin/sh\n\nPYTHONPATH="$0:$PYTHONPATH" exec python -m "%s" "$@"\n'
     ) % mainentry
     with open(pybin, "wb") as f:
         f.write(bootstrap.encode("utf-8"))

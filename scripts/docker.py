@@ -129,7 +129,7 @@ def execute_shell_command_with_stdout(cmd: str):
                 return True
             logger.warning(f"execute command [{cmd}] fail with ret code [{returncode}]")
             return False
-    except subprocess.CalledProcessError as e:
+    except subprocess.CalledProcessError:
         logger.error(
             f"try execute shell command [{cmd}] fail with ret code [{returncode}]"
         )

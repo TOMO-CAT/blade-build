@@ -163,8 +163,6 @@ class BladeConfig(object):
                 "protobuf_libs": [],
                 "protobuf_path": "",
                 "protobuf_incs": [],
-                "protobuf_php_path": "",
-                "protoc_php_plugin": "",
                 "protoc_go_plugin": "",
                 "protoc_go_subplugins": [],
                 # All the generated go source files will be placed

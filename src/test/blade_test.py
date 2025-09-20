@@ -8,7 +8,6 @@
 This is the main test module for all targets.
 """
 
-
 import io
 import os
 import shutil

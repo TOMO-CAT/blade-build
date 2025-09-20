@@ -201,7 +201,7 @@ def package(
     type="tar",
     out=None,
     shell=False,
-    **kwargs
+    **kwargs,
 ):
     package_target = PackageTarget(
         name=name,

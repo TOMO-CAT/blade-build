@@ -195,7 +195,7 @@ class _NinjaFileHeaderGenerator(object):
 
         if (
             hasattr(self.options, "profile-generate")
-            and not getattr(self.options, "profile-generate") is None
+            and getattr(self.options, "profile-generate") is not None
         ):
             pgo_gen_dir = getattr(self.options, "profile-generate")
             if not pgo_gen_dir:
@@ -208,7 +208,7 @@ class _NinjaFileHeaderGenerator(object):
 
         if (
             hasattr(self.options, "profile-use")
-            and not getattr(self.options, "profile-use") is None
+            and getattr(self.options, "profile-use") is not None
         ):
             pgo_use_dir = getattr(self.options, "profile-use")
             if not pgo_use_dir:

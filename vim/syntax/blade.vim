@@ -66,8 +66,6 @@ syn keyword bladeArg generate_descriptors plugins target_languages
 " Thrift Targets
 syn keyword bladeTarget thrift_library
 
-syn keyword bladeTarget swig_library
-
 syn keyword bladeTarget package
 syn keyword bladeArg out
 

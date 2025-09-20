@@ -10,7 +10,6 @@ This is the test module for lex_yacc_library target.
 
 """
 
-
 import blade_test
 
 

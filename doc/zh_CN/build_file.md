@@ -108,7 +108,6 @@ Blade 对各种构建目标预设了一些标签：
 - [构建protobuf和thrift](build_rules/idl.md)
 - [构建Python](build_rules/python.md)
 - [构建Lex和Yacc](build_rules/lexyacc.md)
-- [构建SWIG](build_rules/swig.md)
 - [Bash测试](build_rules/shell.md)
 - [自定义规则构建](build_rules/gen_rule.md)
 - [文件打包](build_rules/package.md)

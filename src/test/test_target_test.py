@@ -10,7 +10,6 @@ This is the test module to test TestRunner function of blade.
 
 """
 
-
 import blade_test
 
 

@@ -9,7 +9,6 @@
 This is the test module for cc_binary target.
 """
 
-
 import blade_test
 
 

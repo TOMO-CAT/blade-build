@@ -9,7 +9,6 @@ command line in this way: python blade.zip
 
 """
 
-
 import sys
 
 import blade.main

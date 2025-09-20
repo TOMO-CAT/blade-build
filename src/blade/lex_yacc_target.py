@@ -182,7 +182,7 @@ def lex_yacc_library(
     prefix=None,
     lexflags=[],
     yaccflags=[],
-    **kwargs
+    **kwargs,
 ):
     """lex_yacc_library."""
     target = LexYaccLibrary(

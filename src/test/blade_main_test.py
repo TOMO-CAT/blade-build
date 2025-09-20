@@ -10,7 +10,6 @@ This is the main test module for all targets.
 
 """
 
-
 import sys
 import unittest
 

@@ -10,7 +10,6 @@ This is the test module for cc_library target.
 
 """
 
-
 import blade_test
 
 

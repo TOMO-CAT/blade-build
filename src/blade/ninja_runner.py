@@ -63,9 +63,10 @@ def _run_ninja_build(cmd, options):
         return _run_ninja_command(cmdstr)
     # In quiet mode, redirect ninja output to the file
     ninja_output = "blade-bin/ninja_output.log"
-    with open(ninja_output, "w", buffering=1) as wf, open(
-        ninja_output, "r", buffering=1
-    ) as rf:
+    with (
+        open(ninja_output, "w", buffering=1) as wf,
+        open(ninja_output, "r", buffering=1) as rf,
+    ):
         os.environ["NINJA_STATUS"] = "[%f/%t] "  # The progress depends on this format
         p = subprocess.Popen(cmdstr, shell=True, stdout=wf, stderr=subprocess.STDOUT)
         _show_progress(p, rf)

@@ -10,7 +10,6 @@ This is the test module for prebuild_cc_library target.
 
 """
 
-
 import blade_test
 
 
@@ -25,7 +24,7 @@ class TestPrebuildCcLibrary(blade_test.TargetTest):
         """Test that rules are generated correctly."""
         self.assertTrue(self.runBlade())
         copy_lower_line = self.findCommand("cp ")
-        com_upper_line = self.findCommand(["puppercase.cpp.o", "-c"])
+        # com_upper_line = self.findCommand(["puppercase.cpp.o", "-c"])
         upper_depends_libs = self.findCommand("libuppercase.so")
 
         self.assertIn("cc/libprebuilt.so", copy_lower_line)
