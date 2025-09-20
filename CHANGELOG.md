@@ -2,12 +2,21 @@
 
 ## 发布版本规范
 
-需要保证如下命令运行通过（后续考虑配置 github action 流水线）：
+需要保证如下命令运行通过（已经配置到 github action 流水线）：
 
 ```bash
 # 进入 docker
 python3 scripts/docker.py --command build
 python3 scripts/docker.py --command run
+
+# pre-commit
+pre-commit run -a
+
+# example
+bash scripts/example.sh
+
+# test
+bash scripts/test.sh
 ```
 
 ## master

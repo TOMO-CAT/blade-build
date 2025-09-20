@@ -94,7 +94,7 @@
         "xcube",
         "Xlinker"
     ],
-    "editor.formatOnSave": false,
+    "editor.formatOnSave": true,
     "cSpell.enabledFileTypes": {
         "jsonc": false
     },

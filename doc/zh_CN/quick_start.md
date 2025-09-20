@@ -5,9 +5,9 @@
 ## 创建工作空间
 
 ```console
-$ mkdir quick-start
-$ cd quick-start
-$ touch BLADE_ROOT
+mkdir quick-start
+cd quick-start
+touch BLADE_ROOT
 ```
 
 ## 定义实现 say 库

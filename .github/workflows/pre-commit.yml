@@ -10,17 +10,17 @@ jobs:
   pre-commit:
     runs-on: ubuntu-24.04
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-    - name: Install pre-commit
-      run: python3 -m pip install pylint==3.3.8 pre-commit==3.5.0
+      - name: Install pre-commit
+        run: python3 -m pip install pylint==3.3.8 pre-commit==3.5.0
 
-    - name: Run pre-commit hooks
-      run: pre-commit run --all-files
+      - name: Run pre-commit hooks
+        run: pre-commit run --all-files
